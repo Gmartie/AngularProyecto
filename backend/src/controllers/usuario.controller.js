@@ -5,8 +5,7 @@ const ResponseUtil = require('../utils/response.util');
 class UsuarioController {
   async getAll(req, res) {
     try {
-      const { curso } = req.query;
-      const usuarios = await usuarioService.getAll(curso);
+      const usuarios = await usuarioService.getAll();
       const response = usuarios.map(m => UsuarioDTO.toResponse(m));
       return ResponseUtil.success(res, response);
     } catch (error) {

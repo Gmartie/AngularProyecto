@@ -1,0 +1,166 @@
+.login-container {
+  display: flex;
+  height: calc(100vh - 70px);
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+}
+
+.login-box {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-box h2 {
+  color: #333;
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  text-align: center;
+  color: #999;
+  margin: 0 0 2rem 0;
+  font-size: 0.95rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3E2723;
+  box-shadow: 0 0 0 3px rgba(62, 39, 35, 0.1);
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #c62828;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.btn-login:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(62, 39, 35, 0.4);
+}
+
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.registro-link {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.registro-link a {
+  color: #3E2723;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.registro-link a:hover {
+  color: #8D6E63;
+  text-decoration: underline;
+}
+
+.login-info {
+  color: white;
+  max-width: 350px;
+}
+
+.login-info h3 {
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+}
+
+.login-info p {
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+  opacity: 0.95;
+}
+
+.login-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.login-info li {
+  padding: 0.75rem 0;
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+    gap: 2rem;
+    height: auto;
+    min-height: calc(100vh - 70px);
+    justify-content: center;
+  }
+
+  .login-info {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    padding: 1.5rem;
+  }
+
+  .login-box h2 {
+    font-size: 1.5rem;
+  }
+}

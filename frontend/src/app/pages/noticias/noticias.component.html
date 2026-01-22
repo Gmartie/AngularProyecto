@@ -1,0 +1,31 @@
+<!-- COMPONENTE: Noticias - Comunicados -->
+<!-- Muestra noticias y comunicados del ciclo -->
+
+<div class="container">
+  <div class="header">
+    <h1>Noticias y Comunicados</h1>
+    <p>Mantente actualizado con las últimas noticias de DAW</p>
+  </div>
+
+  <div class="noticias-grid">
+    <ng-container *ngFor="let noticia of noticias()">
+      <article class="noticia-card">
+        <div class="noticia-header">
+          <span class="categoria" [class]="'cat-' + getCategoriaClass(noticia.categoria)">
+            {{ noticia.categoria }}
+          </span>
+          <span class="fecha">{{ noticia.fecha | date: 'dd/MM/yyyy' }}</span>
+        </div>
+
+        <h3>{{ noticia.titulo }}</h3>
+
+        <p>{{ noticia.contenido }}</p>
+
+        <div class="noticia-footer">
+          <span class="autor">Por: {{ noticia.autor }}</span>
+          <a href="#" class="btn-leer-mas">Leer más →</a>
+        </div>
+      </article>
+    </ng-container>
+  </div>
+</div>

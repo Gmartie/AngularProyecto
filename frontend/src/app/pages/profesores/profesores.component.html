@@ -1,0 +1,158 @@
+<!-- COMPONENTE: Profesores - Gestión -->
+<!-- Interfaz para gestionar profesores -->
+
+<div class="container">
+  <div class="header">
+    <h1>Gestión de Profesores</h1>
+    @if (puedeCrear()) {
+      <button (click)="abrirModalCrear()" class="btn-primary">
+        + Nuevo Profesor
+      </button>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+  @if (exito()) {
+    <div class="alert-success">{{ exito() }}</div>
+  }
+
+  <div class="busqueda">
+    <input 
+      [ngModel]="busqueda()" 
+      (ngModelChange)="busqueda.set($event)"
+      type="text" 
+      placeholder="Buscar por nombre, email o usuario..."
+      class="input-search"
+    >
+  </div>
+
+  @if (cargando()) {
+    <div class="loading">Cargando profesores...</div>
+  }
+
+  @if (!cargando() && profesorFiltrado().length === 0) {
+    <div class="empty">
+      No hay profesores registrados
+    </div>
+  }
+
+  @if (!cargando() && profesorFiltrado().length > 0) {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Usuario</th>
+          <th>Cargo</th>
+          <th>Titulación</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let profesor of profesorFiltrado()">
+          <tr>
+            <td>{{ profesor.nombre }}</td>
+            <td>{{ profesor.email || '-' }}</td>
+            <td>{{ profesor.usuario || '-' }}</td>
+            <td>
+              <span class="badge" [title]="profesor.cargo">
+                {{ obtenerBadgeCargo(profesor.cargo) }} {{ profesor.cargo }}
+              </span>
+            </td>
+            <td>{{ profesor.titulacion || '-' }}</td>
+            <td class="acciones">
+              @if (puedeEditar()) {
+                <button 
+                  (click)="abrirModalEditar(profesor)" 
+                  class="btn-small btn-edit"
+                  title="Editar"
+                >
+                  ✏️
+                </button>
+              }
+              @if (puedeEliminar()) {
+                <button 
+                  (click)="eliminar(profesor)" 
+                  class="btn-small btn-delete"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              }
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  }
+
+  <!-- Modal -->
+  @if (mostrarModal()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editando() ? 'Editar Profesor' : 'Nuevo Profesor' }}</h2>
+          <button (click)="cerrarModal()" class="btn-close">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input 
+              [ngModel]="profesorActual().nombre" 
+              (ngModelChange)="updateProfesorNombre($event)" 
+              type="text" 
+              class="input-text"
+              placeholder="Nombre del profesor"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input 
+              [ngModel]="profesorActual().email" 
+              (ngModelChange)="updateProfesorEmail($event)" 
+              type="email" 
+              class="input-text"
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Cargo *</label>
+            <select 
+              [ngModel]="profesorActual().cargo"
+              (ngModelChange)="updateProfesorCargo($event)" 
+              class="input-text"
+            >
+              <option value="">Seleccionar cargo</option>
+              <ng-container *ngFor="let cargo of cargos()">
+                <option [value]="cargo">
+                  {{ cargo }}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Titulación</label>
+            <input 
+              [ngModel]="profesorActual().titulacion" 
+              (ngModelChange)="updateProfesorTitulacion($event)" 
+              type="text" 
+              class="input-text"
+              placeholder="Ej: Licenciado en Informática"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="cerrarModal()" class="btn-secondary">Cancelar</button>
+          <button (click)="guardar()" class="btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

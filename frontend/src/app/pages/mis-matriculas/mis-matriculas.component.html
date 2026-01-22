@@ -1,0 +1,92 @@
+<!-- COMPONENTE: Mis Matriculaciones -->
+<!-- Muestra matrículas activas del usuario -->
+
+<div class="matriculas-container">
+  <div class="matriculas-header">
+    <h1>📚 Mis Matrículas</h1>
+    <p>Visualiza tus matrículas activas en módulos</p>
+  </div>
+
+  <!-- Estado: Cargando -->
+  @if (cargando()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Cargando tus matrículas...</p>
+    </div>
+  }
+
+  <!-- Estado: Error -->
+  @if (error() && !cargando()) {
+    <div class="error-message">
+      <strong>⚠️ Error:</strong> {{ error() }}
+    </div>
+  }
+
+  <!-- Estado: Sin matrículas -->
+  @if (!cargando() && matriculas().length === 0 && !error()) {
+    <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No tienes matrículas activas</h3>
+      <p>Ponte en contacto con administración para solicitar una matrícula</p>
+    </div>
+  }
+
+  <!-- Estado: Con matrículas -->
+  @if (!cargando() && matriculas().length > 0 && !error()) {
+    <div class="matriculas-section">
+      <!-- Resumen -->
+      <div class="resumen-box">
+        <div class="resumen-item">
+          <span class="resumen-label">Total de módulos:</span>
+          <span class="resumen-valor">{{ matriculas().length }}</span>
+        </div>
+        <div class="resumen-item">
+          <span class="resumen-label">Total de horas semanales:</span>
+          <span class="resumen-valor">{{ obtenerTotalHoras() }} h</span>
+        </div>
+      </div>
+
+      <!-- Grid de matrículas -->
+      <div class="matriculas-grid">
+        @for (matricula of matriculas(); track matricula.id) {
+          <div class="matricula-card">
+            <!-- Encabezado -->
+            <div class="card-header">
+              <h3>{{ matricula.modulo_nombre }}</h3>
+              <span class="status" [ngClass]="'status-' + (matricula.estado || 'activa').toLowerCase()">
+                {{ matricula.estado || 'Activa' }}
+              </span>
+            </div>
+
+            <!-- Detalles -->
+            <div class="card-body">
+              <div class="detail-row">
+                <span class="label">Código:</span>
+                <span class="value">{{ matricula.codigo }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Curso:</span>
+                <span class="value">{{ matricula.curso }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Horas semanales:</span>
+                <span class="value">{{ matricula.horasSemanales }} h</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Matriculado:</span>
+                <span class="value">{{ matricula.fecha_matricula | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            @if (matricula.descripcion) {
+              <div class="card-footer">
+                <p>{{ matricula.descripcion }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

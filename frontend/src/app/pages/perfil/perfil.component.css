@@ -1,0 +1,214 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.perfil-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.perfil-header h1 {
+  color: #333;
+  font-size: 2.2rem;
+  margin: 0;
+  border-bottom: 3px solid #3E2723;
+  padding-bottom: 1rem;
+  display: inline-block;
+}
+
+.perfil-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.info-section h3 {
+  color: #3E2723;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e8e8e8;
+  padding-bottom: 1rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #3E2723;
+}
+
+.info-item label {
+  display: block;
+  color: #3E2723;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.info-item p {
+  color: #333;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.roles {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rol-badge {
+  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.formulario {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3E2723;
+  box-shadow: 0 0 0 3px rgba(62, 39, 35, 0.1);
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #c62828;
+}
+
+.exito-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #2e7d32;
+  font-weight: 600;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.btn-guardar,
+.btn-cancelar,
+.btn-editar {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-guardar {
+  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+  color: white;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(62, 39, 35, 0.4);
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancelar {
+  background-color: #999;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #777;
+}
+
+.perfil-buttons {
+  text-align: center;
+}
+
+.btn-editar {
+  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+  color: white;
+  margin: 0;
+}
+
+.btn-editar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(62, 39, 35, 0.4);
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .perfil-card {
+    padding: 1rem;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .btn-guardar,
+  .btn-cancelar {
+    width: 100%;
+  }
+}

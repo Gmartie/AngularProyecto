@@ -1,0 +1,67 @@
+<!-- COMPONENTE: Navbar - Barra de Navegación -->
+<!-- Menú principal de la aplicación con navegación dinámica -->
+
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/" class="logo" (click)="menuAbierto = false; submenuAbierto = false">DAW</a>
+    </div>
+
+    <div class="menu-toggle" (click)="toggleMenu()" role="button" tabindex="0" (keydown.enter)="toggleMenu()" (keydown.space)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <ul class="nav-menu" [class.activo]="menuAbierto">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuAbierto = false">Inicio</a></li>
+      
+      <li *ngIf="usuario">
+        <a routerLink="/noticias" routerLinkActive="active" (click)="menuAbierto = false">Noticias</a>
+      </li>
+
+      <li *ngIf="usuario && (tieneRol('Administrador') || tieneRol('Tutor') || tieneRol('Profesor') || tieneRol('Jefe Departamento'))">
+        <a routerLink="/modulos" routerLinkActive="active" (click)="menuAbierto = false">Módulos</a>
+      </li>
+
+      <li *ngIf="usuario && tieneRol('Alumno')">
+        <a routerLink="/mis-matriculas" routerLinkActive="active" (click)="menuAbierto = false">Mis Matrículas</a>
+      </li>
+
+      <li *ngIf="usuario && tieneRol('Administrador')">
+        <a routerLink="/admin" routerLinkActive="active" (click)="menuAbierto = false">Panel Admin</a>
+      </li>
+
+      <li *ngIf="usuario && (tieneRol('Administrador') || tieneRol('Jefe Departamento'))">
+        <a routerLink="/alumnos" routerLinkActive="active" (click)="menuAbierto = false">Alumnos</a>
+      </li>
+
+      <li *ngIf="usuario && (tieneRol('Administrador') || tieneRol('Profesor') || tieneRol('Jefe Departamento'))">
+        <a routerLink="/profesores" routerLinkActive="active" (click)="menuAbierto = false">Profesores</a>
+      </li>
+
+      <li *ngIf="usuario && tieneRol('Administrador')">
+        <a routerLink="/matriculas" routerLinkActive="active" (click)="menuAbierto = false">Matrículas</a>
+      </li>
+
+      <li *ngIf="usuario" class="user-menu">
+        <a class="user-link" (click)="toggleSubmenu()" role="button" tabindex="0">{{ usuario.usuario }} ▼</a>
+        <ul class="submenu" [class.activo]="submenuAbierto">
+          <li><a routerLink="/perfil" (click)="submenuAbierto = false">Mi Perfil</a></li>
+          <li *ngIf="tieneRol('Administrador')">
+            <a routerLink="/admin" (click)="submenuAbierto = false">Panel Admin</a>
+          </li>
+          <li><a (click)="logout()" style="cursor: pointer; color: #d32f2f;">Cerrar Sesión</a></li>
+        </ul>
+      </li>
+
+      <li *ngIf="!usuario">
+        <a routerLink="/login" routerLinkActive="active" (click)="menuAbierto = false">Iniciar Sesión</a>
+      </li>
+
+      <li *ngIf="!usuario">
+        <a routerLink="/registro" routerLinkActive="active" class="btn-registro" (click)="menuAbierto = false">Registrarse</a>
+      </li>
+    </ul>
+  </div>
+</nav>

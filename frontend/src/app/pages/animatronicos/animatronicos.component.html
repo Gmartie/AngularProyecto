@@ -1,0 +1,23 @@
+<h2>Animatrónicos</h2>
+
+<div *ngFor="let a of animas">
+  <h3>{{ a.nombre }}</h3>
+  <img [src]="'/assets/' + a.foto" width="100">
+
+  <p *ngIf="rol !== 3">Reconocimiento: {{ a.reconocimiento }}</p>
+
+  <!-- SOLO TÉCNICO -->
+  <div *ngIf="rol === 2">
+    <p>Piezas: {{ a.num_piezas }}</p>
+    <img [src]="'/assets/' + a.planos" width="120">
+    <button (click)="editar(a)">Editar</button>
+    <button (click)="borrar(a.id)">Eliminar</button>
+  </div>
+
+  <!-- PROPIETARIO SIN PLANOS -->
+  <div *ngIf="rol === 1">
+    <button (click)="editar(a)">Editar</button>
+  </div>
+</div>
+
+<button *ngIf="rol !== 3" (click)="crear()">Nuevo</button>

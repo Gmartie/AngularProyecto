@@ -1,0 +1,10 @@
+<h2>Locales</h2>
+
+<div *ngFor="let l of locales">
+  <h3>{{ l.ciudad }}</h3>
+  <p>{{ l.direccion }}</p>
+  <p>Aforo: {{ l.aforo }}</p>
+
+  <button *ngIf="rol !== 3" (click)="editar(l)">Editar</button>
+  <button *ngIf="rol === 1" (click)="borrar(l.id)">Eliminar</button>
+</div>

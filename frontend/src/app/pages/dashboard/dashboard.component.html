@@ -1,144 +1,16 @@
-<!-- COMPONENTE: Dashboard - Página Principal -->
-<!-- Muestra información introductoria del ciclo DAW -->
+<h1>Panel Principal</h1>
 
-<div class="container">
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Ciclo Formativo DAW</h1>
-      <p>Desarrollo de Aplicaciones Web - Grado Superior</p>
-    </div>
-  </section>
+<div *ngIf="rol === 1">
+  <a routerLink="/locales">Gestionar Locales</a>
+  <a routerLink="/animatronicos">Gestionar Animatrónicos</a>
+</div>
 
-  <section class="contenido">
-    <h2>Ciclo Formativo en Desarrollo de Aplicaciones Web</h2>
-    
-    <p>El Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Web (DAW) es una formación oficial de Formación Profesional de 2 años de duración.</p>
+<div *ngIf="rol === 2">
+  <a routerLink="/animatronicos">Animatrónicos (CRUD)</a>
+  <a routerLink="/tipos">Tipos de Animatrónicos</a>
+</div>
 
-    <h3>📚 Módulos del Primer Curso</h3>
-    <table class="modulos-table">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Módulo</th>
-          <th>Horas/Semana</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>SI</td>
-          <td>Sistemas Informáticos</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td>BBDD</td>
-          <td>Bases de Datos</td>
-          <td>6</td>
-        </tr>
-        <tr>
-          <td>PROG</td>
-          <td>Programación</td>
-          <td>8</td>
-        </tr>
-        <tr>
-          <td>LMSGI</td>
-          <td>Lenguajes de Marcas y Sistemas de Gestión de Información</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>ED</td>
-          <td>Entornos de Desarrollo</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>FOL</td>
-          <td>Formación y Orientación Laboral</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>EIE</td>
-          <td>Empresa e Iniciativa Emprendedora</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>IP</td>
-          <td>Inglés Profesional</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>DASP</td>
-          <td>Digitalización Aplicada a los Sectores Productivos</td>
-          <td>1</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3>📚 Módulos del Segundo Curso</h3>
-    <table class="modulos-table">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Módulo</th>
-          <th>Horas/Semana</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>DWEC</td>
-          <td>Desarrollo Web en Entorno Cliente</td>
-          <td>6</td>
-        </tr>
-        <tr>
-          <td>DWES</td>
-          <td>Desarrollo Web en Entorno Servidor</td>
-          <td>7</td>
-        </tr>
-        <tr>
-          <td>DAW</td>
-          <td>Despliegue de Aplicaciones Web</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td>DIW</td>
-          <td>Diseño de Interfaces Web</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td>EIE</td>
-          <td>Empresa e Iniciativa Emprendedora</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>PI</td>
-          <td>Proyecto Integrado</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>FCT</td>
-          <td>Formación en Centros de Trabajo</td>
-          <td>4</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3>🎯 Objetivo del Ciclo</h3>
-    <p>Capacitar al alumnado para desarrollar, implementar, mantener y desplegar aplicaciones web, tanto del lado del cliente (front-end) como del lado del servidor (back-end), con acceso a bases de datos y siguiendo estándares de calidad, usabilidad y accesibilidad.</p>
-
-    <h3>🏆 Título Oficial</h3>
-    <p>Al finalizar obtienes el título oficial de <strong>Técnico Superior en Desarrollo de Aplicaciones Web</strong> — una titulación reconocida en toda España y compatible con estudios posteriores.</p>
-
-    <h3>💼 Salidas Profesionales</h3>
-    <ul>
-      <li>Desarrollador/a web (Front-end y Back-end)</li>
-      <li>Programador/a web y multimedia</li>
-      <li>Especialista en despliegue y mantenimiento web</li>
-      <li>Consultor/a técnico inicial en proyectos digitales</li>
-    </ul>
-
-    <h3>🧑‍🎓 Requisitos de Acceso</h3>
-    <ul>
-      <li>Tener Bachillerato o equivalente</li>
-      <li>Haber superado una prueba de acceso para grado superior</li>
-      <li>Tener un título de FP medio o equivalente</li>
-    </ul>
-  </section>
+<div *ngIf="rol === 3">
+  <a routerLink="/locales">Ver Local</a>
+  <a routerLink="/animatronicos">Ver Animatrónicos</a>
 </div>

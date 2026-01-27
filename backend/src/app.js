@@ -4,12 +4,13 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 
+// Importación de routes reales
 const authRoutes = require('./routes/auth.routes');
 const usuarioRoutes = require('./routes/usuario.routes');
-const profesorRoutes = require('./routes/profesor.routes');
-const alumnoRoutes = require('./routes/alumno.routes');
-const moduloRoutes = require('./routes/modulo.routes');
-const matriculaRoutes = require('./routes/matricula.routes');
+const rolesRoutes = require('./routes/roles.routes');
+const localesRoutes = require('./routes/locales.routes');
+const animatronicosRoutes = require('./routes/animatronicos.routes');
+const tiposAnimatronicosRoutes = require('./routes/tiposanimatronicos.routes');
 
 const app = express();
 
@@ -20,21 +21,24 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Uso de routes
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/profesores', profesorRoutes);
-app.use('/api/alumnos', alumnoRoutes);
-app.use('/api/modulos', moduloRoutes);
-app.use('/api/matriculas', matriculaRoutes);
+app.use('/api/roles', rolesRoutes);
+app.use('/api/locales', localesRoutes);
+app.use('/api/animatronicos', animatronicosRoutes);
+app.use('/api/tipos-animatronicos', tiposAnimatronicosRoutes);
 
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'API funcionando correctamente',
     timestamp: new Date().toISOString()
   });
 });
 
+// Middleware de errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -44,6 +48,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,

@@ -28,7 +28,7 @@ const registerValidator = [
 
 router.post('/login', loginValidator, validate, authController.login);
 router.post('/register', logRegisterData, registerValidator, validate, authController.register);
-router.get('/me', authMiddleware, authController.me);
+router.get('/me',authMiddleware, authController.me);
 router.get('/debug/roles', authController.debugRoles);
 router.get('/create-admin-user', authController.createAdminUser);
 router.post('/create-test-user', authController.createTestUser);

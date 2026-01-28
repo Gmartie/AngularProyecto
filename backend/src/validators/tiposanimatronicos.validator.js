@@ -1,6 +1,6 @@
 const {body} = require('express-validator');
 
-const crearTipoAnimatronicoValidator = [
+const crearTiposAnimatronicosValidator = [
   body('nombre')
     .trim()
     .notEmpty()
@@ -11,4 +11,4 @@ const crearTipoAnimatronicoValidator = [
     .withMessage('El id_local debe ser un entero válido')
 ];
 
-module.exports = { crearTipoAnimatronicoValidator };
+module.exports = { crearTiposAnimatronicosValidator };

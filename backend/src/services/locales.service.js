@@ -63,4 +63,4 @@ class LocalesService {
   }
 }
 
-module.exports = new localesService();
+module.exports = new LocalesService();

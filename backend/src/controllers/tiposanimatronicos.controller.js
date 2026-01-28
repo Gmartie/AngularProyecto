@@ -1,8 +1,8 @@
-const TipoService = require('../services/tipo.service');
-const TipoDTO = require('../dto/tipo.dto');
+const TipoService = require('../services/tiposanimatronicos.service');
+const TipoDTO = require('../dto/tiposanimatronicos.dto');
 const ResponseUtil = require('../utils/response.util');
 
-class TipoAnimatronicosController {
+class TiposAnimatronicosController {
   async getAll(req, res) {
     try {
       const tipos = await TipoService.getAll();
@@ -53,4 +53,4 @@ class TipoAnimatronicosController {
   }
 }
 
-module.exports = new TipoController();
+module.exports = new TiposAnimatronicosController();

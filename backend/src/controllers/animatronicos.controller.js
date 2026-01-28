@@ -1,5 +1,5 @@
-const AnimatronicoService = require('../services/animatronico.service');
-const AnimatronicoDTO = require('../dto/animatronico.dto');
+const AnimatronicoService = require('../services/animatronicos.service');
+const AnimatronicoDTO = require('../dto/animatronicos.dto');
 const ResponseUtil = require('../utils/response.util');
 
 class AnimatronicosController {
@@ -53,4 +53,4 @@ class AnimatronicosController {
   }
 }
 
-module.exports = new AnimatronicoController();
+module.exports = new AnimatronicosController();

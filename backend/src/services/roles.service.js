@@ -41,4 +41,4 @@ class RolesService {
   }
 }
 
-module.exports = new RolService();
+module.exports = new RolesService();

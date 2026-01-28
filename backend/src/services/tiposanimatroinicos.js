@@ -52,4 +52,4 @@ class TipoAnimatronicosService {
   }
 }
 
-module.exports = new TipoService();
+module.exports = new TipoAnimatronicosService();

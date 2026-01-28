@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const tiposanimatronicosController = require('../controllers/tiposanimatronicos.controller');
 const authMiddleware = require('../middleware/auth.middleware');
-const { crearTiposAnimatronicosValidator } = require('../validators/tipoanimatronicos.validator');
+const { crearTiposAnimatronicosValidator } = require('../validators/tiposanimatronicos.validator');
 const validate = require('../middleware/validation.middleware');
 
 // Por ahora solo requerimos autenticación

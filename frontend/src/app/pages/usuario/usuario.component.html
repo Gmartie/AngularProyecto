@@ -1,0 +1,14 @@
+<div *ngIf="usuario; else noLogin" class="perfil">
+  <h2>Perfil de usuario</h2>
+
+  <p><strong>ID:</strong> {{ usuario.id }}</p>
+  <p><strong>Usuario:</strong> {{ usuario.usuario }}</p>
+  <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+  <p><strong>Rol:</strong> {{ nombreRol }}</p>
+
+  <button (click)="logout()">Cerrar sesión</button>
+</div>
+
+<ng-template #noLogin>
+  <p>No hay ningún usuario autenticado.</p>
+</ng-template>

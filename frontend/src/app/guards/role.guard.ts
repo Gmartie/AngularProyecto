@@ -152,9 +152,10 @@ export class RoleGuard implements CanActivate {
     // usuario.roles: [{ id: 1, nombre: 'Administrador' }, ...]
     // 
     // some() retorna true si encuentra al menos una coincidencia
-    const tieneRol = rolesRequeridos.some(rolRequerido => 
-      usuario.roles.some(rolDelUsuario => rolDelUsuario.nombre === rolRequerido)
-    );
+    const tieneRol = rolesRequeridos.some(rolRequerido =>  
+  usuario.id_rol === Number(rolRequerido)
+);
+
 
     console.log('🔐 RoleGuard - ¿Tiene rol requerido?', tieneRol);
 

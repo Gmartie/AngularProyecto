@@ -8,6 +8,7 @@ export interface UsuarioAutenticado {
   id: number;
   usuario: string;
   correo: string;
+  id_rol: number;
   token: string;
   roles?: { nombre: string }[];
 }

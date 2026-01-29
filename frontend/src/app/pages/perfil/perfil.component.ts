@@ -9,9 +9,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { UsuarioService } from '../../services/usuario.service';
-import { Usuario } from '../../models/usuario.model';
 
 @Component({
   selector: 'app-perfil',
@@ -21,7 +20,7 @@ import { Usuario } from '../../models/usuario.model';
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
-  usuario = signal<Usuario | null>(null);
+  usuario = signal<UsuarioAutenticado | null>(null);
   editando = signal(false);
   cargando = signal(false);
   exito = signal(false);
@@ -51,6 +50,21 @@ export class PerfilComponent implements OnInit {
     this.error.set('');
     this.exito.set(false);
   }
+
+  updateCorreo(valor: string) {
+  this.formulario.update(f => ({ ...f, correo: valor }));
+  }
+
+  nombreRol(): string {
+  const rol = this.usuario()?.id_rol;
+
+  switch (rol) {
+    case 1: return 'Administrador';
+    case 2: return 'Técnico';
+    case 3: return 'Guardia de seguridad';
+    default: return 'Desconocido';
+  }
+}
 
   guardarCambios(): void {
     const form = this.formulario();

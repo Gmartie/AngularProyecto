@@ -11,6 +11,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
+import { UsuarioComponent } from './pages/usuario/usuario.component';
+
 
 export const routes: Routes = [
 
@@ -75,6 +77,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
+  //Usuario
+   { path: 'usuario', component: UsuarioComponent },
   // Wildcard
   {
     path: '**',

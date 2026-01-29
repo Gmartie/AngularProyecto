@@ -10,7 +10,7 @@ import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UsuarioAutenticado } from '../../models/usuario.model';
+import { UsuarioAutenticado } from '../../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -38,20 +38,29 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  tieneRol(nombreRol: string): boolean {
-    if (!this.usuario?.roles) {
-      return false;
-    }
-    return this.usuario.roles.some(r => r.nombre === nombreRol);
-  }
+ tieneRol(nombreRol: string): boolean {
+  const rol = Number(this.usuario?.id_rol);
 
-  obtenerNombresRoles(): string {
-    if (!this.usuario?.roles || this.usuario.roles.length === 0) {
-      return '';
-    }
-    // map crea un nuevo array con los roles y join los separa por comas
-    return this.usuario.roles.map(r => r.nombre).join(', ');
+  const mapa: any = {
+    1: 'Administrador',
+    2: 'Técnico',
+    3: 'Guardia de seguridad'
+  };
+
+  return mapa[rol] === nombreRol;
+}
+
+obtenerRolTexto(): string {
+  if (!this.usuario) return '';
+
+  switch (this.usuario.id_rol) {
+    case 1: return 'Administrador';
+    case 2: return 'Técnico';
+    case 3: return 'Guardia de seguridad';
+    default: return 'Desconocido';
   }
+}
+
 
   async asignarRolAdmin(): Promise<void> {
     if (!this.usuario) return;

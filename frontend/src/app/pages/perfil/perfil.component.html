@@ -17,14 +17,14 @@
         </div>
         <div class="info-item">
           <label>Email</label>
-          <p>{{ usuario()?.email }}</p>
+          <p>{{ usuario()?.correo }}</p>
         </div>
         <div class="info-item">
           <label>Roles</label>
           <div class="roles">
-            <span *ngFor="let rol of usuario()?.roles" class="rol-badge">
-              {{ rol }}
-            </span>
+           <span class="rol-badge">
+            {{ nombreRol() }}
+          </span>
           </div>
         </div>
       </div>
@@ -34,8 +34,8 @@
           <label>Email</label>
           <input
             type="email"
-            [ngModel]="formulario().email"
-            (ngModelChange)="updateEmail($event)"
+            [ngModel]="formulario().correo"
+            (ngModelChange)="updateCorreo($event)"
             placeholder="tu@email.com"
           />
         </div>

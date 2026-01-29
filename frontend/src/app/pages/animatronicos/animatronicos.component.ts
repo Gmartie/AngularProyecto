@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './animatronicos.component.html',
     standalone: true,
   imports: [CommonModule]
+  
 })
 export class AnimatronicosComponent implements OnInit {
 

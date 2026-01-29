@@ -1,38 +1,20 @@
-/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F5F5F5;
-  color: #333;
+:root {
+  --bg-main: #c0c0c0;       /* gris clásico */
+  --bg-window: #ffffff;
+  --blue-main: #003399;    /* azul 90s */
+  --blue-light: #3366cc;
+  --border-dark: #404040;
+  --border-light: #ffffff;
+  --text-main: #000000;
 }
 
 body {
   margin: 0;
-  padding: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Tahoma", "Verdana", sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
 
-button {
-  font-family: inherit;
-}
-
-input, select, textarea {
-  font-family: inherit;
-}
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}

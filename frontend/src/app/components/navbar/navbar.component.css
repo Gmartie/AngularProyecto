@@ -1,217 +1,95 @@
-/* ========== NAVBAR PRINCIPAL ========== */
-/* Barra de navegación con gradiente marrón y posición fija en la parte superior */
-.navbar {
-  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%); /* Gradiente marrón diagonal */
-  padding: 0; /* Sin relleno interno */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  position: sticky; /* Se queda en la parte superior al hacer scroll */
-  top: 0; /* Pegado al tope */
-  z-index: 100; /* Por encima de otros elementos */
+.faz-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Logo a la izquierda, menú a la derecha */
+  padding: 10px 20px;
+  background: #003399;
+  color: #e0e0e0;
 }
 
-/* ========== CONTENEDOR NAVBAR ========== */
-/* Contenedor que organiza el logo, menú y elementos de la navbar */
-.navbar-container {
-  max-width: 1200px; /* Ancho máximo para pantallas grandes */
-  margin: 0 auto; /* Centrado horizontalmente */
-  display: flex; /* Disposición flexible (horizontal) */
-  justify-content: space-between; /* Espacio entre elementos (logo a izq, menú a der) */
-  align-items: center; /* Alineación vertical al centro */
-  padding: 1rem 2rem; /* Espacio interno: 1rem arriba/abajo, 2rem izquierda/derecha */
+/* Contenedor para logo + imagen */
+.logo-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
-/* ========== LOGO (MARCA) ========== */
-/* Contenedor del logo DAW */
-.navbar-brand {
-  flex: 1; /* Ocupa todo el espacio disponible a la izquierda */
+.logo-img {
+  width: 40px;   /* Ajusta tamaño de la imagen */
+  height: 40px;
+  margin-right: 10px;
 }
 
-/* Estilos del logo "DAW" */
-.logo {
-  color: white; /* Texto blanco */
-  font-size: 1.8rem; /* Tamaño grande */
-  font-weight: bold; /* Negrita */
-  text-decoration: none; /* Sin subrayado */
-  letter-spacing: 2px; /* Espaciado aumentado entre letras */
+.logo-text {
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px var(--primary);
+  color: var(--primary);
 }
 
-/* ========== MENÚ DE NAVEGACIÓN ========== */
-/* Lista de enlaces principales (Inicio, Noticias, Módulos, etc.) */
-.nav-menu {
-  display: flex; /* Disposición horizontal */
-  list-style: none; /* Sin viñetas */
-  gap: 2rem; /* Espaciado entre elementos */
-  margin: 0; /* Sin margen externo */
-  padding: 0; /* Sin relleno interno */
-}
-
-/* Estilos de enlaces en el menú */
-.nav-menu a {
-  color: white; /* Texto blanco */
-  text-decoration: none; /* Sin subrayado */
-  font-weight: 500; /* Grosor medio */
-  transition: all 0.3s ease; /* Animación suave al pasar el ratón */
-  padding: 0.5rem 1rem; /* Relleno interno */
-  border-radius: 4px; /* Esquinas redondeadas */
-}
-
-/* Efecto al pasar el ratón sobre un enlace */
-.nav-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente blanco */
-  transform: translateY(-2px); /* Sube 2px con animación */
-}
-
-/* Enlace activo (página actual) */
-.nav-menu a.active {
-  background-color: rgba(255, 255, 255, 0.3); /* Fondo más opaco */
-  border-bottom: 2px solid white; /* Línea blanca abajo */
-}
-
-/* ========== BOTÓN REGISTRO ========== */
-/* Estilos especiales para el botón "Registrarse" */
-.btn-registro {
-  background-color: #8D6E63 !important; /* Fondo marrón (fuerza esta regla) */
-  padding: 0.5rem 1.5rem !important; /* Relleno interno mayor */
-  border-radius: 25px !important; /* Bordes muy redondeados (estilo píldora) */
-}
-
-/* Efecto al pasar el ratón sobre el botón registro */
-.btn-registro:hover {
-  background-color: #6D4C41 !important; /* Marrón más oscuro */
-}
-
-/* ========== BOTÓN MENÚ HAMBURGUESA ========== */
-/* Ícono de 3 líneas que aparece en dispositivos móviles */
-.menu-toggle {
-  display: none; /* Oculto en pantallas grandes */
-  flex-direction: column; /* Direccion vertical para las líneas */
-  cursor: pointer; /* Cursor indicando que es clickeable */
-}
-
-/* Líneas individuales del ícono hamburguesa */
 .menu-toggle span {
-  width: 25px; /* Ancho de cada línea */
-  height: 3px; /* Grosor de cada línea */
-  background-color: white; /* Color blanco */
-  margin: 5px 0; /* Espaciado entre líneas */
-  border-radius: 2px; /* Esquinas suavemente redondeadas */
-  transition: all 0.3s ease; /* Animación suave para transformaciones */
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: var(--primary);
+  margin: 4px 0;
+  box-shadow: 0 0 5px var(--primary);
 }
 
-/* ========== MENÚ DEL USUARIO ========== */
-/* Contenedor del menú desplegable del usuario (dropdown) */
+.faz-menu {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.faz-menu li a {
+  color: #e0e0e0;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.faz-menu li a:hover {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent);
+}
+
 .user-menu {
-  position: relative; /* Posicionamiento relativo para que los hijos absolutos estén dentro */
+  position: relative;
 }
 
-/* Enlace del nombre de usuario con flecha */
-.user-link {
-  cursor: pointer; /* Indica que es clickeable */
-  user-select: none; /* Evita que se seleccione el texto al hacer clic */
-}
-
-/* ========== SUBMENÚ (DROPDOWN) ========== */
-/* Menú desplegable con opciones del usuario (Perfil, Panel Admin, Cerrar Sesión) */
 .submenu {
-  position: absolute; /* Posicionamiento absoluto para aparecer encima */
-  top: 100%; /* Justo debajo del elemento padre */
-  right: 0; /* Alineado a la derecha */
-  background-color: #8D6E63; /* Fondo marrón */
-  list-style: none; /* Sin viñetas */
-  padding: 0.5rem 0; /* Relleno vertical */
-  border-radius: 4px; /* Esquinas redondeadas */
-  min-width: 200px; /* Ancho mínimo */
-  margin-top: 0.5rem; /* Espacio entre el menú y el submenú */
-  max-height: 0; /* Altura inicial 0 (oculto) */
-  overflow: hidden; /* Oculta contenido que sobresale */
-  transition: max-height 0.3s ease; /* Animación suave para abrir/cerrar */
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #020617;
+  border: 1px solid var(--primary);
+  display: none;
+  min-width: 180px;
+  box-shadow: 0 0 15px var(--primary);
 }
 
-/* Submenú visible/abierto */
 .submenu.activo {
-  max-height: 300px; /* Se expande hasta 300px */
+  display: block;
 }
 
-/* Elementos del submenú */
-.submenu li {
-  margin: 0; /* Sin margen */
+.submenu li a {
+  display: block;
+  padding: 10px;
+  color: #e0e0e0;
 }
 
-/* Enlaces dentro del submenú */
-.submenu a {
-  display: block; /* Cada enlace ocupa toda la línea */
-  padding: 0.75rem 1rem; /* Relleno interno */
-  color: white; /* Texto blanco */
-  text-decoration: none; /* Sin subrayado */
-  border-radius: 0; /* Sin esquinas redondeadas */
+.danger {
+  color: var(--danger);
+  cursor: pointer;
 }
 
-/* Efecto al pasar el ratón sobre opción del submenú */
-.submenu a:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
+.btn-retro {
+  border: 1px solid var(--primary);
+  padding: 6px 12px;
+  box-shadow: 0 0 8px var(--primary);
 }
-
-/* ========== RESPONSIVE DESIGN - DISPOSITIVOS MÓVILES ========== */
-/* Estilos para pantallas menores a 768px (tablets y móviles) */
-@media (max-width: 768px) {
-  /* Mostrar el botón menú hamburguesa en móviles */
-  .menu-toggle {
-    display: flex;
-  }
-
-  /* Menú de navegación en versión móvil */
-  .nav-menu {
-    position: absolute; /* Se posiciona sobre el contenido */
-    top: 60px; /* Debajo del navbar */
-    left: 0; /* Desde la izquierda */
-    right: 0; /* Hasta la derecha (ancho completo) */
-    flex-direction: column; /* Elementos en vertical */
-    background-color: #3E2723; /* Fondo marrón oscuro */
-    gap: 0; /* Sin espaciado entre elementos */
-    max-height: 0; /* Inicialmente oculto */
-    overflow: hidden; /* Oculta contenido que sobresale */
-    transition: max-height 0.3s ease; /* Animación suave */
-    z-index: 1000; /* Por encima de otros elementos */
-  }
-
-  /* Menú abierto en móvil */
-  .nav-menu.activo {
-    max-height: 600px; /* Se expande hasta 600px */
-  }
-
-  /* Línea separadora entre elementos del menú en móvil */
-  .nav-menu li {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea gris muy sutil */
-  }
-
-  /* Enlaces del menú en móvil */
-  .nav-menu a {
-    padding: 1rem; /* Más relleno para áreas de toque más grandes */
-    border-radius: 0; /* Sin esquinas redondeadas */
-  }
-
-  /* Menú del usuario en móvil */
-  .user-menu {
-    position: relative;
-  }
-
-  /* Submenú en móvil */
-  .submenu {
-    position: static; /* Posicionamiento estático (no absoluto) */
-    max-height: 0; /* Inicialmente oculto */
-    overflow: hidden; /* Oculta contenido */
-    transition: max-height 0.3s ease; /* Animación suave */
-    background-color: #8D6E63; /* Fondo marrón */
-  }
-
-  /* Submenú abierto en móvil */
-  .submenu.activo {
-    max-height: 300px; /* Se expande */
-  }
-
-  /* Enlaces del submenú en móvil */
-  .submenu a {
-    padding: 0.75rem 1rem 0.75rem 2rem; /* Más relleno a la izquierda para indentar */
-  }
-}
-

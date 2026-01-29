@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { LocalesService } from '../../services/locales.service';
 import { AuthService } from '../../services/auth.service';
 import { Local } from '../../models/local.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-locales',
-  templateUrl: './locales.component.html'
+  templateUrl: './locales.component.html',
+     standalone: true,
+  imports: [CommonModule]
 })
 export class LocalesComponent implements OnInit {
 

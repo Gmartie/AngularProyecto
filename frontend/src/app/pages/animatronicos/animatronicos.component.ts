@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { AnimatronicosService } from '../../services/animatronicos.service';
 import { AuthService } from '../../services/auth.service';
 import { Animatronico } from '../../models/animatronico.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-animatronicos',
-  templateUrl: './animatronicos.component.html'
+  templateUrl: './animatronicos.component.html',
+    standalone: true,
+  imports: [CommonModule]
 })
 export class AnimatronicosComponent implements OnInit {
 

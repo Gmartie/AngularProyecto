@@ -1,3 +1,4 @@
+import { AuthService } from '../../services/auth.service';
 export class DashboardComponent {
   rol = 0;
 

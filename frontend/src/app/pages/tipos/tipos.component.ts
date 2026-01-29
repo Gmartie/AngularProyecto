@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { TiposAnimatronicosService } from '../../services/tiposanimatronicos.service';
 import { AuthService } from '../../services/auth.service';
 import { TipoAnimatronico } from '../../models/tiposanimatronicos.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
+    standalone: true,
+  imports: [CommonModule],
   selector: 'app-tipos',
   templateUrl: './tipos.component.html'
 })

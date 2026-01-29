@@ -31,7 +31,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UsuarioAutenticado } from '../../models/usuario.model';
+import { Usuario } from '../../models/usuario.model';
 
 /**
  * Decorador @Component
@@ -71,7 +71,7 @@ export class AdminComponent implements OnInit {
    */
 
   /**
-   * usuario: Signal<UsuarioAutenticado | null>
+   * usuario: Signal<Usuario | null>
    * 
    * QUÉ ES:
    * Una señal reactiva del usuario autenticado actualmente.
@@ -83,8 +83,8 @@ export class AdminComponent implements OnInit {
    * - Se actualizan automáticamente cuando el usuario cambia
    * - Mejor rendimiento y simplicidad
    * 
-   * TIPO: UsuarioAutenticado | null
-   * - Puede ser un objeto UsuarioAutenticado (usuario logueado)
+   * TIPO: Usuario | null
+   * - Puede ser un objeto Usuario (usuario logueado)
    * - O null (sin usuario autenticado)
    * 
    * CÓMO SE USA EN PLANTILLA:
@@ -103,7 +103,7 @@ export class AdminComponent implements OnInit {
    *   permisos: ["crear_modulo", "eliminar_alumno", ...]
    * }
    */
-  usuario = signal<UsuarioAutenticado | null>(null);
+  usuario = signal<Usuario | null>(null);
 
   /**
    * ──────────────────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ export class AdminComponent implements OnInit {
    *   → 'readonly' significa que no puede reasignarse (es constante)
    */
   constructor(private readonly authService: AuthService) {
-    this.authService.usuario$.subscribe(usuario => {
+    this.authService.usuario.subscribe(usuario => {
       this.usuario.set(usuario);
     });
   }

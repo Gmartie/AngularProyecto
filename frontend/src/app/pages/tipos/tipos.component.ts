@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TiposService } from '../../services/tipos.service';
+import { TiposAnimatronicosService } from '../../services/tiposanimatronicos.service';
 import { AuthService } from '../../services/auth.service';
+import { TipoAnimatronico } from '../../models/tiposanimatronicos.model';
 
 @Component({
   selector: 'app-tipos',
@@ -8,25 +9,28 @@ import { AuthService } from '../../services/auth.service';
 })
 export class TiposComponent implements OnInit {
 
-  tipos:any[] = [];
+  tipos: TipoAnimatronico[] = [];
   rol = 0;
 
   constructor(
-    private service:TiposService,
-    private auth:AuthService
+    private service: TiposAnimatronicosService,
+    private auth: AuthService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.rol = this.auth.getUser().id_rol;
-    this.service.getAll().subscribe(data => this.tipos = data as any[]);
+
+    this.service.obtenerTodos().subscribe(data => {
+      this.tipos = data;
+    });
   }
 
-  borrar(id:number){
-    this.service.delete(id).subscribe(() => {
+  borrar(id: number): void {
+    this.service.eliminar(id).subscribe(() => {
       this.tipos = this.tipos.filter(t => t.id !== id);
     });
   }
 
-  crear(){}
-  editar(t:any){}
+  crear() {}
+  editar(tipo: TipoAnimatronico) {}
 }

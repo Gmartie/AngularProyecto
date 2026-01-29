@@ -10,7 +10,7 @@ import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UsuarioAutenticado } from '../../models/user.model';
+import { UsuarioAutenticado } from '../../models/usuario.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({

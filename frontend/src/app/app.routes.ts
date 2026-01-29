@@ -1,9 +1,8 @@
 /**
  * RUTAS DE LA APLICACIÓN
- * 
- * Define todas las rutas de navegación con lazy loading
- * Incluye guards de autenticación y validación de roles
- * Los módulos se cargan bajo demanda (lazy loading) para optimizar rendimiento
+ *
+ * Rutas reales alineadas con las carpetas existentes en /pages
+ * Lazy loading + guards
  */
 
 import { Routes } from '@angular/router';
@@ -14,70 +13,71 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { 
-    path: '', 
-    component: DashboardComponent 
+
+  // Dashboard
+  {
+    path: '',
+    component: DashboardComponent
   },
-  { 
-    path: 'login', 
-    component: LoginComponent 
-  },
-  { 
-    path: 'registro', 
-    component: RegistroComponent 
+
+  // Auth
+  {
+    path: 'login',
+    component: LoginComponent
   },
   {
+    path: 'registro',
+    component: RegistroComponent
+  },
+
+  // Admin
+  {
     path: 'admin',
-    loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent),
+    loadComponent: () =>
+      import('./pages/admin/admin.component').then(m => m.AdminComponent),
     canActivate: [RoleGuard],
     data: { roles: ['Administrador'] }
   },
+
+  // Animatrónicos
   {
-    path: 'noticias',
-    loadComponent: () => import('./pages/noticias/noticias.component').then(m => m.NoticiasComponent),
+    path: 'animatronicos',
+    loadComponent: () =>
+      import('./pages/animatronicos/animatronicos.component')
+        .then(m => m.AnimatronicosComponent),
     canActivate: [AuthGuard]
   },
+
+  // Locales
   {
-    path: 'modulos',
-    loadComponent: () => import('./pages/modulos/modulos.component').then(m => m.ModulosComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ['Administrador', 'Tutor', 'Profesor', 'Jefe Departamento', 'Alumno'] }
+    path: 'locales',
+    loadComponent: () =>
+      import('./pages/locales/locales.component')
+        .then(m => m.LocalesComponent),
+    canActivate: [AuthGuard]
   },
+
+  // Tipos de animatrónicos
   {
-    path: 'mis-matriculas',
-    loadComponent: () => import('./pages/mis-matriculas/mis-matriculas.component').then(m => m.MisMatriculasComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ['Alumno'] }
+    path: 'tipos',
+    loadComponent: () =>
+      import('./pages/tipos/tipos.component')
+        .then(m => m.TiposComponent),
+    canActivate: [AuthGuard]
   },
-  {
-    path: 'alumnos',
-    loadComponent: () => import('./pages/alumnos/alumnos.component').then(m => m.AlumnosComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ['Administrador', 'Jefe Departamento'] }
-  },
-  {
-    path: 'profesores',
-    loadComponent: () => import('./pages/profesores/profesores.component').then(m => m.ProfesoresComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ['Administrador', 'Tutor', 'Jefe Departamento', 'Profesor'] }
-  },
-  {
-    path: 'matriculas',
-    loadComponent: () => import('./pages/matriculas/matriculas.component').then(m => m.MatriculasComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ['Administrador', 'Jefe Departamento'] }
-  },
+
+  // Perfil
   {
     path: 'perfil',
-    loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent),
+    loadComponent: () =>
+      import('./pages/perfil/perfil.component')
+        .then(m => m.PerfilComponent),
     canActivate: [AuthGuard]
   },
+
+  // Wildcard
   {
-    path: 'test-users',
-    loadComponent: () => import('./pages/test-users/test-users.component').then(m => m.TestUsersComponent)
-  },
-  { 
-    path: '**', 
-    redirectTo: '' 
+    path: '**',
+    redirectTo: ''
   }
 ];

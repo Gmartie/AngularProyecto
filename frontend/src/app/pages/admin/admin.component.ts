@@ -31,7 +31,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UsuarioAutenticado } from '../../models/user.model';
+import { UsuarioAutenticado } from '../../models/usuario.model';
 
 /**
  * Decorador @Component

@@ -3,7 +3,7 @@
  * 
  * Página de perfil de usuario autenticado
  * Permite visualizar y editar información personal
- * Gestiona cambios de email y contraseña
+ * Gestiona cambios de correo y contraseña
  */
 
 import { Component, OnInit, signal } from '@angular/core';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UsuarioService } from '../../services/usuario.service';
-import { UsuarioAutenticado } from '../../models/user.model';
+import { Usuario } from '../../models/usuario.model';
 
 @Component({
   selector: 'app-perfil',
@@ -21,14 +21,14 @@ import { UsuarioAutenticado } from '../../models/user.model';
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
-  usuario = signal<UsuarioAutenticado | null>(null);
+  usuario = signal<Usuario | null>(null);
   editando = signal(false);
   cargando = signal(false);
   exito = signal(false);
   error = signal('');
 
   formulario = signal({
-    email: '',
+    correo: '',
     password: '',
     confirmPassword: ''
   });
@@ -42,7 +42,7 @@ export class PerfilComponent implements OnInit {
     const usuarioData = this.authService.obtenerUsuario();
     this.usuario.set(usuarioData);
     if (usuarioData) {
-      this.formulario.update(f => ({ ...f, email: usuarioData.email }));
+      this.formulario.update(f => ({ ...f, correo: usuarioData.correo }));
     }
   }
 
@@ -54,8 +54,8 @@ export class PerfilComponent implements OnInit {
 
   guardarCambios(): void {
     const form = this.formulario();
-    if (!form.email) {
-      this.error.set('El email es obligatorio');
+    if (!form.correo) {
+      this.error.set('El correo es obligatorio');
       return;
     }
 
@@ -71,7 +71,7 @@ export class PerfilComponent implements OnInit {
     setTimeout(() => {
       const usuarioActual = this.usuario();
       if (usuarioActual) {
-        this.usuario.set({ ...usuarioActual, email: form.email });
+        this.usuario.set({ ...usuarioActual, correo: form.correo });
       }
       this.exito.set(true);
       this.editando.set(false);
@@ -85,7 +85,7 @@ export class PerfilComponent implements OnInit {
     const usuarioActual = this.usuario();
     if (usuarioActual) {
       this.formulario.set({
-        email: usuarioActual.email,
+        correo: usuarioActual.correo,
         password: '',
         confirmPassword: ''
       });
@@ -93,8 +93,8 @@ export class PerfilComponent implements OnInit {
     this.error.set('');
   }
 
-  updateEmail(value: string): void {
-    this.formulario.update(f => ({ ...f, email: value }));
+  updatecorreo(value: string): void {
+    this.formulario.update(f => ({ ...f, correo: value }));
   }
 
   updatePassword(value: string): void {

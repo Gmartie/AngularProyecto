@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalesService } from '../../services/locales.service';
 import { AuthService } from '../../services/auth.service';
+import { Local } from '../../models/local.model';
 
 @Component({
   selector: 'app-locales',
@@ -8,25 +9,28 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LocalesComponent implements OnInit {
 
-  locales:any[] = [];
+  locales: Local[] = [];
   rol = 0;
 
   constructor(
-    private service:LocalesService,
-    private auth:AuthService
+    private service: LocalesService,
+    private auth: AuthService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.rol = this.auth.getUser().id_rol;
-    this.service.getAll().subscribe(data => this.locales = data as any[]);
+
+    this.service.obtenerTodos().subscribe(data => {
+      this.locales = data;
+    });
   }
 
-  borrar(id:number){
-    this.service.delete(id).subscribe(() => {
+  borrar(id: number): void {
+    this.service.eliminar(id).subscribe(() => {
       this.locales = this.locales.filter(l => l.id !== id);
     });
   }
 
-  crear(){}
-  editar(l:any){}
+  crear() {}
+  editar(local: Local) {}
 }

@@ -5,5 +5,5 @@
  * Simplifica las importaciones en componentes
  */
 
-export * from './user.model';
+export * from './usuario.model';
 export * from './modulo.model';

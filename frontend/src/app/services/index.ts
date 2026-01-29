@@ -6,7 +6,8 @@
  */
 
 export * from './auth.service';
-export * from './modulo.service';
+export * from './animatronicos.service';
 export * from './usuario.service';
-export * from './alumno.service';
-export * from './profesor.service';
+export * from './locales.service';
+export * from './roles.service';
+export * from './tiposanimatronicos.service';

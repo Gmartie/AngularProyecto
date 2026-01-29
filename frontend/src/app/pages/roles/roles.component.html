@@ -1,0 +1,9 @@
+<h2>Roles</h2>
+
+<div *ngFor="let t of tipos">
+  {{ t.nombre }}
+  <button (click)="editar(t)">Editar</button>
+  <button (click)="borrar(t.id)">Eliminar</button>
+</div>
+
+<button (click)="crear()">Nuevo</button>

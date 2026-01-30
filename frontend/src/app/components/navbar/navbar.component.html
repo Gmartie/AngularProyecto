@@ -17,10 +17,7 @@
 
   <ul class="faz-menu" [class.activo]="menuAbierto">
     <li>
-      <a routerLink="/" routerLinkActive="active" (click)="menuAbierto = false">
-        Dashboard
-      </a>
-    </li>
+
     <li *ngIf="usuario">
       <a routerLink="/animatronicos" (click)="menuAbierto = false">
         Animatrónicos

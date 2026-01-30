@@ -1,1 +1,45 @@
+/* ===== Helpy retro corregido ===== */
+.helpy-container {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 200px;
+  pointer-events: none;
+}
+
+/* Imagen del personaje */
+.helpy-img {
+  width: 120px;
+  display: block;
+  margin-left: auto;
+}
+
+/* Bocadillo como contenedor */
+.helpy-bubble {
+  position: absolute;
+  top: -70px;
+  left: -80px;
+  width: 220px;
+  height: 150px;
+
+  background-image: url("/Helpy/bubble.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 18px 20px;
+  box-sizing: border-box;
+}
+
+/* Texto dentro del bocadillo */
+.helpy-bubble span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.2;
+}
 

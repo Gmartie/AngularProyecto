@@ -4,7 +4,7 @@
 <div class="registro-container">
   <div class="registro-box">
     <h2>Crear Cuenta</h2>
-    <p class="subtitle">Únete a la comunidad DAW</p>
+    <p class="subtitle">Únete a Fazbear</p>
 
     @if (!exito()) {
     <form (ngSubmit)="registrarse()">
@@ -83,4 +83,17 @@
       ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a>
     </p>
   </div>
+  
+ <div class="helpy-container">
+  <div class="helpy-bubble">
+    <span>No olvides Iniciar Sesión</span>
+  </div>
+
+  <img
+    src="Helpy/helpy.png"
+    alt="Helpy"
+    class="helpy-img"
+  />
+</div>
+
 </div>

@@ -4,102 +4,103 @@
   justify-content: center;
   min-height: calc(100vh - 70px);
   padding: 2rem;
-  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
+  background: #c0c0c0; /* gris clásico */
 }
 
+/* Caja principal */
 .registro-box {
-  background-color: white;
-  padding: 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  background: #eeeeee;
+  padding: 2rem;
   width: 100%;
   max-width: 420px;
+  border: 3px solid #003399; /* marco azul clásico */
+  box-shadow: 4px 4px 0 #666666; /* sombra dura */
 }
 
+/* Título */
 .registro-box h2 {
-  color: #333;
+  color: #003399;
   text-align: center;
-  margin: 0 0 0.5rem 0;
-  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
+/* Subtítulo */
 .subtitle {
   text-align: center;
-  color: #999;
-  margin: 0 0 2rem 0;
-  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
 }
 
+/* Grupos */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.3rem;
 }
 
 .form-group label {
   display: block;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  color: #000;
+  font-weight: bold;
+  font-size: 0.85rem;
 }
 
+/* Inputs simples */
 .form-group input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+  padding: 0.5rem;
+  border: 2px solid #999;
+  background: #ffffff;
+  font-size: 0.9rem;
   box-sizing: border-box;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #3E2723;
-  box-shadow: 0 0 0 3px rgba(62, 39, 35, 0.1);
+  border-color: #003399;
+  background: #f8f8ff;
 }
 
+/* Error */
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 0.75rem 1rem;
-  border-radius: 5px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  border-left: 4px solid #c62828;
+  background: #ffffff;
+  color: #990000;
+  border: 2px solid #990000;
+  padding: 0.6rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.85rem;
 }
 
+/* Éxito */
 .exito-message {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  padding: 1.5rem;
-  border-radius: 5px;
+  background: #ffffff;
+  color: #006600;
+  border: 2px solid #006600;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
-  border-left: 4px solid #2e7d32;
 }
 
 .exito-message p {
-  margin: 0.5rem 0;
-  font-weight: 500;
+  margin: 0.4rem 0;
 }
 
+/* Botón clásico */
 .btn-registro {
   width: 100%;
-  padding: 0.85rem 1.5rem;
-  background: linear-gradient(135deg, #3E2723 0%, #8D6E63 100%);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.55rem;
+  background: #003399;
+  color: #ffffff;
+  border: 2px solid #000080;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
+  text-transform: uppercase;
 }
 
 .btn-registro:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(62, 39, 35, 0.4);
+  background: #000080;
 }
 
 .btn-registro:disabled {
@@ -107,31 +108,75 @@
   cursor: not-allowed;
 }
 
+/* Link */
 .login-link {
   text-align: center;
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #000;
 }
 
 .login-link a {
-  color: #3E2723;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.login-link a:hover {
-  color: #8D6E63;
+  color: #003399;
   text-decoration: underline;
 }
 
+.login-link a:hover {
+  color: #000080;
+}
+
+/* Responsive */
 @media (max-width: 480px) {
   .registro-box {
-    padding: 1.5rem;
+    padding: 1.4rem;
   }
 
   .registro-box h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
+}
+
+/* ===== Helpy retro corregido ===== */
+.helpy-container {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 200px;
+  pointer-events: none;
+}
+
+/* Imagen del personaje */
+.helpy-img {
+  width: 120px;
+  display: block;
+  margin-left: auto;
+}
+
+/* Bocadillo como contenedor */
+.helpy-bubble {
+  position: absolute;
+  top: -70px;
+  left: -80px;
+  width: 170px;
+  height: 110px;
+
+  background-image: url("/frontend/public/Helpy/bubble.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 18px 20px;
+  box-sizing: border-box;
+}
+
+/* Texto dentro del bocadillo */
+.helpy-bubble span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.2;
 }

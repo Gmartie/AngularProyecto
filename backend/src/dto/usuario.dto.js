@@ -4,7 +4,7 @@ class UsuarioDTO {
       id: usuario.id,
       usuario: usuario.usuario,
       pass: usuario.pass,
-      email: usuario.email,
+      correo: usuario.correo,
       id_rol: usuario.id_rol
     };
   }

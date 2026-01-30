@@ -44,13 +44,16 @@ export class AuthService {
     );
   }
 
-  register(usuario: string, correo: string, pass: string) {
-    return this.http.post(`${this.API_URL}/registro`, {
-      usuario,
-      correo,
-      pass
-    });
-  }
+ register(usuario: string, email: string, password: string) {
+  return this.http.post('/api/register', {
+    usuario,
+    correo: email,
+    pass: password,
+    id_rol: 3
+  });
+}
+
+
 
   logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);

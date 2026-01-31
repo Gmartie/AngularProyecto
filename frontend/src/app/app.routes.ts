@@ -1,10 +1,3 @@
-/**
- * RUTAS DE LA APLICACIÓN
- *
- * Rutas reales alineadas con las carpetas existentes en /pages
- * Lazy loading + guards
- */
-
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -13,13 +6,13 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
 
-
 export const routes: Routes = [
 
-  // Dashboard
+  // Root → login
   {
     path: '',
-    component: DashboardComponent
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
 
   // Auth
@@ -30,6 +23,13 @@ export const routes: Routes = [
   {
     path: 'registro',
     component: RegistroComponent
+  },
+
+  // Dashboard (protegido)
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard]
   },
 
   // Admin
@@ -59,7 +59,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
-  // Tipos de animatrónicos
+  // Tipos
   {
     path: 'tipos',
     loadComponent: () =>
@@ -77,11 +77,16 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
-  //Usuario
-   { path: 'usuario', component: UsuarioComponent },
+  // Usuario
+  {
+    path: 'usuario',
+    component: UsuarioComponent,
+    canActivate: [AuthGuard]
+  },
+
   // Wildcard
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'login'
   }
 ];

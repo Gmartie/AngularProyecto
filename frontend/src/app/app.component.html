@@ -3,14 +3,21 @@
 
 <app-navbar></app-navbar>
 <router-outlet></router-outlet>
- <div class="helpy-container">
-  <div class="helpy-bubble">
-    <span>No olvides <br>Iniciar Sesión</span>
-  </div>
 
-  <img
-    src="Helpy/helpy.png"
-    alt="Helpy"
-    class="helpy-img"
-  />
-</div>
+<!-- Helpy solo aparece en páginas que NO sean login o registro -->
+@if (mostrarHelpy()) {
+  <div class="helpy-container">
+    <!-- Bocadillo solo si no hay usuario logueado -->
+    @if (mostrarMensaje()) {
+      <div class="helpy-bubble">
+        <span>No olvides <br>Iniciar Sesión</span>
+      </div>
+    }
+
+    <img
+      src="Helpy/helpy.png"
+      alt="Helpy"
+      class="helpy-img"
+    />
+  </div>
+}

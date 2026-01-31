@@ -8,13 +8,13 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']
 })
@@ -27,7 +27,10 @@ export class RegistroComponent {
   error = signal('');
   exito = signal(false);
 
-  constructor(private readonly authService: AuthService, private readonly router: Router) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
 
   registrarse(): void {
     if (!this.usuario() || !this.email() || !this.password() || !this.confirmPassword()) {
@@ -61,8 +64,8 @@ export class RegistroComponent {
       }
     });
   }
-  irLogin() {
-  this.router.navigate(['/login']);
-}
 
+  irLogin(): void {
+    this.router.navigate(['/login']);
+  }
 }

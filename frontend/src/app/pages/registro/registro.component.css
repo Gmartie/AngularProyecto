@@ -5,6 +5,7 @@
   min-height: calc(100vh - 70px);
   padding: 2rem;
   background: #c0c0c0; /* gris clásico */
+  position: relative; /* Para posicionar Helpy */
 }
 
 /* Caja principal */
@@ -125,6 +126,20 @@
   color: #000080;
 }
 
+/* ===== HELPY en Registro ===== */
+.helpy-registro {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.helpy-look-img {
+  width: 120px;
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .registro-box {
@@ -134,5 +149,9 @@
   .registro-box h2 {
     font-size: 1.4rem;
   }
-}
 
+  /* Helpy más pequeño en móvil */
+  .helpy-look-img {
+    width: 80px;
+  }
+}

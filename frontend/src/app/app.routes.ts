@@ -5,14 +5,20 @@ import { RegistroComponent } from './pages/registro/registro.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { HomeComponent } from './pages/home/home.component';
 
 export const routes: Routes = [
 
-  // Root → login
+  // Root → home (página principal)
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
+    component: HomeComponent
+  },
+
+  // Home explícito
+  {
+    path: 'home',
+    component: HomeComponent
   },
 
   // Auth
@@ -84,9 +90,9 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
 
-  // Wildcard
+  // Wildcard → home en lugar de login
   {
     path: '**',
-    redirectTo: 'login'
+    redirectTo: ''
   }
 ];

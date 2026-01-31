@@ -1,0 +1,46 @@
+<!-- COMPONENTE: Home - Página Principal -->
+<!-- Página de bienvenida pública del sistema -->
+
+<div class="home-container">
+  <div class="home-content">
+    <!-- Header con logo y título -->
+    <div class="home-header">
+      <img src="FNaF_Icons/fazbearInc.png" alt="Fazbear Inc." class="home-logo">
+      <h1>FAZBEAR ENTERTAINMENT</h1>
+      <p class="subtitle">Sistema de Gestión Corporativa</p>
+    </div>
+
+    <!-- Botones de acción principales -->
+    <div class="home-actions">
+      <button class="btn-primary" (click)="irLogin()">
+        Acceso al Sistema
+      </button>
+      <button class="btn-secondary" (click)="irRegistro()">
+        Nuevo Operador
+      </button>
+    </div>
+
+    <!-- Información del sistema -->
+    <div class="home-info">
+      <h2>Bienvenido al Sistema Operativo Fazbear</h2>
+      <p>
+        Sistema de gestión integral para la administración de animatrónicos,
+        locales y personal operativo de Fazbear Entertainment.
+      </p>
+      <div class="home-features">
+        <div class="feature-item">
+          <span class="feature-icon">🤖</span>
+          <span class="feature-text">Gestión de Animatrónicos</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🏢</span>
+          <span class="feature-text">Control de Locales</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">👥</span>
+          <span class="feature-text">Administración de Personal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

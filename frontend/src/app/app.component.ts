@@ -37,8 +37,10 @@ export class AppComponent {
   }
 
   private verificarRuta(url: string): void {
-    // Ocultar Helpy en login y registro
-    const ocultarEn = ['/login', '/registro'];
-    this.mostrarHelpy.set(!ocultarEn.some(ruta => url.includes(ruta)));
+    // Ocultar Helpy en home, login y registro
+    const ocultarEn = ['/', '/home', '/login', '/registro'];
+    this.mostrarHelpy.set(!ocultarEn.some(ruta => 
+      url === ruta || url.startsWith(ruta + '?') || url.startsWith(ruta + '#')
+    ));
   }
 }

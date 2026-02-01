@@ -34,6 +34,21 @@ export class UsuarioService {
     return this.http.put<Usuario>(`${this.apiUrl}/${id}`, usuario);
   }
 
+  login(usuario: string, pass: string) {
+  return this.http.post<any>(`${this.apiUrl}/api/auth/login`, { 
+    usuario, 
+    password: pass  // ✅ Cambio crítico
+  });
+}
+
+register(usuario: string, email: string, password: string) {
+  return this.http.post(`${this.apiUrl}/api/auth/register`, {
+    usuario,
+    email,
+    password
+  });
+}
+
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }

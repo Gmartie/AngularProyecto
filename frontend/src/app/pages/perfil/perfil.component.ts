@@ -1,9 +1,6 @@
 /**
  * COMPONENTE: PerfilComponent
- * 
  * Página de perfil de usuario autenticado
- * Permite visualizar y editar información personal
- * Gestiona cambios de correo y contraseña
  */
 
 import { Component, OnInit, signal } from '@angular/core';
@@ -52,19 +49,26 @@ export class PerfilComponent implements OnInit {
   }
 
   updateCorreo(valor: string) {
-  this.formulario.update(f => ({ ...f, correo: valor }));
+    this.formulario.update(f => ({ ...f, correo: valor }));
   }
 
   nombreRol(): string {
-  const rol = this.usuario()?.id_rol;
+    const usuario = this.usuario();
+    if (!usuario) return 'Sin rol';
 
-  switch (rol) {
-    case 1: return 'Administrador';
-    case 2: return 'Técnico';
-    case 3: return 'Guardia de seguridad';
-    default: return 'Desconocido';
+    // Si tiene array de roles, usarlo
+    if (usuario.roles && usuario.roles.length > 0) {
+      return usuario.roles[0].nombre;
+    }
+
+    // Sino, usar id_rol
+    switch (usuario.id_rol) {
+      case 1: return 'Administrador';
+      case 2: return 'Técnico';
+      case 3: return 'Guardia de seguridad';
+      default: return 'Desconocido';
+    }
   }
-}
 
   guardarCambios(): void {
     const form = this.formulario();
@@ -73,15 +77,27 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.correo)) {
+      this.error.set('El formato del correo no es válido');
+      return;
+    }
+
     if (form.password && form.password !== form.confirmPassword) {
       this.error.set('Las contraseñas no coinciden');
+      return;
+    }
+
+    if (form.password && form.password.length < 6) {
+      this.error.set('La contraseña debe tener mínimo 6 caracteres');
       return;
     }
 
     this.cargando.set(true);
     this.error.set('');
 
-    // Simular actualización (en producción se haría con un service)
+    // Simular actualización
     setTimeout(() => {
       const usuarioActual = this.usuario();
       if (usuarioActual) {
@@ -105,10 +121,6 @@ export class PerfilComponent implements OnInit {
       });
     }
     this.error.set('');
-  }
-
-  updatecorreo(value: string): void {
-    this.formulario.update(f => ({ ...f, correo: value }));
   }
 
   updatePassword(value: string): void {

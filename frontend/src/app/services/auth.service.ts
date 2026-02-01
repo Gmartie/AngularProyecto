@@ -7,10 +7,10 @@ import { tap } from 'rxjs/operators';
 export interface UsuarioAutenticado {
   id: number;
   usuario: string;
-  correo: string;
-  id_rol: number;
+  correo: string;  // Campo de la BD original
+  id_rol: number;  // Campo de la BD original
   token: string;
-  roles?: { nombre: string }[];
+  roles?: { id: number; nombre: string }[];
 }
 
 @Injectable({
@@ -32,28 +32,40 @@ export class AuthService {
   }
 
   login(usuario: string, pass: string) {
-    return this.http.post<any>(`${this.API_URL}/login`, { usuario, pass }).pipe(
+    return this.http.post<any>(`${this.API_URL}/api/auth/login`, { 
+      usuario, 
+      password: pass  // El backend espera 'password' pero validará contra 'pass' en la BD
+    }).pipe(
       tap((resp: any) => {
+        console.log('Respuesta completa del login:', resp);
+        
+        // La respuesta viene en formato: { success: true, data: { token, usuario: {...} }, message: "..." }
+        const userData = resp.data || resp;
+        
         const user: UsuarioAutenticado = {
-          ...resp.usuario,
-          token: resp.token
+          id: userData.usuario?.id,
+          usuario: userData.usuario?.usuario,
+          correo: userData.usuario?.correo,
+          id_rol: userData.usuario?.id_rol,
+          token: userData.token,
+          roles: userData.usuario?.roles || []
         };
+        
+        console.log('Usuario procesado:', user);
+        
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
         this.usuarioSubject.next(user);
       })
     );
   }
 
- register(usuario: string, email: string, password: string) {
-  return this.http.post('/api/register', {
-    usuario,
-    correo: email,
-    pass: password,
-    id_rol: 3
-  });
-}
-
-
+  register(usuario: string, email: string, password: string) {
+    return this.http.post(`${this.API_URL}/api/auth/register`, {
+      usuario,
+      email,     // El backend lo convertirá a 'correo' para la BD
+      password   // El backend lo guardará como 'pass' en la BD
+    });
+  }
 
   logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);
@@ -72,7 +84,8 @@ export class AuthService {
     return !!this.usuarioSubject.value;
   }
 
-    private user: any = null;
+  private user: any = null;
+  
   setUser(u: any): void {
     this.user = u;
   }
@@ -82,4 +95,3 @@ export class AuthService {
   }
 
 }
-

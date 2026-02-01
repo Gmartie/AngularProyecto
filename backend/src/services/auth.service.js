@@ -7,60 +7,66 @@ class AuthService {
   async login(usuario, password) {
     console.log(`🔍 LOGIN: Intentando loguear usuario: ${usuario}`);
     
+    // Buscar en la tabla 'usuario' (singular) con campos 'usuario', 'pass', 'correo', 'id_rol'
     const [users] = await pool.query(
-      'SELECT * FROM usuarios WHERE (usuario = ? OR email = ?) AND activo = TRUE',
+      'SELECT * FROM usuario WHERE usuario = ? OR correo = ?',
       [usuario, usuario]
     );
 
     console.log(`🔍 LOGIN: Usuarios encontrados:`, users);
 
     if (users.length === 0) {
-      console.log(`❌ LOGIN: Usuario no encontrado o inactivo: ${usuario}`);
+      console.log(`❌ LOGIN: Usuario no encontrado: ${usuario}`);
       throw new UnauthorizedError('Credenciales invalidas');
     }
 
     const user = users[0];
     console.log(`✅ LOGIN: Usuario encontrado:`, user.usuario);
-    
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    console.log(`🔍 LOGIN: Validación de contraseña: ${isValidPassword}`);
     console.log(`🔍 LOGIN: Contraseña ingresada: ${password}`);
-    console.log(`🔍 LOGIN: Hash en BD: ${user.password}`);
+    console.log(`🔍 LOGIN: Contraseña en BD: ${user.pass}`);
+
+    // Comparar contraseñas (en texto plano en la BD original)
+    const isValidPassword = password === user.pass;
+    console.log(`🔍 LOGIN: Validación de contraseña: ${isValidPassword}`);
 
     if (!isValidPassword) {
       console.log(`❌ LOGIN: Contraseña inválida para usuario: ${usuario}`);
       throw new UnauthorizedError('Credenciales invalidas');
     }
 
-    const queryRoles = `
-      SELECT r.id, r.nombre 
-      FROM roles r
-      INNER JOIN usuarios_roles ur ON r.id = ur.rol_id
-      WHERE ur.usuario_id = ?
-    `;
+    // Obtener el rol del usuario
+    const [roles] = await pool.query(
+      'SELECT id, rol FROM roles WHERE id = ?',
+      [user.id_rol]
+    );
 
-    const [roles] = await pool.query(queryRoles, [user.id]);
-    console.log(`🔍 LOGIN: Roles encontrados:`, roles);
+    console.log(`🔍 LOGIN: Rol encontrado:`, roles);
+
+    // El rol como array para mantener compatibilidad con el frontend
+    const rolesArray = roles.length > 0 ? [{ id: roles[0].id, nombre: roles[0].rol }] : [];
 
     const token = jwt.sign(
       { 
         id: user.id, 
         usuario: user.usuario,
-        roles: roles.map(r => r.nombre)
+        id_rol: user.id_rol,
+        roles: rolesArray.map(r => r.nombre)
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
 
     console.log(`✅ LOGIN: Token generado exitosamente`);
-    return { user, token, roles };
+    
+    return { user, token, roles: rolesArray };
   }
 
-  async register(usuarioData, rolNombre = 'Usuario Registrado') {
+  async register(usuarioData) {
     const { usuario, email, password } = usuarioData;
 
+    // Verificar si ya existe (usando 'correo' como está en la BD)
     const [existing] = await pool.query(
-      'SELECT id FROM usuarios WHERE usuario = ? OR email = ?',
+      'SELECT id FROM usuario WHERE usuario = ? OR correo = ?',
       [usuario, email]
     );
 
@@ -68,25 +74,17 @@ class AuthService {
       throw new ValidationError('El usuario o email ya existe');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    // Insertar nuevo usuario con contraseña en texto plano (como está en la BD original)
+    // Por defecto asignar rol 3 (Guardia de seguridad / Usuario registrado)
     const [result] = await pool.query(
-      'INSERT INTO usuarios (usuario, email, password) VALUES (?, ?, ?)',
-      [usuario, email, hashedPassword]
+      'INSERT INTO usuario (usuario, pass, correo, id_rol) VALUES (?, ?, ?, ?)',
+      [usuario, password, email, 3]
     );
 
     const userId = result.insertId;
 
-    const [rol] = await pool.query('SELECT id FROM roles WHERE nombre = ?', [rolNombre]);
-    
-    if (rol.length > 0) {
-      await pool.query(
-        'INSERT INTO usuarios_roles (usuario_id, rol_id) VALUES (?, ?)',
-        [userId, rol[0].id]
-      );
-    }
-
-    const [newUser] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [userId]);
+    // Obtener el usuario recién creado
+    const [newUser] = await pool.query('SELECT * FROM usuario WHERE id = ?', [userId]);
     
     return newUser[0];
   }

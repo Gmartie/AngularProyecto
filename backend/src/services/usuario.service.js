@@ -61,6 +61,17 @@ class UsuarioService {
     await this.getById(id);
     await pool.query('DELETE FROM usuario WHERE id = ?', [id]);
   }
+
+  async login(usuario, pass) {
+  const user = await Usuario.findOne({
+    where: { usuario, pass }
+  });
+
+  if (!user) throw new Error('Credenciales incorrectas');
+  return user;
+}
+
+
 }
 
 module.exports = new UsuarioService();

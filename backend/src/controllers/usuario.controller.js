@@ -1,4 +1,4 @@
-const UsuarioService = require('../services/usuario.service');
+const usuarioService = require('../services/usuario.service');
 const UsuarioDTO = require('../dto/usuario.dto');
 const ResponseUtil = require('../utils/response.util');
 
@@ -51,6 +51,17 @@ class UsuarioController {
       return ResponseUtil.error(res, error.message, error.statusCode || 500);
     }
   }
+
+  async login(req, res) {
+  try {
+    const { usuario, pass } = req.body;
+    const user = await usuarioService.login(usuario, pass);
+    return ResponseUtil.success(res, user);
+  } catch (error) {
+    return ResponseUtil.error(res, error.message, 401);
+  }
+}
+
 }
 
 module.exports = new UsuarioController();

@@ -5,9 +5,9 @@ class AuthDTO {
       usuario: {
         id: usuario.id,
         usuario: usuario.usuario,
-        email: usuario.email,
-        activo: usuario.activo,
-        roles: roles.map(r => ({ id: r.id, nombre: r.nombre }))
+        correo: usuario.correo,  // Campo de la BD original
+        id_rol: usuario.id_rol,  // Campo de la BD original
+        roles: roles  // Array de roles para compatibilidad con el frontend
       }
     };
   }

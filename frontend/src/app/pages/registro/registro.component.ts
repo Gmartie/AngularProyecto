@@ -48,18 +48,32 @@ export class RegistroComponent {
       return;
     }
 
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email())) {
+      this.error.set('El formato del email no es válido');
+      return;
+    }
+
     this.cargando.set(true);
     this.error.set('');
 
+    console.log('Intentando registrar usuario:', {
+      usuario: this.usuario(),
+      email: this.email()
+    });
+
     this.authService.register(this.usuario(), this.email(), this.password()).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Registro exitoso:', response);
         this.exito.set(true);
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al registrar');
+        console.error('Error en registro:', err);
+        this.error.set(err.error?.message || 'Error al registrar. Intenta con otro usuario o email.');
         this.cargando.set(false);
       }
     });

@@ -21,6 +21,7 @@ export class LoginComponent {
   usuario = '';
   pass = '';
   error = '';
+  cargando = false;
 
   constructor(private auth: AuthService, private router: Router) {}
 
@@ -30,12 +31,20 @@ export class LoginComponent {
       return;
     }
 
+    this.cargando = true;
+    this.error = '';
+
     this.auth.login(this.usuario, this.pass).subscribe({
       next: (res: any) => {
-        this.auth.setUser(res);
+        console.log('Login exitoso:', res);
+        this.cargando = false;
         this.router.navigate(['/dashboard']);
       },
-      error: () => this.error = 'Credenciales incorrectas'
+      error: (err) => {
+        console.error('Error en login:', err);
+        this.error = err.error?.message || 'Credenciales incorrectas';
+        this.cargando = false;
+      }
     });
   }
 

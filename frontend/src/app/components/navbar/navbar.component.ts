@@ -8,7 +8,7 @@
 
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UsuarioAutenticado } from '../../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -38,29 +38,40 @@ export class NavbarComponent implements OnInit {
     });
   }
 
- tieneRol(nombreRol: string): boolean {
-  const rol = Number(this.usuario?.id_rol);
-
-  const mapa: any = {
-    1: 'Administrador',
-    2: 'Técnico',
-    3: 'Guardia de seguridad'
-  };
-
-  return mapa[rol] === nombreRol;
-}
-
-obtenerRolTexto(): string {
-  if (!this.usuario) return '';
-
-  switch (this.usuario.id_rol) {
-    case 1: return 'Administrador';
-    case 2: return 'Técnico';
-    case 3: return 'Guardia de seguridad';
-    default: return 'Desconocido';
+  tieneRol(nombreRol: string): boolean {
+    if (!this.usuario) return false;
+    
+    // Si tiene el array de roles, usarlo
+    if (this.usuario.roles && this.usuario.roles.length > 0) {
+      return this.usuario.roles.some(rol => rol.nombre === nombreRol);
+    }
+    
+    // Sino, usar id_rol (fallback para compatibilidad)
+    const mapaRoles: { [key: number]: string } = {
+      1: 'Administrador',
+      2: 'Técnico',
+      3: 'Guardia de seguridad'
+    };
+    
+    return mapaRoles[this.usuario.id_rol] === nombreRol;
   }
-}
 
+  obtenerRolTexto(): string {
+    if (!this.usuario) return 'Sin rol';
+
+    // Si tiene el array de roles, usarlo
+    if (this.usuario.roles && this.usuario.roles.length > 0) {
+      return this.usuario.roles[0].nombre;
+    }
+
+    // Sino, usar id_rol (fallback)
+    switch (this.usuario.id_rol) {
+      case 1: return 'Administrador';
+      case 2: return 'Técnico';
+      case 3: return 'Guardia de seguridad';
+      default: return 'Desconocido';
+    }
+  }
 
   async asignarRolAdmin(): Promise<void> {
     if (!this.usuario) return;
@@ -77,7 +88,6 @@ obtenerRolTexto(): string {
 
       if (response.ok) {
         alert('Rol Administrador asignado. Por favor, recarga la página.');
-        // Recarga la página para obtener los nuevos roles
         window.location.reload();
       } else {
         const error = await response.json();

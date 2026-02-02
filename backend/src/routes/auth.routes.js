@@ -26,12 +26,13 @@ const registerValidator = [
   body('password').isLength({ min: 6 }).withMessage('Contrasena minimo 6 caracteres')
 ];
 
+// Rutas principales
 router.post('/login', loginValidator, validate, authController.login);
 router.post('/register', logRegisterData, registerValidator, validate, authController.register);
-router.get('/me',authMiddleware, authController.me);
-router.get('/debug/roles', authController.debugRoles);
-router.get('/create-admin-user', authController.createAdminUser);
-router.post('/create-test-user', authController.createTestUser);
-router.post('/assign-admin-role', authController.assignAdminRole);
+router.get('/me', authMiddleware, authController.me);
+
+// NOTA: Las siguientes rutas fueron comentadas porque no existen en el controlador
+// Si necesitas estas funciones, debes implementarlas en auth.controller.js primero
+
 
 module.exports = router;

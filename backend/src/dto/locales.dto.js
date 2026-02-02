@@ -7,7 +7,8 @@ class LocalesDTO {
       foto: local.foto,
       ciudad: local.ciudad,
       direccion: local.direccion,
-      abierto: local.abierto
+      abierto: local.abierto,
+      id_propietario: local.id_propietario
     };
   }
 

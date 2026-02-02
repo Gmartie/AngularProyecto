@@ -12,8 +12,8 @@ class UsuarioService {
     }
 
     const [result] = await pool.query(
-      'INSERT INTO usuario (id, usuario, pass, correo, id_rol) VALUES (?, ?, ?, ?, ?)',
-      [id, usuario, pass, correo, profesorId || null]
+      'INSERT INTO usuario (id, usuario, pass, correo, id_rol, id_local) VALUES (?, ?, ?, ?, ?, ?)',
+      [id, usuario, pass, correo, id_rol, id_local || null]
     );
 
     return this.getById(result.insertId);
@@ -41,9 +41,13 @@ class UsuarioService {
       updates.push('correo = ?');
       values.push(usuarioData.correo);
     }
-    if (usuarioData.profesorId !== undefined) {
+    if (usuarioData.id_rol !== undefined) {
       updates.push('id_rol = ?');
-      values.push(usuarioData.profesorId);
+      values.push(usuarioData.id_rol);
+    }
+     if (usuarioData.id_local !== undefined) {
+      updates.push('id_local = ?');
+      values.push(usuarioData.id_local);
     }
 
     if (updates.length > 0) {

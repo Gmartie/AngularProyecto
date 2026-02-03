@@ -4,7 +4,7 @@
   justify-content: center;
   min-height: calc(100vh - 70px);
   padding: 2rem;
-  background: #c0c0c0; /* gris clásico */
+  /* Se eliminó el background gris para dejar ver el fondo de imagen */
   position: relative; /* Para posicionar Helpy */
 }
 
@@ -74,18 +74,52 @@
   font-size: 0.85rem;
 }
 
-/* Éxito */
+/* Contenedor de éxito */
+.exito-container {
+  width: 100%;
+}
+
+/* Mensaje de éxito con Helpy */
 .exito-message {
   background: #ffffff;
   color: #006600;
   border: 2px solid #006600;
   padding: 1rem;
   margin-bottom: 1.2rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.exito-message p {
+.mensaje-texto {
+  flex: 1;
+}
+
+.mensaje-texto p {
   margin: 0.4rem 0;
+}
+
+/* Helpy en el mensaje de éxito */
+.helpy-exito {
+  flex-shrink: 0;
+}
+
+.helpy-hop-img {
+  width: 80px;
+  height: auto;
+  display: block;
+  animation: helpyBounce 0.6s ease-in-out infinite alternate;
+}
+
+/* Animación de rebote para Helpy */
+@keyframes helpyBounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Botón clásico */
@@ -153,5 +187,15 @@
   /* Helpy más pequeño en móvil */
   .helpy-look-img {
     width: 80px;
+  }
+
+  /* Mensaje de éxito en móvil */
+  .exito-message {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .helpy-hop-img {
+    width: 60px;
   }
 }

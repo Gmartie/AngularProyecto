@@ -7,6 +7,7 @@
   min-height: calc(100vh - 70px);
   padding: 2rem;
   background: #c0c0c0; /* gris clásico */
+  position: relative; /* Para posicionar Helpy */
 }
 
 .home-content {
@@ -131,6 +132,59 @@ h1 {
   font-size: 0.9rem;
 }
 
+/* ===== HELPY EN HOME ===== */
+.helpy-home {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  pointer-events: none;
+  z-index: 100;
+  width: 200px;
+}
+
+.helpy-home-img {
+  width: 120px;
+  display: block;
+  margin-left: auto;
+  animation: helpyFloat 2s ease-in-out infinite;
+}
+
+/* Bocadillo de Helpy en home */
+.helpy-bubble-home {
+  position: absolute;
+  top: -80px;
+  left: -90px;
+  width: 220px;
+  height: 150px;
+  background-image: url("/Helpy/bubble.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 18px 20px;
+  box-sizing: border-box;
+}
+
+.helpy-bubble-home span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* Animación flotante para Helpy */
+@keyframes helpyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .home-content {
@@ -144,6 +198,22 @@ h1 {
 
   .home-logo {
     width: 100px;
+  }
+
+  /* Helpy más pequeño en tablet */
+  .helpy-home-img {
+    width: 100px;
+  }
+
+  .helpy-bubble-home {
+    width: 180px;
+    height: 120px;
+    top: -70px;
+    left: -70px;
+  }
+
+  .helpy-bubble-home span {
+    font-size: 0.7rem;
   }
 }
 
@@ -177,5 +247,26 @@ h1 {
 
   .feature-text {
     font-size: 0.8rem;
+  }
+
+  /* Helpy más pequeño en móvil */
+  .helpy-home {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .helpy-home-img {
+    width: 80px;
+  }
+
+  .helpy-bubble-home {
+    width: 160px;
+    height: 100px;
+    top: -60px;
+    left: -60px;
+  }
+
+  .helpy-bubble-home span {
+    font-size: 0.65rem;
   }
 }

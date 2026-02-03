@@ -73,9 +73,20 @@
     }
 
     @if (exito()) {
-      <div class="exito-message">
-        <p>✅ Cuenta creada exitosamente</p>
-        <p>Serás redirigido al login en breve...</p>
+      <div class="exito-container">
+        <div class="exito-message">
+          <div class="mensaje-texto">
+            <p>✅ Cuenta creada exitosamente</p>
+            <p>Serás redirigido al login en breve...</p>
+          </div>
+          <div class="helpy-exito">
+            <img
+              src="/Helpy/Helpyhop.webp"
+              alt="Helpy celebrando"
+              class="helpy-hop-img"
+            />
+          </div>
+        </div>
       </div>
     }
 
@@ -86,11 +97,13 @@
   </div>
 
   <!-- Helpy Look en la esquina inferior derecha (SIN bocadillo) -->
-  <div class="helpy-registro">
-    <img
-      src="Helpy/HelpyLook.webp"
-      alt="Helpy observando"
-      class="helpy-look-img"
-    />
-  </div>
+  @if (!exito()) {
+    <div class="helpy-registro">
+      <img
+        src="/Helpy/HelpyLook.webp"
+        alt="Helpy observando"
+        class="helpy-look-img"
+      />
+    </div>
+  }
 </div>

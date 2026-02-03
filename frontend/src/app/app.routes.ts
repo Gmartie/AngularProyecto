@@ -6,19 +6,27 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
 import { HomeComponent } from './pages/home/home.component';
+import { Home2Component } from './pages/home2/home2.component';
 
 export const routes: Routes = [
 
-  // Root → home (página principal)
+  // Root → home (página principal pública)
   {
     path: '',
     component: HomeComponent
   },
 
-  // Home explícito
+  // Home explícito (página principal pública)
   {
     path: 'home',
     component: HomeComponent
+  },
+
+  // Home2 - Escritorio estilo Windows 95 (protegido)
+  {
+    path: 'home2',
+    component: Home2Component,
+    canActivate: [AuthGuard]
   },
 
   // Auth
@@ -31,7 +39,7 @@ export const routes: Routes = [
     component: RegistroComponent
   },
 
-  // Dashboard (protegido)
+  // Dashboard (protegido) - Mantener por compatibilidad
   {
     path: 'dashboard',
     component: DashboardComponent,

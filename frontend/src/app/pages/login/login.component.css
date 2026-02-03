@@ -6,7 +6,7 @@
   justify-content: center;
   min-height: calc(100vh - 70px);
   padding: 2rem;
-  background: #c0c0c0; /* gris clásico */
+  /* Se eliminó el background gris para dejar ver el fondo de imagen */
 }
 
 /* Wrapper para contener el formulario y Helpy */

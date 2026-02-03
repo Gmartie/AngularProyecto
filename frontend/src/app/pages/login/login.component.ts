@@ -38,7 +38,8 @@ export class LoginComponent {
       next: (res: any) => {
         console.log('Login exitoso:', res);
         this.cargando = false;
-        this.router.navigate(['/dashboard']);
+        // Redirigir a home2 (escritorio Windows 95)
+        this.router.navigate(['/home2']);
       },
       error: (err) => {
         console.error('Error en login:', err);

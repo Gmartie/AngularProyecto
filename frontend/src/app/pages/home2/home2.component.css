@@ -1,0 +1,394 @@
+/* Estilos Windows 95/98 para el escritorio */
+
+.desktop-container {
+  width: 100vw;
+  height: 100vh;
+  background: #008080; /* Color teal clásico de Windows 95 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== BARRA DE TAREAS (TASKBAR) ===== */
+.taskbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(to bottom, #d4d0c8 0%, #b0aca0 100%);
+  border-bottom: 2px solid #808080;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  z-index: 1000;
+}
+
+.taskbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.taskbar-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.taskbar-title {
+  font-weight: bold;
+  color: #000;
+  font-size: 0.9rem;
+}
+
+.taskbar-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.taskbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  background: #c0c0c0;
+  border: 1px solid #808080;
+  font-size: 0.85rem;
+}
+
+.user-icon {
+  font-size: 1rem;
+}
+
+.user-name {
+  color: #000;
+  font-weight: bold;
+}
+
+.taskbar-time {
+  padding: 0.3rem 0.6rem;
+  background: #c0c0c0;
+  border: 1px inset #808080;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* ===== ÁREA DEL ESCRITORIO ===== */
+.desktop-area {
+  width: 100%;
+  height: calc(100vh - 50px);
+  margin-top: 50px;
+  padding: 2rem;
+  position: relative;
+}
+
+/* ===== ICONOS DEL ESCRITORIO ===== */
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.desktop-icon {
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.desktop-icon:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.icon-image {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  border: 2px outset #c0c0c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.icon-label {
+  color: #ffffff;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  padding: 0.2rem 0.4rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+/* Icono especial de logout */
+.logout-icon .icon-image {
+  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+}
+
+/* ===== VENTANA DE BIENVENIDA ===== */
+.welcome-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-width: 90%;
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.window-titlebar {
+  background: linear-gradient(to right, #000080, #0000a8);
+  color: #ffffff;
+  padding: 0.3rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.window-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.window-buttons {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.window-btn {
+  width: 18px;
+  height: 18px;
+  background: #c0c0c0;
+  border: 1px outset #ffffff;
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-weight: bold;
+}
+
+.window-btn:active {
+  border-style: inset;
+}
+
+.window-content {
+  padding: 1.5rem;
+  background: #c0c0c0;
+}
+
+.welcome-text h2 {
+  color: #000080;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.welcome-text p {
+  margin: 0.5rem 0;
+  color: #000;
+}
+
+.welcome-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 1rem !important;
+  font-style: italic;
+}
+
+.system-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 2px inset #808080;
+}
+
+.system-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #000;
+}
+
+.system-info strong {
+  color: #000080;
+}
+
+/* ===== HELPY EN EL ESCRITORIO ===== */
+.helpy-desktop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.helpy-desktop-img {
+  width: 120px;
+  display: block;
+  margin-left: auto;
+  animation: helpyFloat 2s ease-in-out infinite;
+}
+
+.helpy-bubble-desktop {
+  position: absolute;
+  top: -80px;
+  left: -90px;
+  width: 220px;
+  height: 150px;
+  background-image: url("/Helpy/bubble.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 18px 20px;
+  box-sizing: border-box;
+}
+
+.helpy-bubble-desktop span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* Animación flotante */
+@keyframes helpyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 80px);
+    gap: 1.5rem;
+  }
+
+  .desktop-icon {
+    width: 70px;
+  }
+
+  .icon-image {
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+  }
+
+  .icon-label {
+    font-size: 0.75rem;
+  }
+
+  .welcome-window {
+    width: 90%;
+  }
+
+  .helpy-desktop {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .helpy-desktop-img {
+    width: 100px;
+  }
+
+  .helpy-bubble-desktop {
+    width: 180px;
+    height: 120px;
+    top: -70px;
+    left: -70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .taskbar {
+    height: 40px;
+  }
+
+  .taskbar-title {
+    font-size: 0.75rem;
+  }
+
+  .taskbar-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .desktop-area {
+    margin-top: 40px;
+    height: calc(100vh - 40px);
+    padding: 1rem;
+  }
+
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 70px);
+    gap: 1rem;
+  }
+
+  .desktop-icon {
+    width: 60px;
+  }
+
+  .icon-image {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .window-content {
+    padding: 1rem;
+  }
+
+  .welcome-text h2 {
+    font-size: 1.2rem;
+  }
+
+  .helpy-desktop-img {
+    width: 80px;
+  }
+
+  .helpy-bubble-desktop {
+    width: 150px;
+    height: 100px;
+    top: -60px;
+    left: -60px;
+  }
+
+  .helpy-bubble-desktop span {
+    font-size: 0.65rem;
+  }
+}

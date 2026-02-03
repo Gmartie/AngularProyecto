@@ -1,0 +1,85 @@
+<!-- COMPONENTE: Home2 - Dashboard Estilo Windows 95 -->
+<!-- Escritorio del sistema operativo Fazbear -->
+
+<div class="desktop-container">
+  <!-- Barra superior estilo Windows 95 -->
+  <div class="taskbar">
+    <div class="taskbar-left">
+      <img src="/FNaF_Icons/fazbearInc.png" alt="Fazbear" class="taskbar-logo">
+      <span class="taskbar-title">FAZBEAR OS v1.87</span>
+    </div>
+    <div class="taskbar-right">
+      <div class="taskbar-user" *ngIf="usuario">
+        <span class="user-icon">👤</span>
+        <span class="user-name">{{ usuario.usuario }}</span>
+      </div>
+      <div class="taskbar-time">
+        {{ 'Sistema Activo' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Escritorio con iconos de programas -->
+  <div class="desktop-area">
+    <div class="desktop-icons">
+      <div 
+        *ngFor="let programa of programasFiltrados"
+        class="desktop-icon"
+        (click)="abrirPrograma(programa)"
+        [title]="programa.descripcion"
+      >
+        <div class="icon-image">{{ programa.icono }}</div>
+        <div class="icon-label">{{ programa.nombre }}</div>
+      </div>
+
+      <!-- Icono especial para cerrar sesión -->
+      <div 
+        class="desktop-icon logout-icon"
+        (click)="cerrarSesion()"
+        title="Cerrar Sistema"
+      >
+        <div class="icon-image">🚪</div>
+        <div class="icon-label">Salir</div>
+      </div>
+    </div>
+
+    <!-- Ventana de bienvenida (estilo Windows 95) -->
+    <div class="welcome-window">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <img src="/FNaF_Icons/fazbearInc.png" alt="" class="window-icon">
+          Bienvenido al Sistema
+        </div>
+        <div class="window-buttons">
+          <button class="window-btn">_</button>
+          <button class="window-btn">□</button>
+          <button class="window-btn">✕</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="welcome-text">
+          <h2>¡Bienvenido, {{ usuario?.usuario }}!</h2>
+          <p>Sistema Operativo Fazbear v1.87</p>
+          <p class="welcome-subtitle">Haz doble clic en los iconos para acceder a los programas</p>
+        </div>
+        <div class="system-info">
+          <p><strong>Usuario:</strong> {{ usuario?.usuario }}</p>
+          <p><strong>Email:</strong> {{ usuario?.correo }}</p>
+          <p><strong>Programas disponibles:</strong> {{ programasFiltrados.length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Helpy siempre visible en el escritorio -->
+  <div class="helpy-desktop">
+    <div class="helpy-bubble-desktop">
+      <span>¡Sistema listo!<br>Haz clic en los<br>programas</span>
+    </div>
+    <img
+      src="/Helpy/helpy.png"
+      alt="Helpy asistente"
+      class="helpy-desktop-img"
+    />
+  </div>
+</div>

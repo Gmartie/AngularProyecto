@@ -15,6 +15,31 @@ body {
   background: var(--bg-main);
   color: var(--text-main);
   font-family: "Tahoma", "Verdana", sans-serif;
+  transition: background 0.3s ease;
 }
 
+/* ===== FONDOS DINÁMICOS ===== */
 
+/* Fondo para Login y Registro - EN MOSAICO (REPEAT) */
+body.bg-web {
+  background-image: url('/Wallpapers/WebBackground.jpg');
+  background-size: auto;           /* Tamaño original de la imagen */
+  background-position: top left;   /* Comenzar desde arriba a la izquierda */
+  background-repeat: repeat;       /* REPETIR en mosaico */
+  background-attachment: scroll;   /* Se desplaza con el contenido */
+}
+
+/* Fondo para Dashboard (usuario autenticado) */
+body.bg-dashboard {
+  background-image: url('/Wallpapers/Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Fondo por defecto (sin imagen) */
+body.bg-none {
+  background: var(--bg-main);
+  background-image: none;
+}

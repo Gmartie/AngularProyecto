@@ -75,9 +75,9 @@ class AuthController {
     }
   }
 }
- router.get('/debug/roles', authController.debugRoles);
+ /*router.get('/debug/roles', authController.debugRoles);
 router.get('/create-admin-user', authController.createAdminUser);
 router.post('/create-test-user', authController.createTestUser);
-router.post('/assign-admin-role', authController.assignAdminRole);
+router.post('/assign-admin-role', authController.assignAdminRole);*/
 
 module.exports = new AuthController();

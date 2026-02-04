@@ -1,23 +1,95 @@
-<h2>Animatrónicos</h2>
+<!-- COMPONENTE: Animatronicos - Envuelto en ventana Windows 95 -->
 
-<div *ngFor="let a of animas">
-  <h3>{{ a.nombre }}</h3>
-  <img [src]="'/assets/' + a.foto" width="100">
+<app-window-wrapper 
+  windowId="animatronicos"
+  title="Animatrónicos"
+  icon="/Icons/freddy_icon.png">
+  
+  <div class="window-program-content">
+    <!-- Barra de menú estilo Windows 95 -->
+    <div class="menu-bar">
+      <div class="menu-item">Archivo</div>
+      <div class="menu-item">Editar</div>
+      <div class="menu-item">Ver</div>
+      <div class="menu-item">Ayuda</div>
+    </div>
 
-  <p *ngIf="rol !== 3">Reconocimiento: {{ a.reconocimiento }}</p>
+    <!-- Barra de herramientas -->
+    <div class="toolbar" *ngIf="rol !== 3">
+      <button class="toolbar-btn" (click)="crear()">
+        <span class="toolbar-icon">➕</span>
+        <span class="toolbar-text">Nuevo</span>
+      </button>
+      <div class="toolbar-separator"></div>
+      <button class="toolbar-btn" (click)="actualizar()">
+        <span class="toolbar-icon">🔄</span>
+        <span class="toolbar-text">Actualizar</span>
+      </button>
+    </div>
 
-  <!-- SOLO TÉCNICO -->
-  <div *ngIf="rol === 2">
-    <p>Piezas: {{ a.num_piezas }}</p>
-    <img [src]="'/assets/' + a.planos" width="120">
-    <button (click)="editar(a)">Editar</button>
-    <button (click)="borrar(a.id)">Eliminar</button>
+    <!-- Contenido principal -->
+    <div class="program-main-content">
+      <div class="animatronicos-grid">
+        <div *ngFor="let a of animas" class="animatronic-card">
+          <div class="card-header">
+            <h3>{{ a.nombre }}</h3>
+          </div>
+          
+          <div class="card-body">
+            <div class="animatronic-image">
+              <img [src]="'/assets/' + a.foto" [alt]="a.nombre">
+            </div>
+            
+            <div class="animatronic-info">
+              <p *ngIf="rol !== 3">
+                <strong>Reconocimiento:</strong> {{ a.reconocimiento }}%
+              </p>
+
+              <!-- SOLO TÉCNICO -->
+              <div *ngIf="rol === 2" class="tech-info">
+                <p><strong>Piezas:</strong> {{ a.num_piezas }}</p>
+                <div class="blueprint-container">
+                  <img [src]="'/assets/' + a.planos" [alt]="'Planos de ' + a.nombre">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <!-- TÉCNICO -->
+            <div *ngIf="rol === 2" class="button-group">
+              <button class="win95-btn" (click)="editar(a)">Editar</button>
+              <button class="win95-btn danger" (click)="borrar(a.id)">Eliminar</button>
+            </div>
+
+            <!-- PROPIETARIO -->
+            <div *ngIf="rol === 1" class="button-group">
+              <button class="win95-btn" (click)="editar(a)">Editar</button>
+            </div>
+
+            <!-- EMPLEADO (solo vista) -->
+            <div *ngIf="rol === 3" class="button-group">
+              <button class="win95-btn" (click)="verDetalles(a)">Ver Detalles</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje si no hay animatrónicos -->
+        <div *ngIf="animas.length === 0" class="empty-state">
+          <p>No hay animatrónicos registrados</p>
+          <button *ngIf="rol !== 3" class="win95-btn" (click)="crear()">
+            Crear Primer Animatrónico
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de estado -->
+    <div class="status-bar">
+      <div class="status-item">Total: {{ animas.length }} animatrónicos</div>
+      <div class="status-separator"></div>
+      <div class="status-item">Rol: {{ getRolNombre() }}</div>
+    </div>
   </div>
 
-  <!-- PROPIETARIO SIN PLANOS -->
-  <div *ngIf="rol === 1">
-    <button (click)="editar(a)">Editar</button>
-  </div>
-</div>
-
-<button *ngIf="rol !== 3" (click)="crear()">Nuevo</button>
+</app-window-wrapper>

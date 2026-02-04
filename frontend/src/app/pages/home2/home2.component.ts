@@ -7,6 +7,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService } from '../../services/window.service';
 
@@ -29,7 +30,7 @@ interface ProgramaIcono {
 })
 export class Home2Component implements OnInit {
   usuario: UsuarioAutenticado | null = null;
-  ventanasAbiertas$ = this.windowService.windows$;
+  ventanasAbiertas$!: Observable<any>;
   
   // Todos los programas (funcionales y decorativos)
   programas: ProgramaIcono[] = [
@@ -118,6 +119,7 @@ export class Home2Component implements OnInit {
   ngOnInit(): void {
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
+      this.ventanasAbiertas$ = this.windowService.windows$;
       this.filtrarProgramas();
     });
   }

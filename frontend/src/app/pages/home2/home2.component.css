@@ -1,21 +1,39 @@
-/* Escritorio Windows 95 - Barra de tareas ABAJO */
+/* Escritorio Windows 95 - Ventanas se muestran ENCIMA del escritorio */
 
 .desktop-container {
   width: 100vw;
   height: 100vh;
-  background: #008080; /* Teal clásico de Windows 95 */
-  position: relative;
+  background: #008080;
+  position: fixed;
+  top: 0;
+  left: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* ===== ÁREA DEL ESCRITORIO ===== */
+/* ===== ÁREA DEL ESCRITORIO (siempre visible de fondo) ===== */
 .desktop-area {
   flex: 1;
   padding: 1rem;
   position: relative;
   overflow: auto;
+  z-index: 1; /* Debajo de las ventanas */
+}
+
+/* ===== CONTENEDOR DE PROGRAMAS (ventanas encima) ===== */
+.programs-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40px; /* Espacio para taskbar */
+  pointer-events: none; /* No interfiere con clicks en el escritorio */
+  z-index: 10; /* Encima del escritorio */
+}
+
+.programs-container > * {
+  pointer-events: all; /* Las ventanas sí capturan clicks */
 }
 
 /* ===== ICONOS DEL ESCRITORIO ===== */
@@ -48,7 +66,6 @@
   background: rgba(0, 0, 128, 0.5);
 }
 
-/* Iconos decorativos tienen opacidad reducida */
 .desktop-icon.decorativo {
   opacity: 0.85;
 }
@@ -86,11 +103,11 @@
 /* ===== HELPY EN EL ESCRITORIO ===== */
 .helpy-desktop {
   position: fixed;
-  bottom: 70px; /* Encima de la barra de tareas */
+  bottom: 70px;
   right: 20px;
   width: 200px;
   pointer-events: none;
-  z-index: 999;
+  z-index: 2; /* Encima del escritorio pero debajo de ventanas */
 }
 
 .helpy-desktop-img {
@@ -148,10 +165,9 @@
   align-items: center;
   padding: 0 0.2rem;
   gap: 0.3rem;
-  z-index: 9999;
+  z-index: 9999; /* Siempre encima de todo */
 }
 
-/* Botón Start */
 .start-button {
   height: 32px;
   padding: 0 0.8rem;
@@ -179,7 +195,6 @@
   height: 20px;
 }
 
-/* Separador */
 .taskbar-separator {
   width: 2px;
   height: 32px;
@@ -187,7 +202,6 @@
   margin: 0 0.2rem;
 }
 
-/* Ventanas abiertas en la taskbar */
 .taskbar-windows {
   flex: 1;
   display: flex;
@@ -226,6 +240,11 @@
   opacity: 0.7;
 }
 
+.taskbar-window-btn.active {
+  border-style: inset;
+  background: linear-gradient(to bottom, #a0a0a0 0%, #808080 100%);
+}
+
 .taskbar-window-icon {
   width: 16px;
   height: 16px;
@@ -238,7 +257,6 @@
   white-space: nowrap;
 }
 
-/* Bandeja del sistema */
 .system-tray {
   display: flex;
   align-items: center;
@@ -322,30 +340,6 @@
     font-size: 0.7rem;
   }
 
-  .taskbar {
-    height: 45px;
-  }
-
-  .start-button {
-    padding: 0 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  .start-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .taskbar-window-btn {
-    min-width: 100px;
-    max-width: 150px;
-    font-size: 0.75rem;
-  }
-
-  .system-tray-user {
-    display: none; /* Ocultar usuario en móvil */
-  }
-
   .helpy-desktop {
     bottom: 60px;
     right: 10px;
@@ -360,10 +354,6 @@
     height: 110px;
     top: -60px;
     left: -60px;
-  }
-
-  .helpy-bubble-desktop span {
-    font-size: 0.65rem;
   }
 }
 
@@ -386,27 +376,15 @@
     font-size: 0.65rem;
   }
 
-  .taskbar {
-    height: 40px;
-    padding: 0 0.1rem;
-  }
-
   .start-button span {
-    display: none; /* Solo mostrar icono en móviles muy pequeños */
-  }
-
-  .taskbar-window-btn {
-    min-width: 80px;
-    max-width: 120px;
-    padding: 0 0.4rem;
-  }
-
-  .system-tray-time {
-    font-size: 0.7rem;
-    min-width: 40px;
+    display: none;
   }
 
   .helpy-desktop-img {
     width: 70px;
+  }
+
+  .system-tray-user {
+    display: none;
   }
 }

@@ -1,17 +1,22 @@
-/* Estilos retro/vintage para la página home */
+/* Estilos retro/vintage para la página home con fondo WebBackground */
 
 .home-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   padding: 2rem;
-  background: #c0c0c0; /* gris clásico */
-  position: relative; /* Para posicionar Helpy */
+  /* Fondo con WebBackground.jpg */
+  background-image: url('/Wallpapers/WebBackground.jpg');
+  background-size: auto;
+  background-position: top left;
+  background-repeat: repeat;
+  background-attachment: scroll;
+  position: relative;
 }
 
 .home-content {
-  background: #eeeeee;
+  background: rgba(238, 238, 238, 0.95); /* Semi-transparente para ver el fondo */
   padding: 3rem;
   max-width: 600px;
   width: 100%;
@@ -104,7 +109,7 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
-/* ===== CARACTERÍSTICAS ===== */
+/* ===== CARACTERÍSTICAS CON ICONOS ===== */
 .home-features {
   display: flex;
   flex-direction: column;
@@ -115,21 +120,25 @@ h1 {
 .feature-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  padding: 0.6rem;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 0.8rem;
   background: #ffffff;
   border: 2px solid #999;
 }
 
-.feature-icon {
-  font-size: 1.5rem;
+.feature-icon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .feature-text {
   color: #000;
   font-weight: bold;
   font-size: 0.9rem;
+  text-align: left;
 }
 
 /* ===== HELPY EN HOME ===== */
@@ -149,7 +158,6 @@ h1 {
   animation: helpyFloat 2s ease-in-out infinite;
 }
 
-/* Bocadillo de Helpy en home */
 .helpy-bubble-home {
   position: absolute;
   top: -80px;
@@ -175,7 +183,6 @@ h1 {
   line-height: 1.3;
 }
 
-/* Animación flotante para Helpy */
 @keyframes helpyFloat {
   0%, 100% {
     transform: translateY(0);
@@ -200,7 +207,11 @@ h1 {
     width: 100px;
   }
 
-  /* Helpy más pequeño en tablet */
+  .feature-icon-img {
+    width: 40px;
+    height: 40px;
+  }
+
   .helpy-home-img {
     width: 100px;
   }
@@ -249,7 +260,11 @@ h1 {
     font-size: 0.8rem;
   }
 
-  /* Helpy más pequeño en móvil */
+  .feature-icon-img {
+    width: 36px;
+    height: 36px;
+  }
+
   .helpy-home {
     bottom: 10px;
     right: 10px;

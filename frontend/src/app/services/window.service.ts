@@ -2,12 +2,13 @@
  * SERVICIO: WindowService
  * 
  * Gestiona el estado de las ventanas abiertas en el escritorio
- * Simula el comportamiento de ventanas de Windows 95
+ * Las ventanas se muestran ENCIMA del escritorio home2
  */
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
+import { Location } from '@angular/common';
 
 export interface Window {
   id: string;
@@ -27,8 +28,12 @@ export class WindowService {
   public windows$ = this.windows.asObservable();
   
   private currentZIndex = 100;
+  private isNavigating = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private location: Location
+  ) {}
 
   /**
    * Abre una nueva ventana
@@ -42,6 +47,7 @@ export class WindowService {
     if (existingWindow) {
       // Si ya existe, traerla al frente
       this.focusWindow(id);
+      this.navigateToRoute(route);
       return;
     }
 
@@ -57,11 +63,13 @@ export class WindowService {
     };
 
     this.windows.next([...existingWindows, newWindow]);
-    this.router.navigate([route]);
+    
+    // Navegar a la ruta del programa
+    this.navigateToRoute(route);
   }
 
   /**
-   * Cierra una ventana
+   * Cierra una ventana y vuelve a home2
    */
   closeWindow(id: string): void {
     const existingWindows = this.windows.value;
@@ -75,14 +83,16 @@ export class WindowService {
     } else {
       // Navegar a la ventana que queda arriba
       const topWindow = this.getTopWindow(filteredWindows);
-      if (topWindow) {
-        this.router.navigate([topWindow.route]);
+      if (topWindow && !topWindow.isMinimized) {
+        this.navigateToRoute(topWindow.route);
+      } else {
+        this.router.navigate(['/home2']);
       }
     }
   }
 
   /**
-   * Minimiza una ventana
+   * Minimiza una ventana (vuelve a home2 visualmente)
    */
   minimizeWindow(id: string): void {
     const existingWindows = this.windows.value;
@@ -92,13 +102,8 @@ export class WindowService {
     
     this.windows.next(updatedWindows);
     
-    // Navegar a la siguiente ventana no minimizada
-    const nextWindow = updatedWindows.find(w => !w.isMinimized);
-    if (nextWindow) {
-      this.router.navigate([nextWindow.route]);
-    } else {
-      this.router.navigate(['/home2']);
-    }
+    // Navegar a home2 para mostrar el escritorio
+    this.router.navigate(['/home2']);
   }
 
   /**
@@ -114,7 +119,7 @@ export class WindowService {
     
     const window = updatedWindows.find(w => w.id === id);
     if (window) {
-      this.router.navigate([window.route]);
+      this.navigateToRoute(window.route);
     }
   }
 
@@ -140,11 +145,6 @@ export class WindowService {
     );
     
     this.windows.next(updatedWindows);
-    
-    const window = updatedWindows.find(w => w.id === id);
-    if (window) {
-      this.router.navigate([window.route]);
-    }
   }
 
   /**
@@ -184,5 +184,27 @@ export class WindowService {
   closeAllWindows(): void {
     this.windows.next([]);
     this.router.navigate(['/home2']);
+  }
+
+  /**
+   * Navega a una ruta sin perder el contexto de home2
+   */
+  private navigateToRoute(route: string): void {
+    if (this.isNavigating) return;
+    
+    this.isNavigating = true;
+    this.router.navigate([route], {
+      skipLocationChange: false
+    }).finally(() => {
+      this.isNavigating = false;
+    });
+  }
+
+  /**
+   * Verifica si una ventana está activa
+   */
+  isWindowActive(id: string): boolean {
+    const window = this.getWindow(id);
+    return window ? !window.isMinimized : false;
   }
 }

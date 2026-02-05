@@ -3,23 +3,26 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AuthService } from './services/auth.service';
 import { BackgroundService } from './services/background.service';
+import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent],
+  standalone: true,
+  imports: [RouterOutlet, NavbarComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'frontend';
   mostrarHelpy = signal(true);
-  mostrarMensaje = signal(true); // Por defecto muestra el mensaje
+  mostrarMensaje = signal(true);
+  private rutaActual = '';
   
   constructor(
     private router: Router,
     private authService: AuthService,
-    private backgroundService: BackgroundService // Inyectar el servicio de fondo
+    private backgroundService: BackgroundService
   ) {
     // Verificar ruta inicial
     this.verificarRuta(this.router.url);
@@ -28,30 +31,27 @@ export class AppComponent {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
+        this.rutaActual = event.url;
         this.verificarRuta(event.url);
       });
 
     // Escuchar cambios en el estado de autenticación
     this.authService.usuario$.subscribe(usuario => {
-      // Si hay usuario logueado, ocultar el mensaje
       this.mostrarMensaje.set(!usuario);
     });
-
-    // El BackgroundService se inicializa automáticamente
-    // y gestiona los cambios de fondo
   }
 
   private verificarRuta(url: string): void {
-    // Ocultar Helpy en home, home2, login, registro y rutas sin componente (como /mantenimiento)
-    const ocultarEn = ['/', '/home', '/home2', '/login', '/registro'];
+    // Ocultar Helpy en home, home2, login, registro y rutas de programas
+    const ocultarEn = ['/', '/home', '/home2', '/login', '/registro', 
+                       '/animatronicos', '/locales', '/tipos', '/perfil', 
+                       '/admin', '/usuario'];
     
-    // Verificar si es una de las rutas específicas donde ocultar Helpy
     const esRutaOculta = ocultarEn.some(ruta => 
       url === ruta || url.startsWith(ruta + '?') || url.startsWith(ruta + '#')
     );
 
-    // También ocultar en rutas que no existen (para evitar superposición)
-    // Esto cubre el caso de /mantenimiento que no tiene componente
+    // También ocultar en rutas que no existen
     const rutasValidas = [
       '/', '/home', '/home2', '/login', '/registro', '/dashboard',
       '/admin', '/animatronicos', '/locales', '/tipos', '/perfil', '/usuario'
@@ -61,7 +61,21 @@ export class AppComponent {
       url === ruta || url.startsWith(ruta + '?') || url.startsWith(ruta + '#')
     );
 
-    // Ocultar Helpy si es una ruta donde debe ocultarse O si la ruta no es válida
     this.mostrarHelpy.set(!(esRutaOculta || !esRutaValida));
+  }
+
+  /**
+   * Determina si se debe mostrar el navbar
+   * NO se muestra en: home2 ni en rutas de programas (animatronicos, locales, etc)
+   */
+  mostrarNavbar(): boolean {
+    const rutasSinNavbar = ['/home2', '/animatronicos', '/locales', '/tipos', 
+                            '/perfil', '/admin', '/usuario'];
+    
+    return !rutasSinNavbar.some(ruta => 
+      this.rutaActual === ruta || 
+      this.rutaActual.startsWith(ruta + '?') || 
+      this.rutaActual.startsWith(ruta + '#')
+    );
   }
 }

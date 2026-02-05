@@ -1,8 +1,9 @@
 <!-- COMPONENTE: Home2 - Escritorio Windows 95 -->
+<!-- El escritorio permanece visible y las ventanas se muestran encima -->
 
 <div class="desktop-container">
   
-  <!-- Área del escritorio con iconos -->
+  <!-- Área del escritorio con iconos (siempre visible) -->
   <div class="desktop-area">
     <div class="desktop-icons">
       <div 
@@ -32,6 +33,12 @@
     </div>
   </div>
 
+  <!-- Router outlet para las ventanas de programas -->
+  <!-- Las ventanas se renderizan aquí ENCIMA del escritorio -->
+  <div class="programs-container">
+    <router-outlet></router-outlet>
+  </div>
+
   <!-- BARRA DE TAREAS INFERIOR (estilo Windows 95) -->
   <div class="taskbar">
     <!-- Botón Start -->
@@ -49,6 +56,7 @@
         *ngFor="let window of ventanasAbiertas$ | async"
         class="taskbar-window-btn"
         [class.minimized]="window.isMinimized"
+        [class.active]="!window.isMinimized"
         (click)="restaurarVentana(window.id)"
       >
         <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">

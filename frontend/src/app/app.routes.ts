@@ -22,13 +22,6 @@ export const routes: Routes = [
     component: HomeComponent
   },
 
-  // Home2 - Escritorio estilo Windows 95 (protegido)
-  {
-    path: 'home2',
-    component: Home2Component,
-    canActivate: [AuthGuard]
-  },
-
   // Auth
   {
     path: 'login',
@@ -39,10 +32,45 @@ export const routes: Routes = [
     component: RegistroComponent
   },
 
-  // Dashboard (protegido) - Mantener por compatibilidad
+  // Home2 - Escritorio estilo Windows 95
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: 'home2',
+    component: Home2Component,
+    canActivate: [AuthGuard]
+  },
+
+  // Programas (se abren como ventanas encima de home2)
+  {
+    path: 'animatronicos',
+    loadComponent: () =>
+      import('./pages/animatronicos/animatronicos.component')
+        .then(m => m.AnimatronicosComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'locales',
+    loadComponent: () =>
+      import('./pages/locales/locales.component')
+        .then(m => m.LocalesComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'tipos',
+    loadComponent: () =>
+      import('./pages/tipos/tipos.component')
+        .then(m => m.TiposComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'perfil',
+    loadComponent: () =>
+      import('./pages/perfil/perfil.component')
+        .then(m => m.PerfilComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'usuario',
+    component: UsuarioComponent,
     canActivate: [AuthGuard]
   },
 
@@ -55,50 +83,14 @@ export const routes: Routes = [
     data: { roles: ['Administrador'] }
   },
 
-  // Animatrónicos
+  // Dashboard redirige a home2
   {
-    path: 'animatronicos',
-    loadComponent: () =>
-      import('./pages/animatronicos/animatronicos.component')
-        .then(m => m.AnimatronicosComponent),
-    canActivate: [AuthGuard]
+    path: 'dashboard',
+    redirectTo: 'home2',
+    pathMatch: 'full'
   },
 
-  // Locales
-  {
-    path: 'locales',
-    loadComponent: () =>
-      import('./pages/locales/locales.component')
-        .then(m => m.LocalesComponent),
-    canActivate: [AuthGuard]
-  },
-
-  // Tipos
-  {
-    path: 'tipos',
-    loadComponent: () =>
-      import('./pages/tipos/tipos.component')
-        .then(m => m.TiposComponent),
-    canActivate: [AuthGuard]
-  },
-
-  // Perfil
-  {
-    path: 'perfil',
-    loadComponent: () =>
-      import('./pages/perfil/perfil.component')
-        .then(m => m.PerfilComponent),
-    canActivate: [AuthGuard]
-  },
-
-  // Usuario
-  {
-    path: 'usuario',
-    component: UsuarioComponent,
-    canActivate: [AuthGuard]
-  },
-
-  // Wildcard → home en lugar de login
+  // Wildcard → home
   {
     path: '**',
     redirectTo: ''

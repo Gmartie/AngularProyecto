@@ -1,42 +1,108 @@
-/**
- * SERVICIO: AnimatronicosService
- *
- * Gestiona operaciones CRUD de animatrónicos
- * Comunica con API backend
- */
-
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Animatronico } from '../models/animatronico.model';
+import { environment } from '../../environments/environment';
+
+interface Animatronico {
+  id?: number;
+  nombre: string;
+  reconocimiento: boolean;
+  num_piezas: number;
+  id_gama: number;
+  nombre_gama?: string;
+  planos: string;
+  foto: string;
+}
+
+interface TipoAnimatronico {
+  id: number;
+  nombre: string;
+  id_local: number;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimatronicosService {
 
-  private apiUrl = 'http://localhost:3000/api/animatronicos';
+  private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  obtenerTodos(idGama?: number): Observable<Animatronico[]> {
-    const url = idGama ? `${this.apiUrl}?id_gama=${idGama}` : this.apiUrl;
-    return this.http.get<Animatronico[]>(url);
+  /**
+   * Obtiene todos los animatrónicos de un local
+   */
+  obtenerPorLocal(idLocal: number): Observable<Animatronico[]> {
+    return this.http.get<Animatronico[]>(`${this.apiUrl}/animatronicos/local/${idLocal}`);
   }
 
+  /**
+   * Obtiene un animatrónico por su ID
+   */
   obtenerPorId(id: number): Observable<Animatronico> {
-    return this.http.get<Animatronico>(`${this.apiUrl}/${id}`);
+    return this.http.get<Animatronico>(`${this.apiUrl}/animatronicos/${id}`);
   }
 
-  crear(animatronico: Animatronico): Observable<Animatronico> {
-    return this.http.post<Animatronico>(this.apiUrl, animatronico);
+  /**
+   * Crea un nuevo animatrónico
+   */
+  crear(animatronico: Animatronico): Observable<ApiResponse<Animatronico>> {
+    return this.http.post<ApiResponse<Animatronico>>(
+      `${this.apiUrl}/animatronicos`,
+      animatronico
+    );
   }
 
-  actualizar(id: number, animatronico: Animatronico): Observable<Animatronico> {
-    return this.http.put<Animatronico>(`${this.apiUrl}/${id}`, animatronico);
+  /**
+   * Actualiza un animatrónico existente
+   */
+  actualizar(animatronico: Animatronico): Observable<ApiResponse<Animatronico>> {
+    return this.http.put<ApiResponse<Animatronico>>(
+      `${this.apiUrl}/animatronicos/${animatronico.id}`,
+      animatronico
+    );
   }
 
-  eliminar(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  /**
+   * Elimina un animatrónico
+   */
+  eliminar(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(
+      `${this.apiUrl}/animatronicos/${id}`
+    );
+  }
+
+  /**
+   * Obtiene los tipos de animatrónicos por local
+   */
+  obtenerTiposPorLocal(idLocal: number): Observable<TipoAnimatronico[]> {
+    return this.http.get<TipoAnimatronico[]>(
+      `${this.apiUrl}/tipos-animatronicos/local/${idLocal}`
+    );
+  }
+
+  /**
+   * Sube una imagen (foto o planos) al servidor
+   */
+  subirImagen(formData: FormData, tipo: 'foto' | 'planos'): Observable<ApiResponse<{ filename: string }>> {
+    return this.http.post<ApiResponse<{ filename: string }>> (
+      `${this.apiUrl}/animatronicos/upload/${tipo}`,
+      formData
+    );
+  }
+
+  /**
+   * Elimina una imagen del servidor
+   */
+  eliminarImagen(filename: string, tipo: 'foto' | 'planos'): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(
+      `${this.apiUrl}/animatronicos/imagen/${tipo}/${filename}`
+    );
   }
 }

@@ -1,95 +1,305 @@
-<!-- COMPONENTE: Animatronicos - Envuelto en ventana Windows 95 -->
+<!-- Ventana flotante de animatrónicos -->
+<div class="window-overlay" [class.hidden]="isMinimized">
+  <div class="window-container" [class.maximized]="isMaximized">
+    <div class="window">
+      <!-- Barra de título de la ventana -->
+      <div class="window-header">
+        <div class="window-title">
+          <span class="window-icon-small">📋</span>
+          <span>Gestión de Animatrónicos</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
+          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+        </div>
+      </div>
 
-<app-window-wrapper 
-  windowId="animatronicos"
-  title="Animatrónicos"
-  icon="/Icons/freddy_icon.png">
-  
-  <div class="window-program-content">
-    <!-- Barra de menú estilo Windows 95 -->
-    <div class="menu-bar">
-      <div class="menu-item">Archivo</div>
-      <div class="menu-item">Editar</div>
-      <div class="menu-item">Ver</div>
-      <div class="menu-item">Ayuda</div>
-    </div>
+      <!-- Contenido de la ventana -->
+      <div class="window-content">
+        
+        <!-- Botón para añadir nuevo animatrónico -->
+        <div class="toolbar">
+          <button class="btn-add" (click)="abrirFormularioNuevo()">
+            <span class="btn-icon">➕</span>
+            Añadir Animatrónico
+          </button>
+        </div>
 
-    <!-- Barra de herramientas -->
-    <div class="toolbar" *ngIf="rol !== 3">
-      <button class="toolbar-btn" (click)="crear()">
-        <span class="toolbar-icon">➕</span>
-        <span class="toolbar-text">Nuevo</span>
-      </button>
-      <div class="toolbar-separator"></div>
-      <button class="toolbar-btn" (click)="actualizar()">
-        <span class="toolbar-icon">🔄</span>
-        <span class="toolbar-text">Actualizar</span>
-      </button>
-    </div>
+        <!-- Lista de animatrónicos -->
+        <div class="animatronicos-list">
+          @for (animatronico of animatronicos; track animatronico.id) {
+            <div class="animatronico-card">
+              <div class="card-image">
+                <img [src]="obtenerRutaFoto(animatronico.foto)" 
+                     [alt]="animatronico.nombre"
+                     (error)="onImageError($event)">
+              </div>
 
-    <!-- Contenido principal -->
-    <div class="program-main-content">
-      <div class="animatronicos-grid">
-        <div *ngFor="let a of animas" class="animatronic-card">
-          <div class="card-header">
-            <h3>{{ a.nombre }}</h3>
-          </div>
-          
-          <div class="card-body">
-            <div class="animatronic-image">
-              <img [src]="'/assets/' + a.foto" [alt]="a.nombre">
-            </div>
-            
-            <div class="animatronic-info">
-              <p *ngIf="rol !== 3">
-                <strong>Reconocimiento:</strong> {{ a.reconocimiento }}%
-              </p>
+              <div class="card-info">
+                <h3 class="animatronico-nombre">{{ animatronico.nombre }}</h3>
+                <p class="animatronico-tipo">
+                  <strong>Tipo:</strong> {{ obtenerNombreGama(animatronico.id_gama) }}
+                </p>
+                <p class="animatronico-piezas">
+                  <strong>Piezas:</strong> {{ animatronico.num_piezas }}
+                </p>
+                <p class="animatronico-reconocimiento">
+                  <strong>Reconocimiento:</strong> 
+                  <span [class.badge-si]="animatronico.reconocimiento" 
+                        [class.badge-no]="!animatronico.reconocimiento">
+                    {{ animatronico.reconocimiento ? 'Sí' : 'No' }}
+                  </span>
+                </p>
+              </div>
 
-              <!-- SOLO TÉCNICO -->
-              <div *ngIf="rol === 2" class="tech-info">
-                <p><strong>Piezas:</strong> {{ a.num_piezas }}</p>
-                <div class="blueprint-container">
-                  <img [src]="'/assets/' + a.planos" [alt]="'Planos de ' + a.nombre">
-                </div>
+              <div class="card-actions">
+                <button class="btn-edit" (click)="abrirFormularioEditar(animatronico)">
+                  ✏️ Editar
+                </button>
               </div>
             </div>
+          }
+
+          <!-- Mensaje si no hay animatrónicos -->
+          @if (animatronicos.length === 0) {
+            <div class="empty-state">
+              <p class="empty-icon">🤖</p>
+              <p class="empty-text">No hay animatrónicos registrados en este local</p>
+              <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+                Añadir el primero
+              </button>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para añadir nuevo animatrónico -->
+  @if (mostrarFormularioNuevo) {
+    <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
+      <div class="modal-window" (click)="$event.stopPropagation()">
+        <div class="window-header">
+          <div class="window-title">
+            <span class="window-icon-small">➕</span>
+            <span>Nuevo Animatrónico</span>
           </div>
-
-          <div class="card-footer">
-            <!-- TÉCNICO -->
-            <div *ngIf="rol === 2" class="button-group">
-              <button class="win95-btn" (click)="editar(a)">Editar</button>
-              <button class="win95-btn danger" (click)="borrar(a.id)">Eliminar</button>
-            </div>
-
-            <!-- PROPIETARIO -->
-            <div *ngIf="rol === 1" class="button-group">
-              <button class="win95-btn" (click)="editar(a)">Editar</button>
-            </div>
-
-            <!-- EMPLEADO (solo vista) -->
-            <div *ngIf="rol === 3" class="button-group">
-              <button class="win95-btn" (click)="verDetalles(a)">Ver Detalles</button>
-            </div>
+          <div class="window-controls">
+            <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
           </div>
         </div>
 
-        <!-- Mensaje si no hay animatrónicos -->
-        <div *ngIf="animas.length === 0" class="empty-state">
-          <p>No hay animatrónicos registrados</p>
-          <button *ngIf="rol !== 3" class="win95-btn" (click)="crear()">
-            Crear Primer Animatrónico
-          </button>
+        <div class="modal-content">
+          <form class="form-animatronico">
+            <div class="form-group">
+              <label for="nuevo-nombre">Nombre *:</label>
+              <input type="text" 
+                     id="nuevo-nombre" 
+                     [(ngModel)]="nuevoAnimatronico.nombre"
+                     name="nombre"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="nuevo-gama">Tipo *:</label>
+              <select id="nuevo-gama" 
+                      [(ngModel)]="nuevoAnimatronico.id_gama"
+                      name="id_gama"
+                      required>
+                @for (tipo of tiposAnimatronicos; track tipo.id) {
+                  <option [value]="tipo.id">
+                    {{ tipo.nombre }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="nuevo-piezas">Número de piezas *:</label>
+              <input type="number" 
+                     id="nuevo-piezas" 
+                     [(ngModel)]="nuevoAnimatronico.num_piezas"
+                     name="num_piezas"
+                     min="0"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" 
+                       [(ngModel)]="nuevoAnimatronico.reconocimiento"
+                       name="reconocimiento">
+                Reconocimiento facial
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="nuevo-foto">Foto:</label>
+              <input type="file" 
+                     id="nuevo-foto"
+                     (change)="onFileSelected($event, 'foto', true)"
+                     accept="image/*">
+              <small>O ingrese nombre del archivo (se guardará en /public/FNaF_Profile/):</small>
+              <input type="text" 
+                     [(ngModel)]="nuevoAnimatronico.foto"
+                     name="foto"
+                     placeholder="ejemplo: freddy.jpg">
+              @if (nuevoAnimatronico.foto) {
+                <div class="preview-image">
+                  <img [src]="obtenerRutaFoto(nuevoAnimatronico.foto)" 
+                       alt="Preview"
+                       (error)="onImageError($event)">
+                </div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="nuevo-planos">Planos:</label>
+              <input type="file" 
+                     id="nuevo-planos"
+                     (change)="onFileSelected($event, 'planos', true)"
+                     accept="image/*">
+              <small>O ingrese nombre del archivo (se guardará en /public/FNaF_Blueprints/):</small>
+              <input type="text" 
+                     [(ngModel)]="nuevoAnimatronico.planos"
+                     name="planos"
+                     placeholder="ejemplo: freddy_planos.png">
+              @if (nuevoAnimatronico.planos) {
+                <div class="preview-image">
+                  <img [src]="obtenerRutaPlanos(nuevoAnimatronico.planos)" 
+                       alt="Preview Planos"
+                       (error)="onImageError($event)">
+                </div>
+              }
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
+                Cancelar
+              </button>
+              <button type="button" class="btn-save" (click)="guardarNuevo()">
+                Guardar
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+  }
 
-    <!-- Barra de estado -->
-    <div class="status-bar">
-      <div class="status-item">Total: {{ animas.length }} animatrónicos</div>
-      <div class="status-separator"></div>
-      <div class="status-item">Rol: {{ getRolNombre() }}</div>
+  <!-- Modal para editar animatrónico -->
+@if (mostrarFormularioEditar && animatronicoEditando) {
+  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
+    <div class="modal-window" (click)="$event.stopPropagation()">
+
+      <div class="window-header">
+        <span>✏️ Editar Animatrónico</span>
+        <button (click)="cerrarFormularioEditar()">×</button>
+      </div>
+
+      <div class="modal-content">
+          <form class="form-animatronico">
+            <div class="form-group">
+              <label for="edit-nombre">Nombre *:</label>
+              <input type="text" 
+                     id="edit-nombre" 
+                     [(ngModel)]="animatronicoEditando.nombre"
+                     name="nombre"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-gama">Tipo *:</label>
+              <select id="edit-gama" 
+                      [(ngModel)]="animatronicoEditando.id_gama"
+                      name="id_gama"
+                      required>
+                @for (tipo of tiposAnimatronicos; track tipo.id) {
+                  <option [value]="tipo.id">
+                    {{ tipo.nombre }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-piezas">Número de piezas *:</label>
+              <input type="number" 
+                     id="edit-piezas" 
+                     [(ngModel)]="animatronicoEditando.num_piezas"
+                     name="num_piezas"
+                     min="0"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" 
+                       [(ngModel)]="animatronicoEditando.reconocimiento"
+                       name="reconocimiento">
+                Reconocimiento facial
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-foto">Foto:</label>
+              <input type="file" 
+                     id="edit-foto"
+                     (change)="onFileSelected($event, 'foto', false)"
+                     accept="image/*">
+              <small>O ingrese nombre del archivo (carpeta: /public/FNaF_Profile/):</small>
+              <input type="text" 
+                     [(ngModel)]="animatronicoEditando.foto"
+                     name="foto"
+                     placeholder="ejemplo: freddy.jpg">
+              @if (animatronicoEditando.foto) {
+                <div class="preview-image">
+                  <img [src]="obtenerRutaFoto(animatronicoEditando.foto)" 
+                       alt="Preview"
+                       (error)="onImageError($event)">
+                </div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="edit-planos">Planos:</label>
+              <input type="file" 
+                     id="edit-planos"
+                     (change)="onFileSelected($event, 'planos', false)"
+                     accept="image/*">
+              <small>O ingrese nombre del archivo (carpeta: /public/FNaF_Blueprints/):</small>
+              <input type="text" 
+                     [(ngModel)]="animatronicoEditando.planos"
+                     name="planos"
+                     placeholder="ejemplo: freddy_planos.png">
+              @if (animatronicoEditando.planos) {
+                <div class="preview-image">
+                  <img [src]="obtenerRutaPlanos(animatronicoEditando.planos)" 
+                       alt="Preview Planos"
+                       (error)="onImageError($event)">
+                </div>
+              }
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-delete" (click)="eliminarAnimatronico()">
+                🗑️ Eliminar
+              </button>
+              <div class="form-actions-right">
+                <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
+                  Cancelar
+                </button>
+                <button type="button" class="btn-save" (click)="actualizarAnimatronico()">
+                  Actualizar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
+  }
 
-</app-window-wrapper>

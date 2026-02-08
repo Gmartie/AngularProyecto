@@ -1,6 +1,453 @@
-/* Importar estilos comunes de Windows 95 */
-@import '../../../windows95-programs.css';
+/* ============================================
+   VENTANA FLOTANTE ESTILO WINDOWS 95
+   ============================================ */
 
-/* Estilos específicos del componente Animatronicos */
+.window-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40px; /* Espacio para la taskbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
 
-/* Aquí puedes añadir estilos específicos para este componente si los necesitas */
+.window-overlay.hidden {
+  display: none;
+}
+
+.window-overlay > * {
+  pointer-events: all;
+}
+
+/* Contenedor de la ventana */
+.window-container {
+  width: 90%;
+  max-width: 1200px;
+  height: 85%;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.window-container.maximized {
+  width: 100%;
+  height: calc(100vh - 40px);
+  max-width: none;
+  max-height: none;
+}
+
+.window {
+  width: 100%;
+  height: 100%;
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.window-header {
+  background: linear-gradient(to right, #000080, #1084d0);
+  padding: 4px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 28px;
+  cursor: move;
+  user-select: none;
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.window-icon-small {
+  font-size: 14px;
+}
+
+.window-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.window-btn {
+  width: 20px;
+  height: 20px;
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.window-btn:hover {
+  background: #dfdfdf;
+}
+
+.window-btn:active {
+  border-style: inset;
+}
+
+.window-btn.close {
+  background: #df0000;
+  color: #ffffff;
+}
+
+.window-btn.close:hover {
+  background: #ff0000;
+}
+
+.window-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #c0c0c0;
+}
+
+/* Toolbar */
+.toolbar {
+  margin-bottom: 20px;
+  padding: 8px;
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+  border: 2px groove #808080;
+}
+
+.btn-add {
+  padding: 8px 16px;
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+  border: 2px outset #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-add:hover {
+  background: linear-gradient(to bottom, #efefef 0%, #dfdfdf 100%);
+}
+
+.btn-add:active {
+  border-style: inset;
+}
+
+.btn-icon {
+  font-size: 16px;
+}
+
+/* Lista de animatrónicos */
+.animatronicos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.animatronico-card {
+  background: #ffffff;
+  border: 2px outset #ffffff;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-image {
+  width: 100%;
+  height: 150px;
+  border: 2px inset #808080;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.animatronico-nombre {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000080;
+}
+
+.animatronico-tipo,
+.animatronico-piezas,
+.animatronico-reconocimiento {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.badge-si {
+  color: #008000;
+  font-weight: bold;
+}
+
+.badge-no {
+  color: #df0000;
+  font-weight: bold;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-edit {
+  padding: 6px 12px;
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+  border: 2px outset #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(to bottom, #efefef 0%, #dfdfdf 100%);
+}
+
+.btn-edit:active {
+  border-style: inset;
+}
+
+/* Estado vacío */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 2px inset #808080;
+  grid-column: 1 / -1;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin: 0 0 16px 0;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: #808080;
+  margin: 0 0 20px 0;
+}
+
+.btn-add-empty {
+  padding: 10px 20px;
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+  border: 2px outset #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-add-empty:hover {
+  background: linear-gradient(to bottom, #efefef 0%, #dfdfdf 100%);
+}
+
+.btn-add-empty:active {
+  border-style: inset;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-window {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.8);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Formulario */
+.form-animatronico {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  padding: 4px 6px;
+  border: 2px inset #808080;
+  background: #ffffff;
+  font-size: 13px;
+}
+
+.form-group input[type="file"] {
+  padding: 4px;
+  font-size: 13px;
+}
+
+.form-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 6px;
+}
+
+.form-group small {
+  font-size: 11px;
+  color: #808080;
+  margin-top: 4px;
+}
+
+.preview-image {
+  margin-top: 8px;
+  width: 150px;
+  height: 150px;
+  border: 2px inset #808080;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Acciones del formulario */
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 2px groove #808080;
+}
+
+.form-actions-right {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-save,
+.btn-cancel,
+.btn-delete {
+  padding: 8px 16px;
+  border: 2px outset #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  min-width: 80px;
+}
+
+.btn-save {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+}
+
+.btn-save:hover {
+  background: linear-gradient(to bottom, #efefef 0%, #dfdfdf 100%);
+}
+
+.btn-save:active {
+  border-style: inset;
+}
+
+.btn-cancel {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #c0c0c0 100%);
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(to bottom, #efefef 0%, #dfdfdf 100%);
+}
+
+.btn-cancel:active {
+  border-style: inset;
+}
+
+.btn-delete {
+  background: linear-gradient(to bottom, #ff6666 0%, #df0000 100%);
+  color: #ffffff;
+}
+
+.btn-delete:hover {
+  background: linear-gradient(to bottom, #ff8888 0%, #ff4444 100%);
+}
+
+.btn-delete:active {
+  border-style: inset;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .animatronicos-list {
+    grid-template-columns: 1fr;
+  }
+
+  .desktop-bar-center {
+    display: none;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions-right {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-save,
+  .btn-cancel,
+  .btn-delete {
+    width: 100%;
+  }
+}

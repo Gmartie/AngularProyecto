@@ -26,7 +26,7 @@ interface ProgramaIcono {
 @Component({
   selector: 'app-home2',
   standalone: true,
-  imports: [CommonModule, RouterModule], // 👈 AQUÍ
+  imports: [CommonModule, RouterModule],
   templateUrl: './home2.component.html',
   styleUrls: ['./home2.component.css']
 })

@@ -1,0 +1,43 @@
+<!-- BARRA DE TAREAS INFERIOR (estilo Windows 95) -->
+<div class="taskbar">
+  <!-- Botón Start -->
+  <div class="start-button">
+    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+    <span>Inicio</span>
+  </div>
+
+  <!-- Separador -->
+  <div class="taskbar-separator"></div>
+
+  <!-- Ventanas abiertas (botones en la taskbar) -->
+  <div class="taskbar-windows">
+    <button 
+      *ngFor="let window of ventanasAbiertas$ | async"
+      class="taskbar-window-btn"
+      [class.minimized]="window.isMinimized"
+      [class.active]="!window.isMinimized"
+      (click)="restaurarVentana(window.id)"
+    >
+      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+      <span>{{ window.title }}</span>
+    </button>
+  </div>
+
+  <!-- Bandeja del sistema -->
+  <div class="system-tray">
+    <div class="system-tray-user" *ngIf="usuario">
+      <span class="user-icon">👤</span>
+      <span class="user-name">{{ usuario.usuario }}</span>
+    </div>
+    
+    <div class="system-tray-separator"></div>
+    
+    <div class="system-tray-time">
+      {{ horaActual }}
+    </div>
+    
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+      <span>🚪</span>
+    </button>
+  </div>
+</div>

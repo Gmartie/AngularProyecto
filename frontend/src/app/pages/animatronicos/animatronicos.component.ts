@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WindowService } from '../../services/window.service';
-import { Subscription } from 'rxjs';
+import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
+import { AnimatronicosService } from '../../services/animatronicos.service';
+import { Subscription, Observable } from 'rxjs';
+import { Window } from '../../services/window.service';
 
 interface Animatronico {
   id?: number;
@@ -36,12 +39,16 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   animatronicoEditando: Animatronico | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
-  idLocalUsuario: number = 1; // Obtener del servicio de autenticación
+  idLocalUsuario: number = 1; // Se obtiene del usuario autenticado
   
   // Control de ventana
   isMinimized: boolean = false;
   isMaximized: boolean = false;
   private windowSubscription?: Subscription;
+  
+  // CORRECCIÓN: Agregar propiedades para la barra de tareas
+  usuario: UsuarioAutenticado | null = null;
+  ventanasAbiertas$!: Observable<Window[]>;
   
   // Rutas de imágenes configurables
   RUTA_FOTOS: string;
@@ -59,9 +66,9 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
 
   constructor(
     private windowService: WindowService,
-    private router: Router
-    // private animatronicosService: AnimatronicosService,
-    // private authService: AuthService
+    private router: Router,
+    private authService: AuthService,  // CORRECCIÓN: Inyectar AuthService
+    private animatronicosService: AnimatronicosService  // CORRECCIÓN: Inyectar AnimatronicosService
   ) {
     // Configurar rutas de imágenes
     // En desarrollo con proxy: usa rutas relativas sin barra inicial
@@ -70,18 +77,28 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     
     if (usarProxy) {
       this.RUTA_FOTOS = 'public/FNaF_Profile/';
-      this.RUTA_PLANOS = 'public/FNaF_Blueprints/';
+      this.RUTA_PLANOS = 'public/FNAF_Blueprints/';  // CORRECCIÓN: Sin ñ
       this.PLACEHOLDER = 'public/placeholder.png';
     } else {
       this.RUTA_FOTOS = '/public/FNaF_Profile/';
-      this.RUTA_PLANOS = '/public/FNaF_Blueprints/';
+      this.RUTA_PLANOS = '/public/FNAF_Blueprints/';  // CORRECCIÓN: Sin ñ
       this.PLACEHOLDER = '/public/placeholder.png';
     }
   }
 
   ngOnInit(): void {
-    // TODO: Obtener id_local del usuario autenticado
-    // this.idLocalUsuario = this.authService.getUsuarioActual().id_local;
+    // CORRECCIÓN: Obtener ventanas abiertas para la taskbar
+    this.ventanasAbiertas$ = this.windowService.windows$;
+    
+    // CORRECCIÓN: Obtener usuario autenticado y su id_local
+    this.authService.usuario$.subscribe(usuario => {
+      this.usuario = usuario;
+      if (usuario?.id_local) {
+        this.idLocalUsuario = usuario.id_local;
+        this.cargarTiposAnimatronicos();
+        this.cargarAnimatronicos();
+      }
+    });
     
     // Suscribirse al estado de la ventana
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
@@ -91,9 +108,6 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
         this.isMaximized = thisWindow.isMaximized;
       }
     });
-    
-    this.cargarTiposAnimatronicos();
-    this.cargarAnimatronicos();
   }
 
   ngOnDestroy(): void {
@@ -103,49 +117,57 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   cargarTiposAnimatronicos(): void {
-    // TODO: Llamar al servicio real
-    // this.animatronicosService.obtenerTiposPorLocal(this.idLocalUsuario).subscribe(
-    //   data => this.tiposAnimatronicos = data
-    // );
-
-    // Datos de ejemplo
-    this.tiposAnimatronicos = [
-      { id: 1, nombre: 'Clásicos', id_local: 1 },
-      { id: 2, nombre: 'Unwithered', id_local: 2 },
-      { id: 3, nombre: 'Toys', id_local: 2 },
-      { id: 4, nombre: 'Funtime', id_local: 3 }
-    ];
+    // CORRECCIÓN: Usar servicio real para obtener tipos del local del usuario
+    this.animatronicosService.obtenerTiposPorLocal(this.idLocalUsuario).subscribe({
+      next: (tipos) => {
+        this.tiposAnimatronicos = tipos;
+      },
+      error: (error) => {
+        console.error('Error al cargar tipos de animatrónicos:', error);
+        // Fallback a datos de ejemplo si falla
+        this.tiposAnimatronicos = [
+          { id: 1, nombre: 'Clásicos', id_local: 1 },
+          { id: 2, nombre: 'Unwithered', id_local: 2 },
+          { id: 3, nombre: 'Toys', id_local: 2 },
+          { id: 4, nombre: 'Funtime', id_local: 3 }
+        ];
+      }
+    });
   }
 
   cargarAnimatronicos(): void {
-    // TODO: Llamar al servicio real
-    // this.animatronicosService.obtenerPorLocal(this.idLocalUsuario).subscribe(
-    //   data => this.animatronicos = data
-    // );
-
-    // Datos de ejemplo
-    this.animatronicos = [
-      {
-        id: 1,
-        nombre: 'Freddy Fazbear',
-        reconocimiento: true,
-        num_piezas: 120,
-        id_gama: 1,
-        nombre_gama: 'Clásicos',
-        planos: 'freddy_clasico_planos.png',
-        foto: 'freddy_clasico.jpg'
+    // CORRECCIÓN: Usar servicio real para obtener animatrónicos del local del usuario
+    this.animatronicosService.obtenerPorLocal(this.idLocalUsuario).subscribe({
+      next: (animatronicos) => {
+        this.animatronicos = animatronicos;
       },
-      {
-        id: 2,
-        nombre: 'Bonnie',
-        reconocimiento: true,
-        num_piezas: 115,
-        id_gama: 1,
-        nombre_gama: 'Clásicos',
-        planos: 'bonnie_clasico_planos.png',
-        foto: 'bonnie_clasico.jpg'
+      error: (error) => {
+        console.error('Error al cargar animatrónicos:', error);
+        // Fallback a datos de ejemplo si falla
+        this.animatronicos = [
+          {
+            id: 1,
+            nombre: 'Freddy Fazbear',
+            reconocimiento: true,
+            num_piezas: 120,
+            id_gama: 1,
+            nombre_gama: 'Clásicos',
+            planos: 'freddy_clasico_planos.png',
+            foto: 'freddy_clasico.jpg'
+          },
+          {
+            id: 2,
+            nombre: 'Bonnie',
+            reconocimiento: true,
+            num_piezas: 115,
+            id_gama: 1,
+            nombre_gama: 'Clásicos',
+            planos: 'bonnie_clasico_planos.png',
+            foto: 'bonnie_clasico.jpg'
+          }
+        ];
       }
-    ];
+    });
   }
 
   abrirFormularioNuevo(): void {
@@ -171,20 +193,17 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // TODO: Llamar al servicio real
-    // this.animatronicosService.crear(this.nuevoAnimatronico).subscribe(
-    //   response => {
-    //     this.cargarAnimatronicos();
-    //     this.cerrarFormularioNuevo();
-    //   }
-    // );
-
-    // Simulación
-    const nuevoId = Math.max(...this.animatronicos.map(a => a.id || 0), 0) + 1;
-    this.nuevoAnimatronico.id = nuevoId;
-    this.nuevoAnimatronico.nombre_gama = this.tiposAnimatronicos.find(t => t.id === this.nuevoAnimatronico.id_gama)?.nombre;
-    this.animatronicos.push({...this.nuevoAnimatronico});
-    this.cerrarFormularioNuevo();
+    // CORRECCIÓN: Usar servicio real
+    this.animatronicosService.crear(this.nuevoAnimatronico).subscribe({
+      next: (response) => {
+        this.cargarAnimatronicos();
+        this.cerrarFormularioNuevo();
+      },
+      error: (error) => {
+        console.error('Error al crear animatrónico:', error);
+        alert('Error al guardar el animatrónico. Verifica la conexión con el servidor.');
+      }
+    });
   }
 
   abrirFormularioEditar(animatronico: Animatronico): void {
@@ -206,21 +225,17 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // TODO: Llamar al servicio real
-    // this.animatronicosService.actualizar(this.animatronicoEditando).subscribe(
-    //   response => {
-    //     this.cargarAnimatronicos();
-    //     this.cerrarFormularioEditar();
-    //   }
-    // );
-
-    // Simulación
-    const index = this.animatronicos.findIndex(a => a.id === this.animatronicoEditando!.id);
-    if (index !== -1) {
-      this.animatronicoEditando.nombre_gama = this.tiposAnimatronicos.find(t => t.id === this.animatronicoEditando!.id_gama)?.nombre;
-      this.animatronicos[index] = {...this.animatronicoEditando};
-    }
-    this.cerrarFormularioEditar();
+    // CORRECCIÓN: Usar servicio real
+    this.animatronicosService.actualizar(this.animatronicoEditando).subscribe({
+      next: (response) => {
+        this.cargarAnimatronicos();
+        this.cerrarFormularioEditar();
+      },
+      error: (error) => {
+        console.error('Error al actualizar animatrónico:', error);
+        alert('Error al actualizar el animatrónico. Verifica la conexión con el servidor.');
+      }
+    });
   }
 
   eliminarAnimatronico(): void {
@@ -230,17 +245,19 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // TODO: Llamar al servicio real
-    // this.animatronicosService.eliminar(this.animatronicoEditando.id).subscribe(
-    //   response => {
-    //     this.cargarAnimatronicos();
-    //     this.cerrarFormularioEditar();
-    //   }
-    // );
-
-    // Simulación
-    this.animatronicos = this.animatronicos.filter(a => a.id !== this.animatronicoEditando!.id);
-    this.cerrarFormularioEditar();
+    // CORRECCIÓN: Usar servicio real
+    if (this.animatronicoEditando.id) {
+      this.animatronicosService.eliminar(this.animatronicoEditando.id).subscribe({
+        next: (response) => {
+          this.cargarAnimatronicos();
+          this.cerrarFormularioEditar();
+        },
+        error: (error) => {
+          console.error('Error al eliminar animatrónico:', error);
+          alert('Error al eliminar el animatrónico. Verifica la conexión con el servidor.');
+        }
+      });
+    }
   }
 
   obtenerNombreGama(id_gama: number): string {
@@ -325,5 +342,33 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
    */
   toggleMaximizar(): void {
     this.windowService.toggleMaximize('animatronicos');
+  }
+
+  /**
+   * CORRECCIÓN: Restaura una ventana desde la taskbar
+   */
+  restaurarVentana(windowId: string): void {
+    this.windowService.restoreWindow(windowId);
+    const window = this.windowService.getWindow(windowId);
+    if (window?.route) {
+      this.router.navigate([window.route]);
+    }
+  }
+
+  /**
+   * CORRECCIÓN: Cierra sesión desde la taskbar
+   */
+  cerrarSesion(): void {
+    this.windowService.closeAllWindows();
+    this.authService.logout();
+    this.router.navigate(['/home']);
+  }
+
+  /**
+   * CORRECCIÓN: Obtiene la hora actual para la taskbar
+   */
+  getHoraActual(): string {
+    const ahora = new Date();
+    return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 }

@@ -198,11 +198,18 @@ export class Home2Component implements OnInit {
         programa.icono,
         programa.ruta
       );
+      // CORRECCIÓN: Agregar navegación al router
+      this.router.navigate([programa.ruta]);
     }
   }
 
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
+    // CORRECCIÓN: Navegar a la ruta de la ventana
+    const window = this.windowService.getWindow(windowId);
+    if (window?.route) {
+      this.router.navigate([window.route]);
+    }
   }
 
   cerrarSesion(): void {

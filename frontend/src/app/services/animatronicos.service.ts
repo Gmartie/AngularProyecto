@@ -31,7 +31,7 @@ interface ApiResponse<T> {
 })
 export class AnimatronicosService {
 
-  private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) { }
 

@@ -19,6 +19,13 @@
   position: relative;
   overflow: auto;
   z-index: 1; /* Debajo de las ventanas */
+  /* Wallpaper de fondo con zoom para efecto sin píxeles */
+  background-image: url('/Wallpapers/Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 /* ===== CONTENEDOR DE PROGRAMAS (ventanas encima) ===== */

@@ -9,6 +9,7 @@ export interface UsuarioAutenticado {
   usuario: string;
   correo: string;  // Campo de la BD original
   id_rol: number;  // Campo de la BD original
+  id_local?: number;  // CORRECCIÓN: Campo para el local del usuario
   token: string;
   roles?: { id: number; nombre: string }[];
 }
@@ -47,6 +48,7 @@ export class AuthService {
           usuario: userData.usuario?.usuario,
           correo: userData.usuario?.correo,
           id_rol: userData.usuario?.id_rol,
+          id_local: userData.usuario?.id_local,  // CORRECCIÓN: Incluir id_local
           token: userData.token,
           roles: userData.usuario?.roles || []
         };

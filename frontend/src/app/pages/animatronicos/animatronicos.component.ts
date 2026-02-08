@@ -39,21 +39,15 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   animatronicoEditando: Animatronico | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
-  idLocalUsuario: number = 1; // Se obtiene del usuario autenticado
   
   // Control de ventana
   isMinimized: boolean = false;
   isMaximized: boolean = false;
   private windowSubscription?: Subscription;
   
-  // CORRECCIÓN: Agregar propiedades para la barra de tareas
+  // Usuario y ventanas
   usuario: UsuarioAutenticado | null = null;
   ventanasAbiertas$!: Observable<Window[]>;
-  
-  // Rutas de imágenes configurables
-  RUTA_FOTOS: string;
-  RUTA_PLANOS: string;
-  PLACEHOLDER: string;
   
   nuevoAnimatronico: Animatronico = {
     nombre: '',
@@ -67,34 +61,18 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   constructor(
     private windowService: WindowService,
     private router: Router,
-    private authService: AuthService,  // CORRECCIÓN: Inyectar AuthService
-    private animatronicosService: AnimatronicosService  // CORRECCIÓN: Inyectar AnimatronicosService
-  ) {
-    // Configurar rutas de imágenes
-    // En desarrollo con proxy: usa rutas relativas sin barra inicial
-    // En producción: el backend sirve todo, así que usa la barra inicial
-    const usarProxy = window.location.port === '4200'; // Puerto de Angular dev server
-    
-    if (usarProxy) {
-      this.RUTA_FOTOS = 'public/FNaF_Profile/';
-      this.RUTA_PLANOS = 'public/FNAF_Blueprints/';  // CORRECCIÓN: Sin ñ
-      this.PLACEHOLDER = 'public/placeholder.png';
-    } else {
-      this.RUTA_FOTOS = '/public/FNaF_Profile/';
-      this.RUTA_PLANOS = '/public/FNAF_Blueprints/';  // CORRECCIÓN: Sin ñ
-      this.PLACEHOLDER = '/public/placeholder.png';
-    }
-  }
+    private authService: AuthService,
+    private animatronicosService: AnimatronicosService
+  ) {}
 
   ngOnInit(): void {
-    // CORRECCIÓN: Obtener ventanas abiertas para la taskbar
+    // Obtener ventanas abiertas para la taskbar
     this.ventanasAbiertas$ = this.windowService.windows$;
     
-    // CORRECCIÓN: Obtener usuario autenticado y su id_local
+    // Obtener usuario autenticado
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
-      if (usuario?.id_local) {
-        this.idLocalUsuario = usuario.id_local;
+      if (usuario) {
         this.cargarTiposAnimatronicos();
         this.cargarAnimatronicos();
       }
@@ -117,55 +95,29 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   cargarTiposAnimatronicos(): void {
-    // CORRECCIÓN: Usar servicio real para obtener tipos del local del usuario
-    this.animatronicosService.obtenerTiposPorLocal(this.idLocalUsuario).subscribe({
+    // ⭐ CAMBIO: Ahora usa obtenerTipos() sin parámetros
+    this.animatronicosService.obtenerTipos().subscribe({
       next: (tipos) => {
         this.tiposAnimatronicos = tipos;
       },
       error: (error) => {
         console.error('Error al cargar tipos de animatrónicos:', error);
-        // Fallback a datos de ejemplo si falla
-        this.tiposAnimatronicos = [
-          { id: 1, nombre: 'Clásicos', id_local: 1 },
-          { id: 2, nombre: 'Unwithered', id_local: 2 },
-          { id: 3, nombre: 'Toys', id_local: 2 },
-          { id: 4, nombre: 'Funtime', id_local: 3 }
-        ];
+        this.tiposAnimatronicos = [];
       }
     });
   }
 
   cargarAnimatronicos(): void {
-    // CORRECCIÓN: Usar servicio real para obtener animatrónicos del local del usuario
-    this.animatronicosService.obtenerPorLocal(this.idLocalUsuario).subscribe({
+    // ⭐ CAMBIO: Ahora usa obtenerTodos() sin parámetros
+    // El backend filtra automáticamente por id_local del usuario autenticado
+    this.animatronicosService.obtenerTodos().subscribe({
       next: (animatronicos) => {
         this.animatronicos = animatronicos;
+        console.log('Animatrónicos cargados:', animatronicos);
       },
       error: (error) => {
         console.error('Error al cargar animatrónicos:', error);
-        // Fallback a datos de ejemplo si falla
-        this.animatronicos = [
-          {
-            id: 1,
-            nombre: 'Freddy Fazbear',
-            reconocimiento: true,
-            num_piezas: 120,
-            id_gama: 1,
-            nombre_gama: 'Clásicos',
-            planos: 'freddy_clasico_planos.png',
-            foto: 'freddy_clasico.jpg'
-          },
-          {
-            id: 2,
-            nombre: 'Bonnie',
-            reconocimiento: true,
-            num_piezas: 115,
-            id_gama: 1,
-            nombre_gama: 'Clásicos',
-            planos: 'bonnie_clasico_planos.png',
-            foto: 'bonnie_clasico.jpg'
-          }
-        ];
+        this.animatronicos = [];
       }
     });
   }
@@ -187,15 +139,14 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   guardarNuevo(): void {
-    // Validaciones
     if (!this.nuevoAnimatronico.nombre || this.nuevoAnimatronico.num_piezas <= 0) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
 
-    // CORRECCIÓN: Usar servicio real
     this.animatronicosService.crear(this.nuevoAnimatronico).subscribe({
       next: (response) => {
+        console.log('Animatrónico creado:', response);
         this.cargarAnimatronicos();
         this.cerrarFormularioNuevo();
       },
@@ -219,15 +170,14 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   actualizarAnimatronico(): void {
     if (!this.animatronicoEditando) return;
 
-    // Validaciones
     if (!this.animatronicoEditando.nombre || this.animatronicoEditando.num_piezas <= 0) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
 
-    // CORRECCIÓN: Usar servicio real
     this.animatronicosService.actualizar(this.animatronicoEditando).subscribe({
       next: (response) => {
+        console.log('Animatrónico actualizado:', response);
         this.cargarAnimatronicos();
         this.cerrarFormularioEditar();
       },
@@ -245,10 +195,10 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // CORRECCIÓN: Usar servicio real
     if (this.animatronicoEditando.id) {
       this.animatronicosService.eliminar(this.animatronicoEditando.id).subscribe({
         next: (response) => {
+          console.log('Animatrónico eliminado:', response);
           this.cargarAnimatronicos();
           this.cerrarFormularioEditar();
         },
@@ -265,19 +215,19 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene la ruta completa de la foto del animatrónico
+   * ⭐ CAMBIO: Ahora usa rutas absolutas con /FNaF_Profile/
    */
   obtenerRutaFoto(nombreFoto: string): string {
-    if (!nombreFoto) return this.PLACEHOLDER;
-    return this.RUTA_FOTOS + nombreFoto;
+    if (!nombreFoto) return '/FNaF_Profile/freddy_clasico.jpg'; // Imagen por defecto
+    return `/FNaF_Profile/${nombreFoto}`;
   }
 
   /**
-   * Obtiene la ruta completa de los planos del animatrónico
+   * ⭐ CAMBIO: Ahora usa rutas absolutas con /FNAF_Blueprints/
    */
   obtenerRutaPlanos(nombrePlanos: string): string {
-    if (!nombrePlanos) return this.PLACEHOLDER;
-    return this.RUTA_PLANOS + nombrePlanos;
+    if (!nombrePlanos) return '/FNAF_Blueprints/freddy_clasico_planos.png'; // Planos por defecto
+    return `/FNAF_Blueprints/${nombrePlanos}`;
   }
 
   /**
@@ -285,7 +235,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
    */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    target.src = this.PLACEHOLDER;
+    // Si falla la imagen, usar la de Freddy clásico como fallback
+    if (target.src.includes('FNaF_Profile')) {
+      target.src = '/FNaF_Profile/freddy_clasico.jpg';
+    } else {
+      target.src = '/FNAF_Blueprints/freddy_clasico_planos.png';
+    }
   }
 
   /**
@@ -295,15 +250,6 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     const file = event.target.files[0];
     if (file) {
       const fileName = file.name;
-      
-      // TODO: Implementar la subida real del archivo al servidor
-      // const formData = new FormData();
-      // formData.append('file', file);
-      // this.animatronicosService.subirImagen(formData, tipo).subscribe(
-      //   response => {
-      //     // Usar el nombre del archivo devuelto por el servidor
-      //   }
-      // );
       
       if (esNuevo) {
         if (tipo === 'foto') {
@@ -345,7 +291,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * CORRECCIÓN: Restaura una ventana desde la taskbar
+   * Restaura una ventana desde la taskbar
    */
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
@@ -356,7 +302,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * CORRECCIÓN: Cierra sesión desde la taskbar
+   * Cierra sesión desde la taskbar
    */
   cerrarSesion(): void {
     this.windowService.closeAllWindows();
@@ -365,7 +311,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * CORRECCIÓN: Obtiene la hora actual para la taskbar
+   * Obtiene la hora actual para la taskbar
    */
   getHoraActual(): string {
     const ahora = new Date();

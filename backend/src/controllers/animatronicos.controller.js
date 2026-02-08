@@ -5,7 +5,11 @@ const ResponseUtil = require('../utils/response.util');
 class AnimatronicosController {
   async getAll(req, res) {
     try {
-      const animas = await AnimatronicoService.getAll();
+      // ⭐ CAMBIO: Obtener id_local del usuario autenticado (viene del token JWT)
+      const id_local = req.user?.id_local;
+      
+      // Filtrar por id_local del usuario
+      const animas = await AnimatronicoService.getAll(id_local);
       const response = animas.map(a => AnimatronicoDTO.toResponse(a));
       return ResponseUtil.success(res, response);
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 interface Animatronico {
@@ -36,17 +36,24 @@ export class AnimatronicosService {
   constructor(private http: HttpClient) { }
 
   /**
-   * Obtiene todos los animatrónicos de un local
+   * ⭐ CAMBIO: Ahora usa el endpoint /api/animatronicos sin parámetros
+   * El backend filtra automáticamente por id_local del token JWT
    */
-  obtenerPorLocal(idLocal: number): Observable<Animatronico[]> {
-    return this.http.get<Animatronico[]>(`${this.apiUrl}/animatronicos/local/${idLocal}`);
+  obtenerTodos(): Observable<Animatronico[]> {
+    return this.http.get<ApiResponse<Animatronico[]>>(`${this.apiUrl}/animatronicos`)
+      .pipe(
+        map(response => response.data)
+      );
   }
 
   /**
    * Obtiene un animatrónico por su ID
    */
   obtenerPorId(id: number): Observable<Animatronico> {
-    return this.http.get<Animatronico>(`${this.apiUrl}/animatronicos/${id}`);
+    return this.http.get<ApiResponse<Animatronico>>(`${this.apiUrl}/animatronicos/${id}`)
+      .pipe(
+        map(response => response.data)
+      );
   }
 
   /**
@@ -79,11 +86,13 @@ export class AnimatronicosService {
   }
 
   /**
-   * Obtiene los tipos de animatrónicos por local
+   * Obtiene los tipos de animatrónicos
    */
-  obtenerTiposPorLocal(idLocal: number): Observable<TipoAnimatronico[]> {
-    return this.http.get<TipoAnimatronico[]>(
-      `${this.apiUrl}/tipos-animatronicos/local/${idLocal}`
+  obtenerTipos(): Observable<TipoAnimatronico[]> {
+    return this.http.get<ApiResponse<TipoAnimatronico[]>>(
+      `${this.apiUrl}/tipos-animatronicos`
+    ).pipe(
+      map(response => response.data)
     );
   }
 

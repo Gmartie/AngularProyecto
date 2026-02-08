@@ -45,11 +45,13 @@ class AuthService {
     // El rol como array para mantener compatibilidad con el frontend
     const rolesArray = roles.length > 0 ? [{ id: roles[0].id, nombre: roles[0].rol }] : [];
 
+    // ⭐ CAMBIO: Añadido id_local al token JWT
     const token = jwt.sign(
       { 
         id: user.id, 
         usuario: user.usuario,
         id_rol: user.id_rol,
+        id_local: user.id_local, // <-- NUEVO: id_local del usuario
         roles: rolesArray.map(r => r.nombre)
       },
       process.env.JWT_SECRET,

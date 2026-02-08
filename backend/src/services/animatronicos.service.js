@@ -3,8 +3,23 @@ const { NotFoundError, ValidationError } = require('../utils/errors.util');
 
 class AnimatronicoService {
 
-  async getAll() {
-    const [rows] = await pool.query('SELECT * FROM animatronicos');
+  // ⭐ CAMBIO: Modificado para filtrar por id_local
+  async getAll(id_local = null) {
+    let query = `
+      SELECT a.* 
+      FROM animatronicos a
+      INNER JOIN tipos_animatronicos ta ON a.id_gama = ta.id
+    `;
+    
+    const params = [];
+    
+    // Si se proporciona id_local, filtrar por ese local
+    if (id_local) {
+      query += ' WHERE ta.id_local = ?';
+      params.push(id_local);
+    }
+    
+    const [rows] = await pool.query(query, params);
     return rows;
   }
 

@@ -31,9 +31,9 @@
           @for (animatronico of animatronicos; track animatronico.id) {
             <div class="animatronico-card">
               <div class="card-image">
-                <img [src]="obtenerRutaFoto(animatronico.foto)" 
-                     [alt]="animatronico.nombre"
-                     (error)="onImageError($event)">
+                <img [src]="obtenerRutaFoto(animatronico.foto)"
+                  [alt]="animatronico.nombre"
+                  (error)="onImageError($event)">
               </div>
 
               <div class="card-info">
@@ -64,7 +64,7 @@
           <!-- Mensaje si no hay animatrónicos -->
           @if (animatronicos.length === 0) {
             <div class="empty-state">
-              <p class="empty-icon">🤖</p>
+               <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
               <p class="empty-text">No hay animatrónicos registrados en este local</p>
               <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
                 Añadir el primero

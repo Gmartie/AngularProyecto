@@ -206,6 +206,21 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Obtiene el icono del local según el id_local del usuario
+   */
+  getIconoLocal(): string {
+    const idLocal = this.usuario?.id_local;
+    
+    switch (idLocal) {
+      case 1: return '/Icons/w_restaurant_icon.png';
+      case 2: return '/Icons/t_restaurant_icon.png';
+      case 3: return '/Icons/f_restaurant_icon.png';
+      case 4:
+      default: return '/Icons/restaurant_icon.png';
+    }
+  }
+
+  /**
    * Obtiene la ruta de la foto del restaurante
    */
   obtenerRutaFoto(nombreFoto: string): string {

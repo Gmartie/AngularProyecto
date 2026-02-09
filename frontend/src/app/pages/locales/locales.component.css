@@ -72,7 +72,9 @@
 }
 
 .window-icon-small {
-  font-size: 14px;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 
 .window-controls {

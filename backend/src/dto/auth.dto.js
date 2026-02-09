@@ -5,9 +5,10 @@ class AuthDTO {
       usuario: {
         id: usuario.id,
         usuario: usuario.usuario,
-        correo: usuario.correo,  // Campo de la BD original
-        id_rol: usuario.id_rol,  // Campo de la BD original
-        roles: roles  // Array de roles para compatibilidad con el frontend
+        correo: usuario.correo,
+        id_rol: usuario.id_rol,
+        id_local: usuario.id_local,
+        roles: roles
       }
     };
   }

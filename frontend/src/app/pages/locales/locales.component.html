@@ -1,10 +1,235 @@
-<h2>Locales</h2>
+<!-- Ventana flotante de locales -->
+<div class="window-overlay" [class.hidden]="isMinimized">
+  <div class="window-container" [class.maximized]="isMaximized">
+    <div class="window">
+      <!-- Barra de título de la ventana -->
+      <div class="window-header">
+        <div class="window-title">
+          <span class="window-icon-small">🏢</span>
+          <span>Mi Restaurante</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
+          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+        </div>
+      </div>
 
-<div *ngFor="let l of locales">
-  <h3>{{ l.ciudad }}</h3>
-  <p>{{ l.direccion }}</p>
-  <p>Aforo: {{ l.aforo }}</p>
+      <!-- Contenido de la ventana -->
+      <div class="window-content">
+        
+        <!-- Toolbar solo si hay local -->
+        @if (localUsuario) {
+          <div class="toolbar">
+            <div class="info-badge">
+              <span class="badge-icon">📍</span>
+              <span>Local asignado</span>
+            </div>
+          </div>
+        }
 
-  <button *ngIf="rol !== 3" (click)="editar(l)">Editar</button>
-  <button *ngIf="rol === 1" (click)="borrar(l.id)">Eliminar</button>
+        <!-- Mostrar el local del usuario -->
+        @if (localUsuario) {
+          <div class="local-card">
+            <div class="card-image">
+              <img [src]="obtenerRutaFoto(localUsuario.foto)"
+                [alt]="localUsuario.ciudad"
+                (error)="onImageError($event)">
+            </div>
+
+            <div class="card-info">
+              <h2 class="local-titulo">{{ localUsuario.ciudad }}</h2>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">📍 Dirección:</span>
+                  <span class="info-value">{{ localUsuario.direccion }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">👥 Aforo:</span>
+                  <span class="info-value">{{ localUsuario.aforo }} personas</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">📅 Apertura:</span>
+                  <span class="info-value">{{ formatearFecha(localUsuario.fecha_apertura) }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-label">🔓 Estado:</span>
+                  <span class="info-value">
+                    <span [class.badge-abierto]="localUsuario.abierto" 
+                          [class.badge-cerrado]="!localUsuario.abierto">
+                      {{ localUsuario.abierto ? 'Abierto' : 'Cerrado' }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
+                ✏️ Editar Local
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- Mensaje si el usuario no tiene local asignado -->
+          <div class="empty-state">
+            <img src="/FNaF_Icons/fazbearInc.png" alt="Fazbear" class="empty-icon">
+            <p class="empty-text">No tienes un local asignado</p>
+            <p class="empty-subtext">Contacta con un administrador para que te asigne un restaurante</p>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Barra de tareas -->
+<div class="taskbar" *ngIf="!isMinimized">
+  <!-- Botón Start -->
+  <div class="start-button">
+    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+    <span>Inicio</span>
+  </div>
+
+  <!-- Separador -->
+  <div class="taskbar-separator"></div>
+
+  <!-- Ventanas abiertas (botones en la taskbar) -->
+  <div class="taskbar-windows">
+    <button 
+      *ngFor="let window of ventanasAbiertas$ | async"
+      class="taskbar-window-btn"
+      [class.minimized]="window.isMinimized"
+      [class.active]="!window.isMinimized && window.id === 'locales'"
+      (click)="restaurarVentana(window.id)"
+    >
+      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+      <span>{{ window.title }}</span>
+    </button>
+  </div>
+
+  <!-- Bandeja del sistema -->
+  <div class="system-tray">
+    <div class="system-tray-user" *ngIf="usuario">
+      <span class="user-icon">👤</span>
+      <span class="user-name">{{ usuario.usuario }}</span>
+    </div>
+    
+    <div class="system-tray-separator"></div>
+    
+    <div class="system-tray-time">
+      {{ getHoraActual() }}
+    </div>
+    
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+      <span>🚪</span>
+    </button>
+  </div>
+</div>
+
+<!-- Modal para editar local -->
+@if (mostrarFormularioEditar && localEditando) {
+  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
+    <div class="modal-window" (click)="$event.stopPropagation()">
+
+      <div class="window-header">
+        <div class="window-title">
+          <span class="window-icon-small">✏️</span>
+          <span>Editar Local</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+        </div>
+      </div>
+
+      <div class="modal-content">
+        <form class="form-local">
+          <div class="form-group">
+            <label for="edit-ciudad">Ciudad *:</label>
+            <input type="text" 
+                   id="edit-ciudad" 
+                   [(ngModel)]="localEditando.ciudad"
+                   name="ciudad"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-direccion">Dirección *:</label>
+            <input type="text" 
+                   id="edit-direccion" 
+                   [(ngModel)]="localEditando.direccion"
+                   name="direccion"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-aforo">Aforo *:</label>
+            <input type="number" 
+                   id="edit-aforo" 
+                   [(ngModel)]="localEditando.aforo"
+                   name="aforo"
+                   min="1"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-fecha">Fecha de apertura:</label>
+            <input type="date" 
+                   id="edit-fecha" 
+                   [value]="fechaParaInput(localEditando.fecha_apertura)"
+                   (change)="onFechaChange($event)"
+                   name="fecha_apertura">
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" 
+                     [(ngModel)]="localEditando.abierto"
+                     name="abierto">
+              Local abierto
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-foto">Foto del local:</label>
+            <input type="file" 
+                   id="edit-foto"
+                   (change)="onFileSelected($event, false)"
+                   accept="image/*">
+            <small>O ingrese nombre del archivo (carpeta: /public/FNaF_RESTAURANTES/):</small>
+            <input type="text" 
+                   [(ngModel)]="localEditando.foto"
+                   name="foto"
+                   placeholder="ejemplo: freddy_pizza_1987.jpg">
+            @if (localEditando.foto) {
+              <div class="preview-image">
+                <img [src]="obtenerRutaFoto(localEditando.foto)" 
+                     alt="Preview"
+                     (error)="onImageError($event)">
+              </div>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-delete" (click)="eliminarLocal()">
+              🗑️ Eliminar
+            </button>
+            <div class="form-actions-right">
+              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
+                Cancelar
+              </button>
+              <button type="button" class="btn-save" (click)="actualizarLocal()">
+                Actualizar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

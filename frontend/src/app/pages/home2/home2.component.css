@@ -12,6 +12,8 @@
   flex-direction: column;
 }
 
+
+
 /* ===== ÁREA DEL ESCRITORIO (siempre visible de fondo) ===== */
 .desktop-area {
   flex: 1;

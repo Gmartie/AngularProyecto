@@ -54,24 +54,27 @@ export class RoleGuard implements CanActivate {
     } else {
       // Usar id_rol (fallback)
       const mapaRoles: { [key: number]: string } = {
-        1: 'Administrador',
+        1: 'Propietario',
         2: 'Técnico',
-        3: 'Guardia de seguridad'
+        3: 'Guardia de seguridad',
+        4: 'Empleado',
+        5: 'Cocinero',
+        6: 'Administrador'
       };
       
       const rolUsuario = mapaRoles[usuario.id_rol];
       tieneRol = rolesRequeridos.includes(rolUsuario);
-      console.log('🔐 RoleGuard - Rol del usuario (id_rol):', rolUsuario);
+      console.log('RoleGuard - Rol del usuario (id_rol):', rolUsuario);
     }
 
-    console.log('🔐 RoleGuard - ¿Tiene rol requerido?', tieneRol);
+    console.log('RoleGuard - ¿Tiene rol requerido?', tieneRol);
 
     if (tieneRol) {
-      console.log('✅ RoleGuard - Acceso permitido');
+      console.log('RoleGuard - Acceso permitido');
       return true;
     }
 
-    console.log('❌ RoleGuard - Acceso denegado (sin permisos)');
+    console.log('RoleGuard - Acceso denegado (sin permisos)');
     this.router.navigate(['/']);
     return false;
   }

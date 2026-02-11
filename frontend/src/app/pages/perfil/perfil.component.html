@@ -1,84 +1,152 @@
-<!-- COMPONENTE: Perfil - Información del Usuario -->
-<!-- Muestra y permite editar datos personales del usuario -->
+<!-- Ventana flotante de perfil -->
+<div class="window-overlay" [class.hidden]="isMinimized">
+  <div class="window-container" [class.maximized]="isMaximized">
+    <div class="window">
+      <!-- Barra de título de la ventana -->
+      <div class="window-header">
+        <div class="window-title">
+          <span class="window-icon-small">👤</span>
+          <span>Mi Perfil</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
+          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+        </div>
+      </div>
 
-<div class="container">
-  <div class="perfil-header">
-    <h1>Mi Perfil</h1>
+      <!-- Contenido de la ventana -->
+      <div class="window-content">
+        <div class="perfil-card" *ngIf="usuario()">
+          <div class="info-section">
+            <!-- INFO NORMAL -->
+            <div class="info-row" *ngIf="!editando() && usuario()">
+              <div class="info-item">
+                <label>Usuario</label>
+                <p>{{ usuario()?.usuario }}</p>
+              </div>
+
+              <div class="info-item">
+                <label>Email</label>
+                <p>{{ usuario()?.correo }}</p>
+              </div>
+
+              <div class="info-item">
+                <label>Roles</label>
+                <div class="roles">
+                  <span class="rol-badge">
+                    {{ nombreRol() }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- FORMULARIO -->
+            <div *ngIf="editando()" class="formulario">
+
+              <div class="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  [ngModel]="formulario().correo"
+                  (ngModelChange)="updateCorreo($event)"
+                  placeholder="tu@email.com"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Nueva Contraseña</label>
+                <input
+                  type="password"
+                  [ngModel]="formulario().password"
+                  (ngModelChange)="updatePassword($event)"
+                  placeholder="Nueva contraseña"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Confirmar Contraseña</label>
+                <input
+                  type="password"
+                  [ngModel]="formulario().confirmPassword"
+                  (ngModelChange)="updateConfirmPassword($event)"
+                  placeholder="Confirmar contraseña"
+                />
+              </div>
+
+              <div *ngIf="error()" class="error-message">
+                {{ error() }}
+              </div>
+
+              <div *ngIf="exito()" class="exito-message">
+                Cambios guardados exitosamente
+              </div>
+
+              <div class="form-buttons">
+                <button (click)="guardarCambios()" [disabled]="cargando()" class="btn-guardar">
+                  {{ cargando() ? 'Guardando...' : 'Guardar Cambios' }}
+                </button>
+
+                <button (click)="cancelar()" class="btn-cancelar">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            <!-- BOTÓN EDITAR -->
+            <div *ngIf="!editando()" class="perfil-buttons">
+              <button (click)="toggleEditar()" class="btn-editar">
+                ✏️ Editar Perfil
+              </button>
+            </div>
+
+          </div> <!-- CIERRE info-section -->
+        </div> <!-- CIERRE perfil-card -->
+      </div> <!-- CIERRE window-content -->
+    </div> <!-- CIERRE window -->
+  </div> <!-- CIERRE window-container -->
+</div> <!-- CIERRE window-overlay -->
+
+<!-- Barra de tareas -->
+<div class="taskbar" *ngIf="!isMinimized">
+  <!-- Botón Start -->
+  <div class="start-button">
+    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+    <span>Inicio</span>
   </div>
 
-  <div class="perfil-card" *ngIf="usuario">
-    <div class="info-section">
-      <h3>Información Personal</h3>
+  <!-- Separador -->
+  <div class="taskbar-separator"></div>
 
-      <div class="info-row" *ngIf="!editando && usuario()">
-        <div class="info-item">
-          <label>Usuario</label>
-          <p>{{ usuario()?.usuario }}</p>
-        </div>
-        <div class="info-item">
-          <label>Email</label>
-          <p>{{ usuario()?.correo }}</p>
-        </div>
-        <div class="info-item">
-          <label>Roles</label>
-          <div class="roles">
-           <span class="rol-badge">
-            {{ nombreRol() }}
-          </span>
-          </div>
-        </div>
-      </div>
+  <!-- Ventanas abiertas (botones en la taskbar) -->
+  <div class="taskbar-windows">
+    <button 
+      *ngFor="let window of ventanasAbiertas$ | async"
+      class="taskbar-window-btn"
+      [class.minimized]="window.isMinimized"
+      [class.active]="!window.isMinimized && window.id === 'perfil'"
+      (click)="restaurarVentana(window.id)"
+    >
+      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+      <span>{{ window.title }}</span>
+    </button>
+  </div>
 
-      <div *ngIf="editando" class="formulario">
-        <div class="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            [ngModel]="formulario().correo"
-            (ngModelChange)="updateCorreo($event)"
-            placeholder="tu@email.com"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Nueva Contraseña (Dejar en blanco para no cambiar)</label>
-          <input
-            type="password"
-            [ngModel]="formulario().password"
-            (ngModelChange)="updatePassword($event)"
-            placeholder="Nueva contraseña"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Confirmar Contraseña</label>
-          <input
-            type="password"
-            [ngModel]="formulario().confirmPassword"
-            (ngModelChange)="updateConfirmPassword($event)"
-            placeholder="Confirmar contraseña"
-          />
-        </div>
-
-        <div *ngIf="error()" class="error-message">
-          {{ error() }}
-        </div>
-
-        <div *ngIf="exito()" class="exito-message">
-          ✅ Cambios guardados exitosamente
-        </div>
-
-        <div class="form-buttons">
-          <button (click)="guardarCambios()" [disabled]="cargando()" class="btn-guardar">
-            {{ cargando() ? 'Guardando...' : 'Guardar Cambios' }}
-          </button>
-          <button (click)="cancelar()" class="btn-cancelar">Cancelar</button>
-        </div>
-      </div>
-
-      <div *ngIf="!editando" class="perfil-buttons">
-        <button (click)="toggleEditar()" class="btn-editar">✏️ Editar Perfil</button>
-      </div>
+  <!-- Bandeja del sistema -->
+  <div class="system-tray">
+    <div class="system-tray-user" *ngIf="usuario()">
+      <span class="user-icon">👤</span>
+      <span class="user-name">{{ usuario()?.usuario }}</span>
     </div>
+    
+    <div class="system-tray-separator"></div>
+    
+    <div class="system-tray-time">
+      {{ getHoraActual() }}
+    </div>
+    
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+      <span>🚪</span>
+    </button>
   </div>
 </div>

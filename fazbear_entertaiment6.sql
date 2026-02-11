@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-02-2026 a las 19:00:12
+-- Tiempo de generación: 11-02-2026 a las 10:40:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -104,9 +104,12 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `rol`) VALUES
-(1, 'Administrador'),
+(1, 'Propietario'),
 (2, 'Técnico'),
-(3, 'Guardia de seguridad');
+(3, 'Guardia de seguridad'),
+(4, 'Empleado'),
+(5, 'Cocinero'),
+(6, 'Administrador');
 
 -- --------------------------------------------------------
 
@@ -216,7 +219,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `animatronicos`
 --
 ALTER TABLE `animatronicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `locales`
@@ -228,7 +231,7 @@ ALTER TABLE `locales`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_animatronicos`

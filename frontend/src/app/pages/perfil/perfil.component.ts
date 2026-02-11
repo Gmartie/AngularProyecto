@@ -3,11 +3,14 @@
  * Página de perfil de usuario autenticado
  */
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { UsuarioService } from '../../services/usuario.service';
+import { WindowService, Window } from '../../services/window.service';
 
 @Component({
   selector: 'app-perfil',
@@ -16,7 +19,7 @@ import { UsuarioService } from '../../services/usuario.service';
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.css']
 })
-export class PerfilComponent implements OnInit {
+export class PerfilComponent implements OnInit, OnDestroy {
   usuario = signal<UsuarioAutenticado | null>(null);
   editando = signal(false);
   cargando = signal(false);
@@ -29,16 +32,44 @@ export class PerfilComponent implements OnInit {
     confirmPassword: ''
   });
 
+  // Control de ventana
+  isMinimized: boolean = false;
+  isMaximized: boolean = false;
+  private windowSubscription?: Subscription;
+  
+  // Ventanas abiertas
+  ventanasAbiertas$!: Observable<Window[]>;
+
   constructor(
     private readonly authService: AuthService,
-    private readonly usuarioService: UsuarioService
+    private readonly usuarioService: UsuarioService,
+    private readonly windowService: WindowService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
+    // Obtener ventanas abiertas para la taskbar
+    this.ventanasAbiertas$ = this.windowService.windows$;
+    
+    // Suscribirse al estado de la ventana
+    this.windowSubscription = this.windowService.windows$.subscribe(windows => {
+      const perfilWindow = windows.find(w => w.id === 'perfil');
+      if (perfilWindow) {
+        this.isMinimized = perfilWindow.isMinimized;
+        this.isMaximized = perfilWindow.isMaximized;
+      }
+    });
+    
     const usuarioData = this.authService.obtenerUsuario();
     this.usuario.set(usuarioData);
     if (usuarioData) {
       this.formulario.update(f => ({ ...f, correo: usuarioData.correo }));
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.windowSubscription) {
+      this.windowSubscription.unsubscribe();
     }
   }
 
@@ -129,5 +160,56 @@ export class PerfilComponent implements OnInit {
 
   updateConfirmPassword(value: string): void {
     this.formulario.update(f => ({ ...f, confirmPassword: value }));
+  }
+
+  /**
+   * Cierra la ventana y vuelve a home2
+   */
+  cerrarVentana(): void {
+    this.windowService.closeWindow('perfil');
+    this.router.navigate(['/home2']);
+  }
+
+  /**
+   * Minimiza la ventana
+   */
+  minimizarVentana(): void {
+    this.windowService.minimizeWindow('perfil');
+    this.router.navigate(['/home2']);
+  }
+
+  /**
+   * Maximiza/restaura la ventana
+   */
+  toggleMaximizar(): void {
+    this.windowService.toggleMaximize('perfil');
+  }
+
+  /**
+   * Restaura una ventana desde la taskbar
+   */
+  restaurarVentana(windowId: string): void {
+    this.windowService.restoreWindow(windowId);
+    const window = this.windowService.getWindow(windowId);
+    if (window?.route) {
+      this.router.navigate([window.route]);
+    }
+  }
+
+  /**
+   * Cierra sesión desde la taskbar
+   */
+  cerrarSesion(): void {
+    this.windowService.closeAllWindows();
+    this.authService.logout();
+    this.router.navigate(['/home']);
+  }
+
+  /**
+   * Obtiene la hora actual para la taskbar
+   */
+  getHoraActual(): string {
+    const ahora = new Date();
+    return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 }

@@ -1,53 +1,143 @@
-<!-- COMPONENTE: Admin - Panel de Administración -->
-<!-- Panel de control administrativo del sistema -->
+<!-- Ventana flotante de administración -->
+<div class="window-overlay" [class.hidden]="isMinimized">
+  <div class="window-container" [class.maximized]="isMaximized">
+    <div class="window">
+      <!-- Barra de título de la ventana -->
+      <div class="window-header">
+        <div class="window-title">
+          <span class="window-icon-small">⚙️</span>
+          <span>Panel de Administración - Fazbear Entertainment</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
+          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+        </div>
+      </div>
 
-<div class="admin-container">
-  <div class="admin-header">
-    <h1>Panel de Administración</h1>
-    <p>Gestiona todos los aspectos de la plataforma DAW</p>
+      <!-- Contenido de la ventana -->
+      <div class="window-content">
+        <!-- Mensaje de bienvenida -->
+        <div class="admin-welcome">
+          <div class="welcome-icon">🔐</div>
+          <h2>Panel de Administración</h2>
+          <p *ngIf="usuario">Bienvenido, <strong>{{ usuario.usuario }}</strong></p>
+          <p class="role-badge">{{ nombreRol() }}</p>
+        </div>
+
+        <!-- Verificación de permisos -->
+        <div class="access-denied" *ngIf="!esAdministrador()">
+          <div class="denied-icon">⛔</div>
+          <h3>Acceso Denegado</h3>
+          <p>Solo los usuarios con rol de <strong>Administrador</strong> pueden acceder a este panel.</p>
+          <p>Tu rol actual: <strong>{{ nombreRol() }}</strong></p>
+          <button class="btn-volver" (click)="cerrarVentana()">Volver al Escritorio</button>
+        </div>
+
+        <!-- Panel de administración (solo visible para administradores) -->
+        <div class="admin-panel" *ngIf="esAdministrador()">
+          <div class="panel-info">
+            <p>Gestiona todos los aspectos del sistema Fazbear Entertainment</p>
+          </div>
+
+          <!-- Grid de secciones -->
+          <div class="admin-grid">
+            <div 
+              *ngFor="let seccion of secciones" 
+              class="admin-card"
+              (click)="navegarSeccion(seccion)"
+            >
+              <div class="card-header">
+                <span class="card-icon">{{ seccion.icono }}</span>
+                <h3>{{ seccion.titulo }}</h3>
+              </div>
+              
+              <div class="card-body">
+                <p class="card-description">{{ seccion.descripcion }}</p>
+                
+                <div class="card-stats" *ngIf="seccion.estadisticas">
+                  <span class="stats-label">{{ seccion.estadisticas.label }}:</span>
+                  <span class="stats-value">{{ seccion.estadisticas.valor }}</span>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-link">Abrir →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información del sistema -->
+          <div class="system-info">
+            <div class="info-header">
+              <span class="info-icon">ℹ️</span>
+              <h3>Información del Sistema</h3>
+            </div>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Base de datos:</label>
+                <span>fazbear_entertainment</span>
+              </div>
+              <div class="info-item">
+                <label>Versión:</label>
+                <span>6.0</span>
+              </div>
+              <div class="info-item">
+                <label>Estado:</label>
+                <span class="status-online">● Operativo</span>
+              </div>
+              <div class="info-item">
+                <label>Último acceso:</label>
+                <span>{{ getHoraActual() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Barra de tareas -->
+<div class="taskbar" *ngIf="!isMinimized">
+  <!-- Botón Start -->
+  <div class="start-button">
+    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+    <span>Inicio</span>
   </div>
 
-  <div class="admin-grid">
-    <div class="admin-card">
-      <div class="card-icon">📚</div>
-      <h3>Módulos</h3>
-      <p>Crear, editar y eliminar módulos formativos</p>
-      <a routerLink="/modulos" class="btn-card">Gestionar Módulos</a>
-    </div>
+  <!-- Separador -->
+  <div class="taskbar-separator"></div>
 
-    <div class="admin-card">
-      <div class="card-icon">👨‍🎓</div>
-      <h3>Alumnos</h3>
-      <p>Administrar datos de alumnos y matrículas</p>
-      <a routerLink="/alumnos" class="btn-card">Gestionar Alumnos</a>
-    </div>
+  <!-- Ventanas abiertas (botones en la taskbar) -->
+  <div class="taskbar-windows">
+    <button 
+      *ngFor="let window of ventanasAbiertas$ | async"
+      class="taskbar-window-btn"
+      [class.minimized]="window.isMinimized"
+      [class.active]="!window.isMinimized && window.id === 'admin'"
+      (click)="restaurarVentana(window.id)"
+    >
+      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+      <span>{{ window.title }}</span>
+    </button>
+  </div>
 
-    <div class="admin-card">
-      <div class="card-icon">👨‍🏫</div>
-      <h3>Profesores</h3>
-      <p>Administrar profesores y asignaciones</p>
-      <a routerLink="/profesores" class="btn-card">Gestionar Profesores</a>
+  <!-- Bandeja del sistema -->
+  <div class="system-tray">
+    <div class="system-tray-user" *ngIf="usuario">
+      <span class="user-icon">👤</span>
+      <span class="user-name">{{ usuario.usuario }}</span>
     </div>
-
-    <div class="admin-card">
-      <div class="card-icon">📋</div>
-      <h3>Matrículas</h3>
-      <p>Ver y gestionar matrículas de alumnos</p>
-      <a routerLink="/matriculas" class="btn-card">Ver Matrículas</a>
+    
+    <div class="system-tray-separator"></div>
+    
+    <div class="system-tray-time">
+      {{ getHoraActual() }}
     </div>
-
-    <div class="admin-card">
-      <div class="card-icon">📰</div>
-      <h3>Noticias</h3>
-      <p>Publicar y gestionar noticias</p>
-      <a routerLink="/noticias" class="btn-card">Gestionar Noticias</a>
-    </div>
-
-    <div class="admin-card">
-      <div class="card-icon">⚙️</div>
-      <h3>Configuración</h3>
-      <p>Configuración general del sistema</p>
-      <a href="#" class="btn-card">Configuración</a>
-    </div>
+    
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+      <span>🚪</span>
+    </button>
   </div>
 </div>

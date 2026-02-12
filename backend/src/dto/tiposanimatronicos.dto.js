@@ -1,17 +1,13 @@
-class AnimatronicosDTO {
+class TipoAnimatronicosDTO {
 
-  static toResponse(animatronico) {
+  static toResponse(tipo) {
     return {
-      id: animatronico.id,
-      nombre: animatronico.nombre,
-      reconocimiento: animatronico.reconocimiento,
-      num_piezas: animatronico.num_piezas,
-      id_gama: animatronico.id_gama,
-      planos: animatronico.planos,
-      foto: animatronico.foto
+      id: tipo.id,
+      nombre: tipo.nombre,
+      id_local: tipo.id_local
     };
   }
 
 }
 
-module.exports = AnimatronicosDTO;
+module.exports = TipoAnimatronicosDTO;

@@ -8,7 +8,7 @@ class AuthDTO {
         correo: usuario.correo,
         id_rol: usuario.id_rol,
         id_local: usuario.id_local,
-        roles: roles 
+        roles: roles
       }
     };
   }

@@ -8,9 +8,9 @@
   padding: 2rem;
   /* Fondo con WebBackground.jpg */
   background-image: url('/Wallpapers/WebBackground.jpg');
-  background-size: auto;
-  background-position: top left;
-  background-repeat: repeat;
+ background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   background-attachment: scroll;
   position: relative;
 }

@@ -20,7 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `fazbear_entertaiment`
 --
-
+DROP DATABASE IF EXISTS fazbear_entertaiment;
+CREATE DATABASE fazbear_entertaiment;
+USE fazbear_entertaiment;
 -- --------------------------------------------------------
 
 --

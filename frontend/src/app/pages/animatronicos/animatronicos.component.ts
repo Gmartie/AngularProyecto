@@ -79,7 +79,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private animatronicosService: AnimatronicosService,
-    private permisosService: PermisosService  // NUEVO
+    public permisosService: PermisosService  // NUEVO
   ) {}
 
   ngOnInit(): void {

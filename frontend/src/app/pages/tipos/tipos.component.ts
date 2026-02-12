@@ -278,6 +278,22 @@ export class TiposComponent implements OnInit, OnDestroy {
     return local ? `${local.ciudad} - ${local.direccion}` : 'Desconocido';
   }
 
+  /**
+   * Obtiene el icono de animatrónico según el id_local del usuario
+   * Usa la misma lógica que en home2 para mantener consistencia visual
+   */
+  obtenerIconoAnimatronicos(): string {
+    const idLocal = this.usuario?.id_local;
+    
+    switch (idLocal) {
+      case 1: return '/Icons/w_freddy_icon.png';
+      case 2: return '/Icons/t_freddy_icon.png';
+      case 3: return '/Icons/f_freddy_icon.png';
+      case 4:
+      default: return '/Icons/freddy_icon.png';
+    }
+  }
+
   cerrarVentana(): void {
     this.windowService.closeWindow('tipos');
     this.router.navigate(['/home2']);

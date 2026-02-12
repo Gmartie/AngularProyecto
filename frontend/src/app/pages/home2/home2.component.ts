@@ -1,13 +1,19 @@
 /**
- * COMPONENTE: Home2Component
+ * COMPONENTE: Home2Component - VERSIÓN CON CONTROL DE PERMISOS POR ROL
  * 
  * Escritorio estilo Windows 95 con iconos de programas
- * Los iconos de animatronicos y locales cambian según el id_local del usuario
+ * Los iconos y permisos cambian según el id_rol del usuario
+ * 
+ * ROLES Y PERMISOS:
+ * - id_rol = 1 (Propietario): Editar local, VER animatronicos (no editar), Editar tipos
+ * - id_rol = 2 (Técnico): Ver local, CRUD Tipos, CRUD Animátronicos
+ * - id_rol = 3,4,5 (Guardia/Empleado/Cocinero): Solo VER locales y animatrónicos
+ * - id_rol = 6 (Administrador Master): Panel admin especial (ya implementado)
  */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // 
+import { Router, RouterModule } from '@angular/router';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService } from '../../services/window.service';
 import { Observable } from 'rxjs';
@@ -19,7 +25,7 @@ interface ProgramaIcono {
   icono: string;
   ruta?: string;
   descripcion: string;
-  rolesPermitidos?: string[];
+  rolesPermitidos?: number[];  // CAMBIO: Ahora usa números (id_rol) en lugar de nombres
   funcional: boolean;
 }
 
@@ -79,6 +85,7 @@ export class Home2Component implements OnInit {
 
   /**
    * Crea la lista de programas con iconos dinámicos
+   * NUEVO: Cada programa tiene definidos los roles que pueden acceder a él
    */
   private crearProgramas(): ProgramaIcono[] {
     return [
@@ -89,6 +96,7 @@ export class Home2Component implements OnInit {
         icono: this.getIconoAnimatronicos(),
         ruta: '/animatronicos',
         descripcion: 'Gestión de Animatrónicos',
+        rolesPermitidos: [1, 2, 3, 4, 5], // Todos excepto Admin Master (6)
         funcional: true
       },
       {
@@ -97,6 +105,7 @@ export class Home2Component implements OnInit {
         icono: this.getIconoLocales(),
         ruta: '/locales',
         descripcion: 'Control de Locales',
+        rolesPermitidos: [1, 2, 3, 4, 5], // Todos excepto Admin Master (6)
         funcional: true
       },
       {
@@ -105,6 +114,7 @@ export class Home2Component implements OnInit {
         icono: '/Icons/springlock_icon.png',
         ruta: '/tipos',
         descripcion: 'Tipos de Animatrónicos',
+        rolesPermitidos: [1, 2], // Solo Propietario y Técnico
         funcional: true
       },
       {
@@ -113,6 +123,7 @@ export class Home2Component implements OnInit {
         icono: '/Icons/profile_icon.png',
         ruta: '/perfil',
         descripcion: 'Perfil de Operador',
+        rolesPermitidos: [1, 2, 3, 4, 5, 6], // Todos los roles
         funcional: true
       },
       {
@@ -121,11 +132,11 @@ export class Home2Component implements OnInit {
         icono: '/Icons/computer_icon.png',
         ruta: '/admin',
         descripcion: 'Panel de Administración',
-        rolesPermitidos: ['Administrador'],
+        rolesPermitidos: [6], // Solo Administrador Master
         funcional: true
       },
       
-      // PROGRAMAS DECORATIVOS
+      // PROGRAMAS DECORATIVOS (visibles para todos)
       {
         id: 'cameras',
         nombre: 'Cámaras',
@@ -157,6 +168,9 @@ export class Home2Component implements OnInit {
     ];
   }
 
+  /**
+   * NUEVO: Filtra los programas según el id_rol del usuario
+   */
   filtrarProgramas(): void {
     if (!this.usuario) {
       this.programasFiltrados = [];
@@ -164,25 +178,61 @@ export class Home2Component implements OnInit {
     }
 
     const programas = this.crearProgramas();
+    const idRol = this.usuario.id_rol;
 
     this.programasFiltrados = programas.filter(programa => {
+      // Los programas decorativos siempre se muestran
       if (!programa.funcional) {
         return true;
       }
 
+      // Si no tiene restricciones de roles, se muestra a todos
       if (!programa.rolesPermitidos || programa.rolesPermitidos.length === 0) {
         return true;
       }
 
-      return programa.rolesPermitidos.some(rolRequerido => 
-        this.tieneRol(rolRequerido)
-      );
+      // Verificar si el id_rol del usuario está en la lista de roles permitidos
+      return programa.rolesPermitidos.includes(idRol);
     });
   }
 
-  tieneRol(nombreRol: string): boolean {
-    if (!this.usuario?.roles) return false;
-    return this.usuario.roles.some(rol => rol.nombre === nombreRol);
+  /**
+   * NUEVO: Verifica si el usuario tiene un rol específico por ID
+   */
+  tieneRol(idRol: number): boolean {
+    return this.usuario?.id_rol === idRol;
+  }
+
+  /**
+   * NUEVO: Obtiene los permisos del usuario para cada módulo
+   * Esto se usará en los componentes hijos
+   */
+  obtenerPermisos() {
+    const idRol = this.usuario?.id_rol;
+    
+    return {
+      // Permisos para ANIMATRONICOS
+      animatronicos: {
+        ver: [1, 2, 3, 4, 5].includes(idRol || 0),
+        crear: [2].includes(idRol || 0),  // Solo Técnico
+        editar: [2].includes(idRol || 0),  // Solo Técnico
+        eliminar: [2].includes(idRol || 0)  // Solo Técnico
+      },
+      // Permisos para LOCALES
+      locales: {
+        ver: [1, 2, 3, 4, 5].includes(idRol || 0),
+        crear: false,  // Nadie puede crear locales
+        editar: [1].includes(idRol || 0),  // Solo Propietario
+        eliminar: false  // Nadie puede eliminar locales
+      },
+      // Permisos para TIPOS
+      tipos: {
+        ver: [1, 2].includes(idRol || 0),  // Solo Propietario y Técnico
+        crear: [1, 2].includes(idRol || 0),  // Propietario y Técnico
+        editar: [1, 2].includes(idRol || 0),  // Propietario y Técnico
+        eliminar: [1, 2].includes(idRol || 0)  // Propietario y Técnico
+      }
+    };
   }
 
   abrirPrograma(programa: ProgramaIcono): void {
@@ -198,14 +248,12 @@ export class Home2Component implements OnInit {
         programa.icono,
         programa.ruta
       );
-      // CORRECCIÓN: Agregar navegación al router
       this.router.navigate([programa.ruta]);
     }
   }
 
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
-    // CORRECCIÓN: Navegar a la ruta de la ventana
     const window = this.windowService.getWindow(windowId);
     if (window?.route) {
       this.router.navigate([window.route]);

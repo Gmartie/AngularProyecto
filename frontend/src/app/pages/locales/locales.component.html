@@ -1,4 +1,4 @@
-<!-- Ventana flotante de locales -->
+<!-- Ventana flotante de locales - CON CONTROL DE PERMISOS -->
 <div class="window-overlay" [class.hidden]="isMinimized">
   <div class="window-container" [class.maximized]="isMaximized">
     <div class="window">
@@ -7,6 +7,10 @@
         <div class="window-title">
           <img [src]="getIconoLocal()" alt="Local" class="window-icon-small">
           <span>Mi Restaurante</span>
+          <!-- NUEVO: Indicador de modo solo lectura -->
+          @if (soloLectura) {
+            <span class="badge-readonly">🔒 Solo Lectura</span>
+          }
         </div>
         <div class="window-controls">
           <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
@@ -18,13 +22,20 @@
       <!-- Contenido de la ventana -->
       <div class="window-content">
         
-        <!-- Toolbar solo si hay local -->
+        <!-- Toolbar con información del modo -->
         @if (localUsuario) {
           <div class="toolbar">
-            <div class="info-badge">
-              <span class="badge-icon">📍</span>
-              <span>Local asignado</span>
-            </div>
+            @if (puedeEditar) {
+              <div class="info-badge">
+                <span class="badge-icon">📍</span>
+                <span>Local asignado - Modo edición</span>
+              </div>
+            } @else {
+              <div class="info-badge">
+                <span class="badge-icon">👁️</span>
+                <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
+              </div>
+            }
           </div>
         }
 
@@ -68,10 +79,17 @@
               </div>
             </div>
 
+            <!-- NUEVO: Botón según permisos -->
             <div class="card-actions">
-              <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
-                ✏️ Editar Local
-              </button>
+              @if (puedeEditar) {
+                <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
+                  ✏️ Editar Local
+                </button>
+              } @else {
+                <button class="btn-view" disabled title="Solo el Propietario puede editar el local">
+                  👁️ Solo lectura
+                </button>
+              }
             </div>
           </div>
         } @else {
@@ -216,7 +234,8 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-delete" (click)="eliminarLocal()">
+            <!-- NUEVO: Botón eliminar deshabilitado (nadie puede eliminar) -->
+            <button type="button" class="btn-delete" (click)="eliminarLocal()" disabled title="La eliminación de locales está deshabilitada">
               🗑️ Eliminar
             </button>
             <div class="form-actions-right">

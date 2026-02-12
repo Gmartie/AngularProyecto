@@ -1,3 +1,12 @@
+/**
+ * COMPONENTE: LocalesComponent - VERSIÓN CON CONTROL DE PERMISOS
+ * 
+ * Gestión de locales con permisos según rol:
+ * - id_rol = 1 (Propietario): Ver y Editar
+ * - id_rol = 2 (Técnico): Solo VER
+ * - id_rol = 3,4,5 (Guardia/Empleado/Cocinero): Solo VER
+ */
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -5,6 +14,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '../../services/window.service';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { LocalesService } from '../../services/locales.service';
+import { PermisosService } from '../../services/permisos.service';  // NUEVO
 import { Local } from '../../models/local.model';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
@@ -23,6 +33,10 @@ export class LocalesComponent implements OnInit, OnDestroy {
   localEditando: Local | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
+  
+  // NUEVO: Variables de control de permisos
+  puedeEditar: boolean = false;
+  soloLectura: boolean = false;
   
   // Control de ventana
   isMinimized: boolean = false;
@@ -46,7 +60,8 @@ export class LocalesComponent implements OnInit, OnDestroy {
     private windowService: WindowService,
     private router: Router,
     private authService: AuthService,
-    private localesService: LocalesService
+    private localesService: LocalesService,
+    public permisosService: PermisosService  // NUEVO - public para usar en template
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +75,8 @@ export class LocalesComponent implements OnInit, OnDestroy {
       console.log('Usuario recibido en LocalesComponent:', usuario);
       this.usuario = usuario;
       if (usuario) {
+        // NUEVO: Configurar permisos
+        this.configurarPermisos();
         console.log('ID Local del usuario:', usuario.id_local);
         this.cargarLocalUsuario();
       } else {
@@ -81,6 +98,20 @@ export class LocalesComponent implements OnInit, OnDestroy {
     if (this.windowSubscription) {
       this.windowSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * NUEVO: Configura los permisos del usuario actual
+   */
+  private configurarPermisos(): void {
+    this.puedeEditar = this.permisosService.puedeEditarLocales();
+    this.soloLectura = !this.puedeEditar;
+    
+    console.log('Permisos de Locales configurados:', {
+      puedeEditar: this.puedeEditar,
+      soloLectura: this.soloLectura,
+      rol: this.permisosService.obtenerNombreRol()
+    });
   }
 
   cargarLocalUsuario(): void {
@@ -110,15 +141,8 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   abrirFormularioNuevo(): void {
-    this.mostrarFormularioNuevo = true;
-    this.nuevoLocal = {
-      fecha_apertura: new Date(),
-      aforo: 100,
-      foto: '',
-      ciudad: 'Hurricane',
-      direccion: '',
-      abierto: true
-    };
+    // Los locales no se pueden crear (nadie tiene permiso)
+    alert('La creación de nuevos locales está deshabilitada.');
   }
 
   cerrarFormularioNuevo(): void {
@@ -126,35 +150,17 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   guardarNuevo(): void {
-    if (!this.nuevoLocal.ciudad || !this.nuevoLocal.direccion || !this.nuevoLocal.aforo || this.nuevoLocal.aforo <= 0) {
-      alert('Por favor completa todos los campos obligatorios');
-      return;
-    }
-
-    // Crear el objeto Local completo
-    const localParaCrear: Omit<Local, 'id'> = {
-      fecha_apertura: this.nuevoLocal.fecha_apertura || new Date(),
-      aforo: this.nuevoLocal.aforo,
-      foto: this.nuevoLocal.foto || '',
-      ciudad: this.nuevoLocal.ciudad,
-      direccion: this.nuevoLocal.direccion,
-      abierto: this.nuevoLocal.abierto ?? true
-    };
-
-    this.localesService.crear(localParaCrear as Local).subscribe({
-      next: (response) => {
-        console.log('Local creado:', response);
-        this.cargarLocalUsuario();
-        this.cerrarFormularioNuevo();
-      },
-      error: (error) => {
-        console.error('Error al crear local:', error);
-        alert('Error al guardar el local. Verifica la conexión con el servidor.');
-      }
-    });
+    // Método deshabilitado - nadie puede crear locales
+    alert('No tienes permisos para crear nuevos locales.');
   }
 
   abrirFormularioEditar(local: Local): void {
+    // NUEVO: Verificar permisos antes de abrir formulario
+    if (!this.puedeEditar) {
+      alert('No tienes permisos para editar el local.\nSolo el Propietario puede modificar la información del local.');
+      return;
+    }
+    
     this.localEditando = {...local};
     this.mostrarFormularioEditar = true;
   }
@@ -186,28 +192,10 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   eliminarLocal(): void {
-    if (!this.localEditando || !this.localEditando.id) return;
-    
-    if (!confirm(`¿Estás seguro de que deseas eliminar el local en ${this.localEditando.ciudad}?`)) {
-      return;
-    }
-
-    this.localesService.eliminar(this.localEditando.id).subscribe({
-      next: (response) => {
-        console.log('Local eliminado:', response);
-        this.localUsuario = null;
-        this.cerrarFormularioEditar();
-      },
-      error: (error) => {
-        console.error('Error al eliminar local:', error);
-        alert('Error al eliminar el local. Verifica la conexión con el servidor.');
-      }
-    });
+    // NUEVO: Los locales no se pueden eliminar
+    alert('La eliminación de locales está deshabilitada por seguridad.');
   }
 
-  /**
-   * Obtiene el icono del local según el id_local del usuario
-   */
   getIconoLocal(): string {
     const idLocal = this.usuario?.id_local;
     
@@ -220,25 +208,16 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Obtiene la ruta de la foto del restaurante
-   */
   obtenerRutaFoto(nombreFoto: string): string {
-    if (!nombreFoto) return '/FNaF_RESTAURANTES/freddy_pizza_1983.jpg'; // Imagen por defecto
+    if (!nombreFoto) return '/FNaF_RESTAURANTES/freddy_pizza_1983.jpg';
     return `/FNaF_RESTAURANTES/${nombreFoto}`;
   }
 
-  /**
-   * Maneja errores de carga de imágenes
-   */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = '/FNaF_RESTAURANTES/freddy_pizza_1983.jpg';
   }
 
-  /**
-   * Maneja la selección de archivos de imagen
-   */
   onFileSelected(event: any, esNuevo: boolean = true): void {
     const file = event.target.files[0];
     if (file) {
@@ -252,27 +231,18 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Formatea la fecha para mostrar
-   */
   formatearFecha(fecha: Date | string): string {
     if (!fecha) return 'N/A';
     const date = fecha instanceof Date ? fecha : new Date(fecha);
     return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
-  /**
-   * Convierte Date a string formato YYYY-MM-DD para inputs
-   */
   fechaParaInput(fecha: Date | string): string {
     if (!fecha) return '';
     const date = fecha instanceof Date ? fecha : new Date(fecha);
     return date.toISOString().split('T')[0];
   }
 
-  /**
-   * Maneja el cambio de fecha en el formulario de edición
-   */
   onFechaChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (this.localEditando && input.value) {
@@ -280,9 +250,6 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Maneja el cambio de fecha en el formulario de nuevo local
-   */
   onFechaChangeNuevo(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.value) {
@@ -290,32 +257,20 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Cierra la ventana y vuelve a home2
-   */
   cerrarVentana(): void {
     this.windowService.closeWindow('locales');
     this.router.navigate(['/home2']);
   }
 
-  /**
-   * Minimiza la ventana
-   */
   minimizarVentana(): void {
     this.windowService.minimizeWindow('locales');
     this.router.navigate(['/home2']);
   }
 
-  /**
-   * Maximiza/restaura la ventana
-   */
   toggleMaximizar(): void {
     this.windowService.toggleMaximize('locales');
   }
 
-  /**
-   * Restaura una ventana desde la taskbar
-   */
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
     const window = this.windowService.getWindow(windowId);
@@ -324,18 +279,12 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Cierra sesión desde la taskbar
-   */
   cerrarSesion(): void {
     this.windowService.closeAllWindows();
     this.authService.logout();
     this.router.navigate(['/home']);
   }
 
-  /**
-   * Obtiene la hora actual para la taskbar
-   */
   getHoraActual(): string {
     const ahora = new Date();
     return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });

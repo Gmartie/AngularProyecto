@@ -22,21 +22,21 @@ export class RoleGuard implements CanActivate {
   ): boolean {
     const rolesRequeridos = route.data['roles'] as string[];
 
-    console.log('🔐 RoleGuard - Validando acceso a ruta:', state.url);
-    console.log('🔐 RoleGuard - Roles requeridos:', rolesRequeridos);
+    console.log('RoleGuard - Validando acceso a ruta:', state.url);
+    console.log('RoleGuard - Roles requeridos:', rolesRequeridos);
 
     if (!this.authService.estaAutenticado()) {
-      console.log('❌ RoleGuard - Usuario no autenticado');
+      console.log('RoleGuard - Usuario no autenticado');
       this.router.navigate(['/login']);
       return false;
     }
 
     const usuario = this.authService.obtenerUsuario();
     
-    console.log('🔐 RoleGuard - Usuario actual:', usuario);
+    console.log('RoleGuard - Usuario actual:', usuario);
 
     if (!usuario) {
-      console.log('❌ RoleGuard - Usuario null');
+      console.log('RoleGuard - Usuario null');
       this.router.navigate(['/']);
       return false;
     }
@@ -50,7 +50,7 @@ export class RoleGuard implements CanActivate {
       tieneRol = rolesRequeridos.some(rolRequerido => 
         rolesUsuario.includes(rolRequerido)
       );
-      console.log('🔐 RoleGuard - Roles del usuario (array):', rolesUsuario);
+      console.log('RoleGuard - Roles del usuario (array):', rolesUsuario);
     } else {
       // Usar id_rol (fallback)
       const mapaRoles: { [key: number]: string } = {

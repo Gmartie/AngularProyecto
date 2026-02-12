@@ -1,4 +1,4 @@
-<!-- Ventana flotante de animatrónicos -->
+<!-- Ventana flotante de animatrónicos - CON CONTROL DE PERMISOS -->
 <div class="window-overlay" [class.hidden]="isMinimized">
   <div class="window-container" [class.maximized]="isMaximized">
     <div class="window">
@@ -7,6 +7,10 @@
         <div class="window-title">
           <span class="window-icon-small">📋</span>
           <span>Gestión de Animatrónicos</span>
+          <!-- NUEVO: Indicador de modo solo lectura -->
+          @if (soloLectura) {
+            <span class="badge-readonly">Solo Lectura</span>
+          }
         </div>
         <div class="window-controls">
           <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
@@ -14,16 +18,23 @@
           <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
         </div>
       </div>
-
+      
       <!-- Contenido de la ventana -->
       <div class="window-content">
         
-        <!-- Botón para añadir nuevo animatrónico -->
+        <!-- Botón para añadir nuevo animatrónico - SOLO SI TIENE PERMISOS -->
         <div class="toolbar">
-          <button class="btn-add" (click)="abrirFormularioNuevo()">
-            <span class="btn-icon">➕</span>
-            Añadir Animatrónico
-          </button>
+          @if (puedeCrear) {
+            <button class="btn-add" (click)="abrirFormularioNuevo()">
+              <span class="btn-icon">➕</span>
+              Añadir Animatrónico
+            </button>
+          } @else {
+            <div class="info-badge">
+              <span class="badge-icon">👁️</span>
+              <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
+            </div>
+          }
         </div>
 
         <!-- Lista de animatrónicos -->
@@ -53,10 +64,17 @@
                 </p>
               </div>
 
+              <!-- NUEVO: Botones según permisos -->
               <div class="card-actions">
-                <button class="btn-edit" (click)="abrirFormularioEditar(animatronico)">
-                  ✏️ Editar
-                </button>
+                @if (puedeEditar) {
+                  <button class="btn-edit" (click)="abrirFormularioEditar(animatronico)">
+                    ✏️ Editar
+                  </button>
+                } @else {
+                  <button class="btn-view" disabled title="No tienes permisos para editar">
+                    👁️ Solo lectura
+                  </button>
+                }
               </div>
             </div>
           }
@@ -66,9 +84,11 @@
             <div class="empty-state">
                <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
               <p class="empty-text">No hay animatrónicos registrados en este local</p>
-              <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
-                Añadir el primero
-              </button>
+              @if (puedeCrear) {
+                <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+                  Añadir el primero
+                </button>
+              }
             </div>
           }
         </div>
@@ -78,18 +98,186 @@
   </div>
 </div>
 
-<!-- CORRECCIÓN: BARRA DE TAREAS (igual que en home2) -->
+<!-- FORMULARIO NUEVO ANIMATRÓNICO -->
+@if (mostrarFormularioNuevo) {
+  <div class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2>Nuevo Animatrónico</h2>
+        <button class="modal-close" (click)="cerrarFormularioNuevo()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="form-group">
+          <label for="nuevo-nombre">Nombre *</label>
+          <input 
+            id="nuevo-nombre"
+            type="text" 
+            [(ngModel)]="nuevoAnimatronico.nombre" 
+            placeholder="Ej: Freddy Fazbear"
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="nuevo-tipo">Tipo *</label>
+          <select 
+            id="nuevo-tipo"
+            [(ngModel)]="nuevoAnimatronico.id_gama" 
+            class="form-input">
+            @for (tipo of tiposAnimatronicos; track tipo.id) {
+              <option [value]="tipo.id">{{ tipo.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="nuevo-piezas">Número de Piezas *</label>
+          <input 
+            id="nuevo-piezas"
+            type="number" 
+            [(ngModel)]="nuevoAnimatronico.num_piezas" 
+            min="1"
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="nuevo-reconocimiento">
+            <input 
+              id="nuevo-reconocimiento"
+              type="checkbox" 
+              [(ngModel)]="nuevoAnimatronico.reconocimiento">
+            Sistema de Reconocimiento Facial
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="nuevo-foto">Foto</label>
+          <input 
+            id="nuevo-foto"
+            type="file" 
+            (change)="onFileSelected($event, 'foto', true)"
+            accept="image/*"
+            class="form-input">
+          <small>Archivo seleccionado: {{ nuevoAnimatronico.foto || 'Ninguno' }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="nuevo-planos">Planos</label>
+          <input 
+            id="nuevo-planos"
+            type="file" 
+            (change)="onFileSelected($event, 'planos', true)"
+            accept="image/*"
+            class="form-input">
+          <small>Archivo seleccionado: {{ nuevoAnimatronico.planos || 'Ninguno' }}</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
+        <button class="btn-save" (click)="guardarNuevo()">Guardar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- FORMULARIO EDITAR ANIMATRÓNICO -->
+@if (mostrarFormularioEditar && animatronicoEditando) {
+  <div class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2>Editar Animatrónico</h2>
+        <button class="modal-close" (click)="cerrarFormularioEditar()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="form-group">
+          <label for="edit-nombre">Nombre *</label>
+          <input 
+            id="edit-nombre"
+            type="text" 
+            [(ngModel)]="animatronicoEditando.nombre" 
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-tipo">Tipo *</label>
+          <select 
+            id="edit-tipo"
+            [(ngModel)]="animatronicoEditando.id_gama" 
+            class="form-input">
+            @for (tipo of tiposAnimatronicos; track tipo.id) {
+              <option [value]="tipo.id">{{ tipo.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-piezas">Número de Piezas *</label>
+          <input 
+            id="edit-piezas"
+            type="number" 
+            [(ngModel)]="animatronicoEditando.num_piezas" 
+            min="1"
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-reconocimiento">
+            <input 
+              id="edit-reconocimiento"
+              type="checkbox" 
+              [(ngModel)]="animatronicoEditando.reconocimiento">
+            Sistema de Reconocimiento Facial
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-foto">Foto</label>
+          <input 
+            id="edit-foto"
+            type="file" 
+            (change)="onFileSelected($event, 'foto', false)"
+            accept="image/*"
+            class="form-input">
+          <small>Archivo actual: {{ animatronicoEditando.foto }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-planos">Planos</label>
+          <input 
+            id="edit-planos"
+            type="file" 
+            (change)="onFileSelected($event, 'planos', false)"
+            accept="image/*"
+            class="form-input">
+          <small>Archivo actual: {{ animatronicoEditando.planos }}</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <!-- NUEVO: Botón eliminar solo si tiene permisos -->
+        @if (puedeEliminar) {
+          <button class="btn-delete" (click)="eliminarAnimatronico()">🗑️ Eliminar</button>
+        }
+        <div class="modal-footer-right">
+          <button class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
+          <button class="btn-save" (click)="actualizarAnimatronico()">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- BARRA DE TAREAS -->
 <div class="taskbar" *ngIf="!isMinimized">
-  <!-- Botón Start -->
   <div class="start-button">
     <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
     <span>Inicio</span>
   </div>
 
-  <!-- Separador -->
   <div class="taskbar-separator"></div>
 
-  <!-- Ventanas abiertas (botones en la taskbar) -->
   <div class="taskbar-windows">
     <button 
       *ngFor="let window of ventanasAbiertas$ | async"
@@ -103,7 +291,6 @@
     </button>
   </div>
 
-  <!-- Bandeja del sistema -->
   <div class="system-tray">
     <div class="system-tray-user" *ngIf="usuario">
       <span class="user-icon">👤</span>
@@ -121,229 +308,3 @@
     </button>
   </div>
 </div>
-
-<!-- Modal para añadir nuevo animatrónico -->
-  @if (mostrarFormularioNuevo) {
-    <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
-      <div class="modal-window" (click)="$event.stopPropagation()">
-        <div class="window-header">
-          <div class="window-title">
-            <span class="window-icon-small">➕</span>
-            <span>Nuevo Animatrónico</span>
-          </div>
-          <div class="window-controls">
-            <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
-          </div>
-        </div>
-
-        <div class="modal-content">
-          <form class="form-animatronico">
-            <div class="form-group">
-              <label for="nuevo-nombre">Nombre *:</label>
-              <input type="text" 
-                     id="nuevo-nombre" 
-                     [(ngModel)]="nuevoAnimatronico.nombre"
-                     name="nombre"
-                     required>
-            </div>
-
-            <div class="form-group">
-              <label for="nuevo-gama">Tipo *:</label>
-              <select id="nuevo-gama" 
-                      [(ngModel)]="nuevoAnimatronico.id_gama"
-                      name="id_gama"
-                      required>
-                @for (tipo of tiposAnimatronicos; track tipo.id) {
-                  <option [value]="tipo.id">
-                    {{ tipo.nombre }}
-                  </option>
-                }
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="nuevo-piezas">Número de piezas *:</label>
-              <input type="number" 
-                     id="nuevo-piezas" 
-                     [(ngModel)]="nuevoAnimatronico.num_piezas"
-                     name="num_piezas"
-                     min="0"
-                     required>
-            </div>
-
-            <div class="form-group">
-              <label>
-                <input type="checkbox" 
-                       [(ngModel)]="nuevoAnimatronico.reconocimiento"
-                       name="reconocimiento">
-                Reconocimiento facial
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label for="nuevo-foto">Foto:</label>
-              <input type="file" 
-                     id="nuevo-foto"
-                     (change)="onFileSelected($event, 'foto', true)"
-                     accept="image/*">
-              <small>O ingrese nombre del archivo (se guardará en /public/FNaF_Profile/):</small>
-              <input type="text" 
-                     [(ngModel)]="nuevoAnimatronico.foto"
-                     name="foto"
-                     placeholder="ejemplo: freddy.jpg">
-              @if (nuevoAnimatronico.foto) {
-                <div class="preview-image">
-                  <img [src]="obtenerRutaFoto(nuevoAnimatronico.foto)" 
-                       alt="Preview"
-                       (error)="onImageError($event)">
-                </div>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="nuevo-planos">Planos:</label>
-              <input type="file" 
-                     id="nuevo-planos"
-                     (change)="onFileSelected($event, 'planos', true)"
-                     accept="image/*">
-              <small>O ingrese nombre del archivo (se guardará en /public/FNAF_Blueprints/):</small>
-              <input type="text" 
-                     [(ngModel)]="nuevoAnimatronico.planos"
-                     name="planos"
-                     placeholder="ejemplo: freddy_planos.png">
-              @if (nuevoAnimatronico.planos) {
-                <div class="preview-image">
-                  <img [src]="obtenerRutaPlanos(nuevoAnimatronico.planos)" 
-                       alt="Preview Planos"
-                       (error)="onImageError($event)">
-                </div>
-              }
-            </div>
-
-            <div class="form-actions">
-              <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
-                Cancelar
-              </button>
-              <button type="button" class="btn-save" (click)="guardarNuevo()">
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Modal para editar animatrónico -->
-@if (mostrarFormularioEditar && animatronicoEditando) {
-  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
-    <div class="modal-window" (click)="$event.stopPropagation()">
-
-      <div class="window-header">
-        <span>✏️ Editar Animatrónico</span>
-        <button (click)="cerrarFormularioEditar()">×</button>
-      </div>
-
-      <div class="modal-content">
-          <form class="form-animatronico">
-            <div class="form-group">
-              <label for="edit-nombre">Nombre *:</label>
-              <input type="text" 
-                     id="edit-nombre" 
-                     [(ngModel)]="animatronicoEditando.nombre"
-                     name="nombre"
-                     required>
-            </div>
-
-            <div class="form-group">
-              <label for="edit-gama">Tipo *:</label>
-              <select id="edit-gama" 
-                      [(ngModel)]="animatronicoEditando.id_gama"
-                      name="id_gama"
-                      required>
-                @for (tipo of tiposAnimatronicos; track tipo.id) {
-                  <option [value]="tipo.id">
-                    {{ tipo.nombre }}
-                  </option>
-                }
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="edit-piezas">Número de piezas *:</label>
-              <input type="number" 
-                     id="edit-piezas" 
-                     [(ngModel)]="animatronicoEditando.num_piezas"
-                     name="num_piezas"
-                     min="0"
-                     required>
-            </div>
-
-            <div class="form-group">
-              <label>
-                <input type="checkbox" 
-                       [(ngModel)]="animatronicoEditando.reconocimiento"
-                       name="reconocimiento">
-                Reconocimiento facial
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label for="edit-foto">Foto:</label>
-              <input type="file" 
-                     id="edit-foto"
-                     (change)="onFileSelected($event, 'foto', false)"
-                     accept="image/*">
-              <small>O ingrese nombre del archivo (carpeta: /public/FNaF_Profile/):</small>
-              <input type="text" 
-                     [(ngModel)]="animatronicoEditando.foto"
-                     name="foto"
-                     placeholder="ejemplo: freddy.jpg">
-              @if (animatronicoEditando.foto) {
-                <div class="preview-image">
-                  <img [src]="obtenerRutaFoto(animatronicoEditando.foto)" 
-                       alt="Preview"
-                       (error)="onImageError($event)">
-                </div>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="edit-planos">Planos:</label>
-              <input type="file" 
-                     id="edit-planos"
-                     (change)="onFileSelected($event, 'planos', false)"
-                     accept="image/*">
-              <small>O ingrese nombre del archivo (carpeta: /public/FNAF_Blueprints/):</small>
-              <input type="text" 
-                     [(ngModel)]="animatronicoEditando.planos"
-                     name="planos"
-                     placeholder="ejemplo: freddy_planos.png">
-              @if (animatronicoEditando.planos) {
-                <div class="preview-image">
-                  <img [src]="obtenerRutaPlanos(animatronicoEditando.planos)" 
-                       alt="Preview Planos"
-                       (error)="onImageError($event)">
-                </div>
-              }
-            </div>
-
-            <div class="form-actions">
-              <button type="button" class="btn-delete" (click)="eliminarAnimatronico()">
-                🗑️ Eliminar
-              </button>
-              <div class="form-actions-right">
-                <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
-                  Cancelar
-                </button>
-                <button type="button" class="btn-save" (click)="actualizarAnimatronico()">
-                  Actualizar
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  }
-

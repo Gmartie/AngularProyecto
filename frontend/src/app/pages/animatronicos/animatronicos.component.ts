@@ -1,3 +1,12 @@
+/**
+ * COMPONENTE: AnimatronicosComponent - VERSIÓN CON CONTROL DE PERMISOS
+ * 
+ * Gestión de animatrónicos con permisos según rol:
+ * - id_rol = 1 (Propietario): Solo VER
+ * - id_rol = 2 (Técnico): CRUD completo
+ * - id_rol = 3,4,5 (Guardia/Empleado/Cocinero): Solo VER
+ */
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -5,6 +14,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '../../services/window.service';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { AnimatronicosService } from '../../services/animatronicos.service';
+import { PermisosService } from '../../services/permisos.service';  // NUEVO
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
 
@@ -40,6 +50,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
   
+  // NUEVO: Variables de control de permisos
+  puedeEditar: boolean = false;
+  puedeCrear: boolean = false;
+  puedeEliminar: boolean = false;
+  soloLectura: boolean = false;
+  
   // Control de ventana
   isMinimized: boolean = false;
   isMaximized: boolean = false;
@@ -62,7 +78,8 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     private windowService: WindowService,
     private router: Router,
     private authService: AuthService,
-    private animatronicosService: AnimatronicosService
+    private animatronicosService: AnimatronicosService,
+    private permisosService: PermisosService  // NUEVO
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +90,8 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
       if (usuario) {
+        // NUEVO: Configurar permisos
+        this.configurarPermisos();
         this.cargarTiposAnimatronicos();
         this.cargarAnimatronicos();
       }
@@ -94,8 +113,27 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * NUEVO: Configura los permisos del usuario actual
+   */
+  private configurarPermisos(): void {
+    this.puedeEditar = this.permisosService.puedeEditarAnimatronicos();
+    this.puedeCrear = this.permisosService.puedeCrearAnimatronicos();
+    this.puedeEliminar = this.permisosService.puedeEliminarAnimatronicos();
+    
+    // Si no puede editar ni crear ni eliminar, está en modo solo lectura
+    this.soloLectura = !this.puedeEditar && !this.puedeCrear && !this.puedeEliminar;
+    
+    console.log('Permisos configurados:', {
+      puedeEditar: this.puedeEditar,
+      puedeCrear: this.puedeCrear,
+      puedeEliminar: this.puedeEliminar,
+      soloLectura: this.soloLectura,
+      rol: this.permisosService.obtenerNombreRol()
+    });
+  }
+
   cargarTiposAnimatronicos(): void {
-    // ⭐ CAMBIO: Ahora usa obtenerTipos() sin parámetros
     this.animatronicosService.obtenerTipos().subscribe({
       next: (tipos) => {
         this.tiposAnimatronicos = tipos;
@@ -108,8 +146,6 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   cargarAnimatronicos(): void {
-    // ⭐ CAMBIO: Ahora usa obtenerTodos() sin parámetros
-    // El backend filtra automáticamente por id_local del usuario autenticado
     this.animatronicosService.obtenerTodos().subscribe({
       next: (animatronicos) => {
         this.animatronicos = animatronicos;
@@ -123,6 +159,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   abrirFormularioNuevo(): void {
+    // NUEVO: Verificar permisos antes de abrir formulario
+    if (!this.puedeCrear) {
+      alert('No tienes permisos para crear nuevos animatrónicos.');
+      return;
+    }
+    
     this.mostrarFormularioNuevo = true;
     this.nuevoAnimatronico = {
       nombre: '',
@@ -158,6 +200,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   abrirFormularioEditar(animatronico: Animatronico): void {
+    // NUEVO: Verificar permisos antes de abrir formulario
+    if (!this.puedeEditar) {
+      alert('No tienes permisos para editar animatrónicos.');
+      return;
+    }
+    
     this.animatronicoEditando = {...animatronico};
     this.mostrarFormularioEditar = true;
   }
@@ -191,6 +239,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   eliminarAnimatronico(): void {
     if (!this.animatronicoEditando) return;
     
+    // NUEVO: Verificar permisos antes de eliminar
+    if (!this.puedeEliminar) {
+      alert('No tienes permisos para eliminar animatrónicos.');
+      return;
+    }
+    
     if (!confirm(`¿Estás seguro de que deseas eliminar a ${this.animatronicoEditando.nombre}?`)) {
       return;
     }
@@ -214,28 +268,18 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     return this.tiposAnimatronicos.find(t => t.id === id_gama)?.nombre || 'Desconocido';
   }
 
-  /**
-   * ⭐ CAMBIO: Ahora usa rutas absolutas con /FNaF_Profile/
-   */
   obtenerRutaFoto(nombreFoto: string): string {
-    if (!nombreFoto) return '/FNaF_Profile/freddy_clasico.jpg'; // Imagen por defecto
+    if (!nombreFoto) return '/FNaF_Profile/freddy_clasico.jpg';
     return `/FNaF_Profile/${nombreFoto}`;
   }
 
-  /**
-   * ⭐ CAMBIO: Ahora usa rutas absolutas con /FNAF_Blueprints/
-   */
   obtenerRutaPlanos(nombrePlanos: string): string {
-    if (!nombrePlanos) return '/FNAF_Blueprints/freddy_clasico_planos.png'; // Planos por defecto
+    if (!nombrePlanos) return '/FNAF_Blueprints/freddy_clasico_planos.png';
     return `/FNAF_Blueprints/${nombrePlanos}`;
   }
 
-  /**
-   * Maneja errores de carga de imágenes
-   */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
-    // Si falla la imagen, usar la de Freddy clásico como fallback
     if (target.src.includes('FNaF_Profile')) {
       target.src = '/FNaF_Profile/freddy_clasico.jpg';
     } else {
@@ -243,9 +287,6 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Maneja la selección de archivos de imagen
-   */
   onFileSelected(event: any, tipo: 'foto' | 'planos', esNuevo: boolean = true): void {
     const file = event.target.files[0];
     if (file) {
@@ -267,32 +308,20 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Cierra la ventana y vuelve a home2
-   */
   cerrarVentana(): void {
     this.windowService.closeWindow('animatronicos');
     this.router.navigate(['/home2']);
   }
 
-  /**
-   * Minimiza la ventana
-   */
   minimizarVentana(): void {
     this.windowService.minimizeWindow('animatronicos');
     this.router.navigate(['/home2']);
   }
 
-  /**
-   * Maximiza/restaura la ventana
-   */
   toggleMaximizar(): void {
     this.windowService.toggleMaximize('animatronicos');
   }
 
-  /**
-   * Restaura una ventana desde la taskbar
-   */
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
     const window = this.windowService.getWindow(windowId);
@@ -301,18 +330,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Cierra sesión desde la taskbar
-   */
   cerrarSesion(): void {
     this.windowService.closeAllWindows();
     this.authService.logout();
     this.router.navigate(['/home']);
   }
 
-  /**
-   * Obtiene la hora actual para la taskbar
-   */
   getHoraActual(): string {
     const ahora = new Date();
     return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });

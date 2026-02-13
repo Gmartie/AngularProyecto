@@ -29,20 +29,52 @@ class AnimatronicosController {
 
   async create(req, res) {
     try {
-      const anima = await AnimatronicoService.create(req.body);
+      // Obtener id_local del usuario autenticado
+      const id_local = req.user?.id_local;
+      
+      // Preparar datos del animatrónico
+      const data = {
+        nombre: req.body.nombre,
+        reconocimiento: req.body.reconocimiento === 'true' || req.body.reconocimiento === true,
+        num_piezas: parseInt(req.body.num_piezas),
+        foto: req.files?.foto ? req.files.foto[0].filename : 'freddy_clasico.jpg',
+        planos: req.files?.planos ? req.files.planos[0].filename : 'freddy_clasico_planos.png'
+      };
+
+      console.log('Datos a crear:', data);
+      console.log('Archivos recibidos:', req.files);
+      
+      const anima = await AnimatronicoService.create(data, id_local);
       const response = AnimatronicoDTO.toResponse(anima);
       return ResponseUtil.created(res, response, 'Animatrónico creado exitosamente');
     } catch (error) {
+      console.error('Error en create controller:', error);
       return ResponseUtil.error(res, error.message, error.statusCode || 500);
     }
   }
 
   async update(req, res) {
     try {
-      const anima = await AnimatronicoService.update(req.params.id, req.body);
+      // Obtener el animatrónico actual para mantener los valores si no se suben nuevos archivos
+      const animaActual = await AnimatronicoService.getById(req.params.id);
+      
+      // Preparar datos del animatrónico
+      const data = {
+        nombre: req.body.nombre,
+        reconocimiento: req.body.reconocimiento === 'true' || req.body.reconocimiento === true,
+        num_piezas: parseInt(req.body.num_piezas),
+        foto: req.files?.foto ? req.files.foto[0].filename : (req.body.foto || animaActual.foto),
+        planos: req.files?.planos ? req.files.planos[0].filename : (req.body.planos || animaActual.planos)
+      };
+
+      console.log('Datos a actualizar:', data);
+      console.log('Archivos recibidos:', req.files);
+      
+      const anima = await AnimatronicoService.update(req.params.id, data);
       const response = AnimatronicoDTO.toResponse(anima);
       return ResponseUtil.success(res, response, 'Animatrónico actualizado exitosamente');
     } catch (error) {
+      console.error('Error en update controller:', error);
       return ResponseUtil.error(res, error.message, error.statusCode || 500);
     }
   }

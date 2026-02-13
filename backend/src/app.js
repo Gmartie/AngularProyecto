@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
+const path = require('path');
 
 // Importación de routes reales
 const authRoutes = require('./routes/auth.routes');
@@ -14,12 +15,32 @@ const tiposAnimatronicosRoutes = require('./routes/tiposanimatronicos.routes');
 
 const app = express();
 
-app.use(helmet());
-app.use(cors());
+// Configuración de CORS más permisiva para desarrollo
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true
+}));
+
+// Helmet con configuración para permitir carga de imágenes
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
 app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ⭐ NUEVO: Servir archivos estáticos desde la carpeta public del frontend
+// Esto permite que las imágenes se sirvan sin necesidad de refrescar
+const publicPath = path.join(__dirname, '../../frontend/public');
+console.log('📁 Sirviendo archivos estáticos desde:', publicPath);
+
+app.use('/FNaF_Profile', express.static(path.join(publicPath, 'FNaF_Profile')));
+app.use('/FNAF_Blueprints', express.static(path.join(publicPath, 'FNAF_Blueprints')));
+app.use('/FNaF_Icons', express.static(path.join(publicPath, 'FNaF_Icons')));
+app.use('/Icons', express.static(path.join(publicPath, 'Icons')));
+app.use('/Helpy', express.static(path.join(publicPath, 'Helpy')));
 
 // Uso de routes
 app.use('/api/auth', authRoutes);

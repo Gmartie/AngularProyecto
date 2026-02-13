@@ -50,6 +50,12 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
   
+  // Archivos para subir
+  fotoNuevoFile: File | null = null;
+  planosNuevoFile: File | null = null;
+  fotoEditFile: File | null = null;
+  planosEditFile: File | null = null;
+  
   // NUEVO: Variables de control de permisos
   puedeEditar: boolean = false;
   puedeCrear: boolean = false;
@@ -186,11 +192,28 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.animatronicosService.crear(this.nuevoAnimatronico).subscribe({
+    // Crear FormData para enviar archivos
+    const formData = new FormData();
+    formData.append('nombre', this.nuevoAnimatronico.nombre);
+    formData.append('reconocimiento', this.nuevoAnimatronico.reconocimiento.toString());
+    formData.append('num_piezas', this.nuevoAnimatronico.num_piezas.toString());
+    
+    // Agregar archivos si fueron seleccionados
+    if (this.fotoNuevoFile) {
+      formData.append('foto', this.fotoNuevoFile);
+    }
+    if (this.planosNuevoFile) {
+      formData.append('planos', this.planosNuevoFile);
+    }
+
+    this.animatronicosService.crearConArchivos(formData).subscribe({
       next: (response) => {
         console.log('Animatrónico creado:', response);
         this.cargarAnimatronicos();
         this.cerrarFormularioNuevo();
+        // Limpiar archivos
+        this.fotoNuevoFile = null;
+        this.planosNuevoFile = null;
       },
       error: (error) => {
         console.error('Error al crear animatrónico:', error);
@@ -223,11 +246,33 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.animatronicosService.actualizar(this.animatronicoEditando).subscribe({
+    // Crear FormData para enviar archivos
+    const formData = new FormData();
+    formData.append('nombre', this.animatronicoEditando.nombre);
+    formData.append('reconocimiento', this.animatronicoEditando.reconocimiento.toString());
+    formData.append('num_piezas', this.animatronicoEditando.num_piezas.toString());
+    
+    // Solo agregar archivos si fueron seleccionados nuevos
+    if (this.fotoEditFile) {
+      formData.append('foto', this.fotoEditFile);
+    } else if (this.animatronicoEditando.foto) {
+      formData.append('foto', this.animatronicoEditando.foto);
+    }
+    
+    if (this.planosEditFile) {
+      formData.append('planos', this.planosEditFile);
+    } else if (this.animatronicoEditando.planos) {
+      formData.append('planos', this.animatronicoEditando.planos);
+    }
+
+    this.animatronicosService.actualizarConArchivos(this.animatronicoEditando.id!, formData).subscribe({
       next: (response) => {
         console.log('Animatrónico actualizado:', response);
         this.cargarAnimatronicos();
         this.cerrarFormularioEditar();
+        // Limpiar archivos
+        this.fotoEditFile = null;
+        this.planosEditFile = null;
       },
       error: (error) => {
         console.error('Error al actualizar animatrónico:', error);
@@ -269,40 +314,43 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   }
 
   obtenerRutaFoto(nombreFoto: string): string {
-    if (!nombreFoto) return '/FNaF_Profile/freddy_clasico.jpg';
-    return `/FNaF_Profile/${nombreFoto}`;
-  }
+  if (!nombreFoto) return 'http://localhost:3000/FNaF_Profile/freddy_clasico.jpg';
+  return `http://localhost:3000/FNaF_Profile/${nombreFoto}`;
+}
 
-  obtenerRutaPlanos(nombrePlanos: string): string {
-    if (!nombrePlanos) return '/FNAF_Blueprints/freddy_clasico_planos.png';
-    return `/FNAF_Blueprints/${nombrePlanos}`;
-  }
+obtenerRutaPlanos(nombrePlanos: string): string {
+  if (!nombrePlanos) return 'http://localhost:3000/FNAF_Blueprints/freddy_clasico_planos.png';
+  return `http://localhost:3000/FNAF_Blueprints/${nombrePlanos}`;
+}
 
-  onImageError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    if (target.src.includes('FNaF_Profile')) {
-      target.src = '/FNaF_Profile/freddy_clasico.jpg';
-    } else {
-      target.src = '/FNAF_Blueprints/freddy_clasico_planos.png';
-    }
+onImageError(event: Event): void {
+  const target = event.target as HTMLImageElement;
+  if (target.src.includes('FNaF_Profile')) {
+    target.src = 'http://localhost:3000/FNaF_Profile/freddy_clasico.jpg';
+  } else {
+    target.src = 'http://localhost:3000/FNAF_Blueprints/freddy_clasico_planos.png';
   }
+}
+
 
   onFileSelected(event: any, tipo: 'foto' | 'planos', esNuevo: boolean = true): void {
     const file = event.target.files[0];
     if (file) {
-      const fileName = file.name;
-      
       if (esNuevo) {
         if (tipo === 'foto') {
-          this.nuevoAnimatronico.foto = fileName;
+          this.nuevoAnimatronico.foto = file.name;
+          this.fotoNuevoFile = file;
         } else {
-          this.nuevoAnimatronico.planos = fileName;
+          this.nuevoAnimatronico.planos = file.name;
+          this.planosNuevoFile = file;
         }
       } else if (this.animatronicoEditando) {
         if (tipo === 'foto') {
-          this.animatronicoEditando.foto = fileName;
+          this.animatronicoEditando.foto = file.name;
+          this.fotoEditFile = file;
         } else {
-          this.animatronicoEditando.planos = fileName;
+          this.animatronicoEditando.planos = file.name;
+          this.planosEditFile = file;
         }
       }
     }

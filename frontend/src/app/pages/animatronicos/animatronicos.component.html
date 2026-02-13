@@ -118,17 +118,7 @@
             class="form-input">
         </div>
 
-        <div class="form-group">
-          <label for="nuevo-tipo">Tipo *</label>
-          <select 
-            id="nuevo-tipo"
-            [(ngModel)]="nuevoAnimatronico.id_gama" 
-            class="form-input">
-            @for (tipo of tiposAnimatronicos; track tipo.id) {
-              <option [value]="tipo.id">{{ tipo.nombre }}</option>
-            }
-          </select>
-        </div>
+        <!-- El tipo se asigna automáticamente según el local del usuario -->
 
         <div class="form-group">
           <label for="nuevo-piezas">Número de Piezas *</label>
@@ -200,16 +190,16 @@
             class="form-input">
         </div>
 
+        <!-- El tipo NO se puede modificar - es fijo según el local -->
         <div class="form-group">
-          <label for="edit-tipo">Tipo *</label>
-          <select 
-            id="edit-tipo"
-            [(ngModel)]="animatronicoEditando.id_gama" 
-            class="form-input">
-            @for (tipo of tiposAnimatronicos; track tipo.id) {
-              <option [value]="tipo.id">{{ tipo.nombre }}</option>
-            }
-          </select>
+          <label>Tipo (fijo)</label>
+          <input 
+            type="text" 
+            [value]="obtenerNombreGama(animatronicoEditando.id_gama)"
+            class="form-input"
+            disabled
+            readonly>
+          <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
         </div>
 
         <div class="form-group">

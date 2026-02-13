@@ -9,26 +9,24 @@ const crearAnimatronicosValidator = [
     .withMessage('El nombre no puede superar 255 caracteres'),
 
   body('reconocimiento')
-    .isBoolean()
+    .optional()
+    .isIn(['true', 'false', true, false])
     .withMessage('El reconocimiento debe ser true o false'),
 
   body('num_piezas')
-    .isInt({ min: 1 })
-    .withMessage('El número de piezas debe ser un entero positivo'),
-
-  body('id_gama')
-    .isInt({ min: 1 })
-    .withMessage('El id_gama debe ser un entero válido'),
-
-  body('planos')
-    .trim()
     .notEmpty()
-    .withMessage('Los planos son obligatorios'),
+    .withMessage('El número de piezas es obligatorio')
+    .isNumeric()
+    .withMessage('El número de piezas debe ser un número')
+    .custom((value) => {
+      if (parseInt(value) < 1) {
+        throw new Error('El número de piezas debe ser mayor a 0');
+      }
+      return true;
+    })
 
-  body('foto')
-    .trim()
-    .notEmpty()
-    .withMessage('La foto es obligatoria')
+  // NO validamos id_gama porque se calcula automáticamente en el backend
+  // NO validamos foto ni planos porque vienen en req.files, no en req.body
 ];
 
 module.exports = { crearAnimatronicosValidator };

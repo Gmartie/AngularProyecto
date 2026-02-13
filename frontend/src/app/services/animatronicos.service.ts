@@ -67,12 +67,32 @@ export class AnimatronicosService {
   }
 
   /**
+   * Crea un nuevo animatrónico con archivos
+   */
+  crearConArchivos(formData: FormData): Observable<ApiResponse<Animatronico>> {
+    return this.http.post<ApiResponse<Animatronico>>(
+      `${this.apiUrl}/animatronicos`,
+      formData
+    );
+  }
+
+  /**
    * Actualiza un animatrónico existente
    */
   actualizar(animatronico: Animatronico): Observable<ApiResponse<Animatronico>> {
     return this.http.put<ApiResponse<Animatronico>>(
       `${this.apiUrl}/animatronicos/${animatronico.id}`,
       animatronico
+    );
+  }
+
+  /**
+   * Actualiza un animatrónico existente con archivos
+   */
+  actualizarConArchivos(id: number, formData: FormData): Observable<ApiResponse<Animatronico>> {
+    return this.http.put<ApiResponse<Animatronico>>(
+      `${this.apiUrl}/animatronicos/${id}`,
+      formData
     );
   }
 

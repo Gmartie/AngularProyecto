@@ -366,6 +366,56 @@
   /*object-fit: cover;*/
 }
 
+/* ===== HELPY EN EL ESCRITORIO ===== */
+.helpy-desktop {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 200px;
+  pointer-events: none;
+  z-index: 2; /* Encima del escritorio pero debajo de ventanas */
+}
+
+.helpy-desktop-img {
+  width: 120px;
+  display: block;
+  margin-left: auto;
+  animation: helpyFloat 2s ease-in-out infinite;
+}
+
+.helpy-bubble-desktop {
+  position: absolute;
+  top: -80px;
+  left: -90px;
+  width: 220px;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 18px 20px;
+  box-sizing: border-box;
+}
+
+.helpy-bubble-desktop span {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.3;
+}
+
+@keyframes helpyFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
 /* Acciones del formulario */
 .form-actions {
   display: flex;

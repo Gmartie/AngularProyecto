@@ -60,6 +60,7 @@
   height: 28px;
   cursor: move;
   user-select: none;
+  position: relative; /* Añadido para posicionar a Helpy */
 }
 
 .window-title {
@@ -75,6 +76,34 @@
   width: 16px;
   height: 16px;
   object-fit: contain;
+}
+
+/* Helpy en la esquina superior derecha de la ventana */
+.helpy-hanging {
+  position: absolute;
+  top: -60px; /* Sobresale mucho más arriba de la barra */
+  right: -90px; /* En la esquina derecha de la ventana */
+  z-index: 10;
+  pointer-events: none; /* No interfiere con clics */
+}
+
+.helpy-hanging img {
+  width: 150px; /* Más grande */
+  height: auto;
+  display: block;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6)); /* Sombra más pronunciada */
+}
+
+/* Ajuste responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .helpy-hanging {
+    right: -15px;
+    top: -60px;
+  }
+  
+  .helpy-hanging img {
+    width: 80px; /* Tamaño más pequeño en móviles */
+  }
 }
 
 .window-controls {

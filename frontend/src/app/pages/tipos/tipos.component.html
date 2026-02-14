@@ -36,9 +36,6 @@
 
               <div class="card-info">
                 <h3 class="tipo-nombre">{{ tipo.nombre }}</h3>
-                <p class="tipo-local">
-                  <strong>Restaurante:</strong> {{ obtenerNombreLocal(tipo.id_local) }}
-                </p>
               </div>
 
               <div class="card-actions">
@@ -136,20 +133,6 @@
                    required>
           </div>
 
-          <div class="form-group">
-            <label for="nuevo-local">Restaurante *:</label>
-            <select id="nuevo-local" 
-                    [(ngModel)]="nuevoTipo.id_local"
-                    name="id_local"
-                    required>
-              @for (local of locales; track local.id) {
-                <option [value]="local.id">
-                  {{ local.ciudad }} - {{ local.direccion }}
-                </option>
-              }
-            </select>
-          </div>
-
           <div class="form-actions">
             <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
               Cancelar
@@ -183,20 +166,6 @@
                    [(ngModel)]="tipoEditando.nombre"
                    name="nombre"
                    required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-local">Restaurante *:</label>
-            <select id="edit-local" 
-                    [(ngModel)]="tipoEditando.id_local"
-                    name="id_local"
-                    required>
-              @for (local of locales; track local.id) {
-                <option [value]="local.id">
-                  {{ local.ciudad }} - {{ local.direccion }}
-                </option>
-              }
-            </select>
           </div>
 
           <div class="form-actions">

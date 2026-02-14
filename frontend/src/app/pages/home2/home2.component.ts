@@ -135,6 +135,15 @@ export class Home2Component implements OnInit {
         rolesPermitidos: [6], // Solo Administrador Master
         funcional: true
       },
+      {
+        id: 'animatronico-local',
+        nombre: 'Asignaciones',
+        icono: '/Icons/delivery_box.png',
+        ruta: '/animatronico-local',
+        descripcion: 'Gestión de Asignaciones',
+        rolesPermitidos: [6], // Solo Administrador Master
+        funcional: true
+      },
       
       // PROGRAMAS DECORATIVOS (visibles para todos)
       {

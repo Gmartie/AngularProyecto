@@ -51,8 +51,7 @@ export class TiposComponent implements OnInit, OnDestroy {
   ventanasAbiertas$!: Observable<Window[]>;
   
   nuevoTipo: Partial<TipoAnimatronico> = {
-    nombre: '',
-    id_local: 1
+    nombre: ''
   };
 
   constructor(
@@ -129,43 +128,18 @@ export class TiposComponent implements OnInit, OnDestroy {
   cargarTipos(): void {
     console.log('');
     console.log('═══════════════════════════════════════════════════════');
-    console.log(' CARGANDO TIPOS DE ANIMATRÓNICOS');
+    console.log('📦 CARGANDO TIPOS DE ANIMATRÓNICOS');
     console.log('═══════════════════════════════════════════════════════');
-    console.log('Usuario actual:', this.usuario);
-    console.log('ID Local del usuario:', this.usuario?.id_local);
     
     this.tiposService.obtenerTodos().subscribe({
       next: (tipos) => {
-        console.log('');
-        console.log('📥 Tipos recibidos (ya procesados por el servicio):');
-        console.log('  - Es un array?', Array.isArray(tipos));
-        console.log('  - Cantidad:', tipos.length);
-        console.log('  - Datos:', tipos);
-        
-        // Filtrar solo los tipos del local del usuario
-        if (this.usuario && this.usuario.id_local !== undefined && this.usuario.id_local !== null) {
-          console.log('');
-          console.log(' Filtrando por local:', this.usuario.id_local);
-          
-          this.tipos = tipos.filter(tipo => {
-            const match = tipo.id_local === this.usuario!.id_local;
-            console.log(`  Tipo "${tipo.nombre}" (local ${tipo.id_local}) → ${match ? '✅' : '❌'}`);
-            return match;
-          });
-          
-          console.log('');
-          console.log('Tipos filtrados:', this.tipos.length);
-          console.log(' Array final this.tipos:', this.tipos);
-        } else {
-          console.warn(' Usuario no tiene id_local, mostrando todos');
-          this.tipos = tipos;
-        }
-        
+        console.log('📥 Tipos recibidos:', tipos);
+        this.tipos = tipos;
+        console.log('✅ Tipos cargados:', this.tipos.length);
         console.log('═══════════════════════════════════════════════════════');
-        console.log('');
       },
       error: (error) => {
-        console.error(' Error al cargar tipos:', error);
+        console.error('❌ Error al cargar tipos:', error);
         this.tipos = [];
       }
     });
@@ -179,11 +153,8 @@ export class TiposComponent implements OnInit, OnDestroy {
     }
     
     this.mostrarFormularioNuevo = true;
-    // Si el usuario tiene un local asignado, usarlo por defecto
-    const localPorDefecto = this.usuario?.id_local || (this.locales.length > 0 ? this.locales[0].id : 1);
     this.nuevoTipo = {
-      nombre: '',
-      id_local: localPorDefecto
+      nombre: ''
     };
   }
 
@@ -192,7 +163,7 @@ export class TiposComponent implements OnInit, OnDestroy {
   }
 
   guardarNuevo(): void {
-    if (!this.nuevoTipo.nombre || !this.nuevoTipo.id_local) {
+    if (!this.nuevoTipo.nombre) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
@@ -229,7 +200,7 @@ export class TiposComponent implements OnInit, OnDestroy {
   actualizarTipo(): void {
     if (!this.tipoEditando || !this.tipoEditando.id) return;
 
-    if (!this.tipoEditando.nombre || !this.tipoEditando.id_local) {
+    if (!this.tipoEditando.nombre) {
       alert('Por favor completa todos los campos obligatorios');
       return;
     }
@@ -271,11 +242,6 @@ export class TiposComponent implements OnInit, OnDestroy {
         alert('Error al eliminar el tipo. Verifica la conexión con el servidor.');
       }
     });
-  }
-
-  obtenerNombreLocal(id_local: number): string {
-    const local = this.locales.find(l => l.id === id_local);
-    return local ? `${local.ciudad} - ${local.direccion}` : 'Desconocido';
   }
 
   /**

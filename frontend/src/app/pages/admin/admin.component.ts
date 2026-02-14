@@ -95,6 +95,17 @@ export class AdminComponent implements OnInit, OnDestroy {
       }
     },
     {
+      id: 'animatronico-local',
+      titulo: 'Asignación de Animatrónicos',
+      icono: '📦',
+      descripcion: 'Gestionar asignaciones de animatrónicos a locales',
+      ruta: '/animatronico-local',
+      estadisticas: {
+        label: 'Asignaciones activas',
+        valor: 18
+      }
+    },
+    {
       id: 'reportes',
       titulo: 'Reportes y Estadísticas',
       icono: '📊',

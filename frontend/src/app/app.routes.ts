@@ -62,6 +62,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'animatronico-local',
+    loadComponent: () =>
+      import('./pages/animatronico-local/animatronico-local.component')
+        .then(m => m.AnimatronicoLocalComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'perfil',
     loadComponent: () =>
       import('./pages/perfil/perfil.component')

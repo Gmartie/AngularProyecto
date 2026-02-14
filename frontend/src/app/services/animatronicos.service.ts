@@ -2,17 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-interface Animatronico {
-  id?: number;
-  nombre: string;
-  reconocimiento: boolean;
-  num_piezas: number;
-  id_gama: number;
-  nombre_gama?: string;
-  planos: string;
-  foto: string;
-}
+import { Animatronico } from '../models/animatronico.model';
 
 interface TipoAnimatronico {
   id: number;

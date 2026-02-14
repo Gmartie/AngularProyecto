@@ -245,18 +245,21 @@ export class TiposComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene el icono de animatrónico según el id_local del usuario
-   * Usa la misma lógica que en home2 para mantener consistencia visual
+   * Obtiene el icono de animatrónico según el nombre del tipo
    */
-  obtenerIconoAnimatronicos(): string {
-    const idLocal = this.usuario?.id_local;
+  obtenerIconoPorTipo(nombreTipo: string): string {
+    const nombreLower = nombreTipo.toLowerCase();
     
-    switch (idLocal) {
-      case 1: return '/Icons/w_freddy_icon.png';
-      case 2: return '/Icons/t_freddy_icon.png';
-      case 3: return '/Icons/f_freddy_icon.png';
-      case 4:
-      default: return '/Icons/freddy_icon.png';
+    if (nombreLower.includes('unwithered') || nombreLower.includes('withered')) {
+      return '/Icons/w_freddy_icon.png';
+    } else if (nombreLower.includes('toy')) {
+      return '/Icons/t_freddy_icon.png';
+    } else if (nombreLower.includes('funtime')) {
+      return '/Icons/f_freddy_icon.png';
+    } else if (nombreLower.includes('clásico') || nombreLower.includes('clasico')) {
+      return '/Icons/freddy_icon.png';
+    } else {
+      return '/Icons/freddy_icon.png'; // Default
     }
   }
 

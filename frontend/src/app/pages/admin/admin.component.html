@@ -48,7 +48,7 @@
               (click)="navegarSeccion(seccion)"
             >
               <div class="card-header">
-                <span class="card-icon">{{ seccion.icono }}</span>
+                <img [src]="seccion.icono" [alt]="seccion.titulo" class="card-icon-img">
                 <h3>{{ seccion.titulo }}</h3>
               </div>
               

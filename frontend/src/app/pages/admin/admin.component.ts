@@ -5,7 +5,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService, Window } from '../../services/window.service';
@@ -25,7 +25,7 @@ interface SeccionAdmin {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -42,7 +42,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'usuarios',
       titulo: 'Gestión de Usuarios',
-      icono: '👥',
+      icono: '/Icons/profile_icon.png',
       descripcion: 'Administrar usuarios del sistema',
       ruta: '/usuario',
       estadisticas: {
@@ -53,7 +53,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'roles',
       titulo: 'Gestión de Roles',
-      icono: '🔐',
+      icono: '/Icons/springlock_icon.png',
       descripcion: 'Configurar roles y permisos',
       ruta: '/roles',
       estadisticas: {
@@ -64,7 +64,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'animatronicos',
       titulo: 'Todos los Animatrónicos',
-      icono: '🤖',
+      icono: '/Icons/freddy_icon.png',
       descripcion: 'Ver todos los animatrónicos del sistema',
       ruta: '/animatronicos',
       estadisticas: {
@@ -75,7 +75,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'locales',
       titulo: 'Todos los Locales',
-      icono: '🏢',
+      icono: '/Icons/restaurant_icon.png',
       descripcion: 'Gestionar todos los locales',
       ruta: '/locales',
       estadisticas: {
@@ -86,7 +86,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'tipos',
       titulo: 'Tipos de Animatrónicos',
-      icono: '📋',
+      icono: '/Icons/files_icon.png',
       descripcion: 'Administrar tipos y gamas',
       ruta: '/tipos',
       estadisticas: {
@@ -97,7 +97,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     {
       id: 'animatronico-local',
       titulo: 'Asignación de Animatrónicos',
-      icono: '📦',
+      icono: '/Icons/delivery_box.png',
       descripcion: 'Gestionar asignaciones de animatrónicos a locales',
       ruta: '/animatronico-local',
       estadisticas: {

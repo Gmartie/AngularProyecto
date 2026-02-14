@@ -28,8 +28,56 @@
       <!-- Contenido de la ventana -->
       <div class="window-content">
         
-        <!-- Toolbar con información del modo -->
-        @if (localUsuario) {
+        <!-- MODO ADMINISTRADOR: Mostrar todos los locales -->
+        @if (esAdministrador && todosLosLocales.length > 0) {
+          <div class="toolbar">
+            <div class="info-badge">
+              <span class="badge-icon">🔑</span>
+              <span>Modo Administrador - Todos los locales</span>
+            </div>
+          </div>
+
+          <div class="locales-list">
+            @for (local of todosLosLocales; track local.id) {
+              <div class="local-card-compact" (click)="abrirFormularioEditar(local)">
+                <div class="card-image-compact">
+                  <img [src]="obtenerRutaFoto(local.foto)"
+                    [alt]="local.ciudad"
+                    (error)="onImageError($event)">
+                </div>
+
+                <div class="card-info-compact">
+                  <h3 class="local-titulo-compact">{{ local.ciudad }}</h3>
+                  <p class="local-direccion">{{ local.direccion }}</p>
+                  <div class="local-stats">
+                    <span class="stat-item">👥 {{ local.aforo }}</span>
+                    <span class="stat-item">📅 {{ formatearFecha(local.fecha_apertura) }}</span>
+                    <span [class.badge-abierto]="local.abierto" 
+                          [class.badge-cerrado]="!local.abierto"
+                          class="stat-badge">
+                      {{ local.abierto ? '🔓 Abierto' : '🔒 Cerrado' }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="card-actions-compact">
+                  <button class="btn-edit-compact">✏️</button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Mensaje si admin no tiene locales -->
+        @if (esAdministrador && todosLosLocales.length === 0) {
+          <div class="empty-state">
+            <img src="/FNaF_Icons/fazbearInc.png" alt="No hay locales" class="empty-icon">
+            <p>No hay locales registrados en el sistema</p>
+          </div>
+        }
+        
+        <!-- MODO USUARIO NORMAL: Toolbar con información del modo -->
+        @if (!esAdministrador && localUsuario) {
           <div class="toolbar">
             @if (puedeEditar) {
               <div class="info-badge">
@@ -45,8 +93,8 @@
           </div>
         }
 
-        <!-- Mostrar el local del usuario -->
-        @if (localUsuario) {
+        <!-- MODO USUARIO NORMAL: Mostrar el local del usuario -->
+        @if (!esAdministrador && localUsuario) {
           <div class="local-card">
             <div class="card-image">
               <img [src]="obtenerRutaFoto(localUsuario.foto)"

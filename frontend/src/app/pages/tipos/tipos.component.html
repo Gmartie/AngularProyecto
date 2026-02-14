@@ -31,7 +31,7 @@
           @for (tipo of tipos; track tipo.id) {
             <div class="tipo-card">
               <div class="card-icon">
-                <img [src]="obtenerIconoAnimatronicos()" alt="Animatrónico" style="width: 100%; height: 100%; object-fit: contain;">
+                <img [src]="obtenerIconoPorTipo(tipo.nombre)" alt="Animatrónico" style="width: 100%; height: 100%; object-fit: contain;">
               </div>
 
               <div class="card-info">

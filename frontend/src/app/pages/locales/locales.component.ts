@@ -30,6 +30,10 @@ export class LocalesComponent implements OnInit, OnDestroy {
   
   // El local donde trabaja el usuario
   localUsuario: Local | null = null;
+  // NUEVO: Todos los locales (para administradores)
+  todosLosLocales: Local[] = [];
+  esAdministrador: boolean = false;
+  
   localEditando: Local | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
@@ -107,15 +111,25 @@ export class LocalesComponent implements OnInit, OnDestroy {
     this.puedeEditar = this.permisosService.puedeEditarLocales();
     this.soloLectura = !this.puedeEditar;
     
+    // Verificar si es administrador (rol 6)
+    this.esAdministrador = this.usuario?.id_rol === 6;
+    
     console.log('Permisos de Locales configurados:', {
       puedeEditar: this.puedeEditar,
       soloLectura: this.soloLectura,
+      esAdministrador: this.esAdministrador,
       rol: this.permisosService.obtenerNombreRol()
     });
   }
 
   cargarLocalUsuario(): void {
     console.log('Usuario actual:', this.usuario);
+    
+    // Si es administrador, cargar TODOS los locales
+    if (this.esAdministrador) {
+      this.cargarTodosLosLocales();
+      return;
+    }
     
     // Verificar que el usuario existe y tiene un id_local válido (mayor que 0)
     if (!this.usuario || this.usuario.id_local === undefined || this.usuario.id_local === null || this.usuario.id_local === 0) {
@@ -136,6 +150,25 @@ export class LocalesComponent implements OnInit, OnDestroy {
         console.error('Error al cargar el local:', error);
         console.error('Detalles del error:', error.message || error);
         this.localUsuario = null;
+      }
+    });
+  }
+
+  /**
+   * NUEVO: Carga todos los locales (solo para administradores)
+   */
+  cargarTodosLosLocales(): void {
+    console.log('🔑 Cargando TODOS los locales (modo administrador)');
+    
+    this.localesService.obtenerTodos().subscribe({
+      next: (locales) => {
+        this.todosLosLocales = locales;
+        console.log('✅ Todos los locales cargados:', locales.length, 'locales');
+        console.log('Locales:', locales);
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar todos los locales:', error);
+        this.todosLosLocales = [];
       }
     });
   }

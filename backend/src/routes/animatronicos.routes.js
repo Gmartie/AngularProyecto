@@ -31,4 +31,9 @@ router.put('/:id',
 );
 router.delete('/:id', authMiddleware, animatronicosController.delete);
 
+// ⭐ NUEVAS RUTAS: Para gestionar la tabla intermedia animatronico_local
+router.patch('/:id/estado', authMiddleware, animatronicosController.actualizarEstado);
+router.post('/:id/asignar-local', authMiddleware, animatronicosController.asignarALocal);
+router.delete('/:id/remover-local', authMiddleware, animatronicosController.removerDeLocal);
+
 module.exports = router;

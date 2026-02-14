@@ -32,7 +32,6 @@ interface Animatronico {
 interface TipoAnimatronico {
   id: number;
   nombre: string;
-  id_local: number;
 }
 
 @Component({

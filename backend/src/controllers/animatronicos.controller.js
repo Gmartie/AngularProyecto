@@ -87,6 +87,65 @@ class AnimatronicosController {
       return ResponseUtil.error(res, error.message, error.statusCode || 500);
     }
   }
+
+  /**
+   * ⭐ NUEVO: Actualiza el estado de un animatrónico en un local
+   */
+  async actualizarEstado(req, res) {
+    try {
+      const id_animatronico = req.params.id;
+      const id_local = req.user?.id_local;
+      const { estado } = req.body;
+
+      if (!estado) {
+        return ResponseUtil.error(res, 'El campo estado es requerido', 400);
+      }
+
+      const result = await AnimatronicoService.actualizarEstado(id_animatronico, id_local, estado);
+      return ResponseUtil.success(res, result, 'Estado actualizado exitosamente');
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, error.statusCode || 500);
+    }
+  }
+
+  /**
+   * ⭐ NUEVO: Asigna un animatrónico a un local
+   */
+  async asignarALocal(req, res) {
+    try {
+      const id_animatronico = req.params.id;
+      const { id_local, fecha_instalacion, estado } = req.body;
+
+      if (!id_local) {
+        return ResponseUtil.error(res, 'El campo id_local es requerido', 400);
+      }
+
+      const result = await AnimatronicoService.asignarALocal(
+        id_animatronico, 
+        id_local, 
+        fecha_instalacion, 
+        estado
+      );
+      return ResponseUtil.success(res, result, 'Animatrónico asignado al local exitosamente');
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, error.statusCode || 500);
+    }
+  }
+
+  /**
+   * ⭐ NUEVO: Remueve un animatrónico de un local
+   */
+  async removerDeLocal(req, res) {
+    try {
+      const id_animatronico = req.params.id;
+      const id_local = req.user?.id_local;
+
+      const result = await AnimatronicoService.removerDeLocal(id_animatronico, id_local);
+      return ResponseUtil.success(res, result, 'Animatrónico removido del local exitosamente');
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, error.statusCode || 500);
+    }
+  }
 }
 
 module.exports = new AnimatronicosController();

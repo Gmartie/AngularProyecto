@@ -15,12 +15,12 @@ class TiposAnimatronicosService {
   }
 
   async create(data) {
-    const { nombre, id_local } = data;
+    const { nombre } = data;
 
     const [result] = await pool.query(
-      `INSERT INTO tipos_animatronicos (nombre, id_local)
-       VALUES (?, ?)`,
-      [nombre, id_local]
+      `INSERT INTO tipos_animatronicos (nombre)
+       VALUES (?)`,
+      [nombre]
     );
 
     return this.getById(result.insertId);
@@ -33,7 +33,6 @@ class TiposAnimatronicosService {
     const values = [];
 
     if (data.nombre) updates.push('nombre = ?'), values.push(data.nombre);
-    if (data.id_local) updates.push('id_local = ?'), values.push(data.id_local);
 
     if (updates.length) {
       values.push(id);

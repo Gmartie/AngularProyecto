@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-02-2026 a las 10:40:59
+-- Tiempo de generación: 14-02-2026 a las 10:59:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,9 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `fazbear_entertaiment`
 --
-DROP DATABASE IF EXISTS fazbear_entertaiment;
-CREATE DATABASE fazbear_entertaiment;
-USE fazbear_entertaiment;
+
 -- --------------------------------------------------------
 
 --
@@ -62,6 +60,19 @@ INSERT INTO `animatronicos` (`id`, `nombre`, `reconocimiento`, `num_piezas`, `id
 (16, 'Funtime Freddy', 1, 135, 4, 'ft_freddy_planos.png', 'ft_freddy.jpg'),
 (17, 'Funtime Foxy', 1, 130, 4, 'ft_foxy_planos.png', 'ft_foxy.jpg'),
 (18, 'Ballora', 1, 125, 4, 'ballora_planos.png', 'ballora.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `animatronico_local`
+--
+
+CREATE TABLE `animatronico_local` (
+  `id_animatronico` int(11) NOT NULL,
+  `id_local` int(11) NOT NULL,
+  `fecha_instalacion` date DEFAULT NULL,
+  `estado` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -121,19 +132,18 @@ INSERT INTO `roles` (`id`, `rol`) VALUES
 
 CREATE TABLE `tipos_animatronicos` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `id_local` int(11) NOT NULL
+  `nombre` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipos_animatronicos`
 --
 
-INSERT INTO `tipos_animatronicos` (`id`, `nombre`, `id_local`) VALUES
-(1, 'Clásicos', 4),
-(2, 'Unwithered', 1),
-(3, 'Toys', 2),
-(4, 'Funtime', 3);
+INSERT INTO `tipos_animatronicos` (`id`, `nombre`) VALUES
+(1, 'Clásicos'),
+(2, 'Unwithered'),
+(3, 'Toys'),
+(4, 'Funtime');
 
 -- --------------------------------------------------------
 
@@ -188,6 +198,13 @@ ALTER TABLE `animatronicos`
   ADD KEY `id_gama` (`id_gama`);
 
 --
+-- Indices de la tabla `animatronico_local`
+--
+ALTER TABLE `animatronico_local`
+  ADD PRIMARY KEY (`id_animatronico`,`id_local`),
+  ADD KEY `id_local` (`id_local`);
+
+--
 -- Indices de la tabla `locales`
 --
 ALTER TABLE `locales`
@@ -204,8 +221,7 @@ ALTER TABLE `roles`
 -- Indices de la tabla `tipos_animatronicos`
 --
 ALTER TABLE `tipos_animatronicos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_local` (`id_local`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `usuario`
@@ -221,7 +237,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `animatronicos`
 --
 ALTER TABLE `animatronicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `locales`
@@ -258,16 +274,17 @@ ALTER TABLE `animatronicos`
   ADD CONSTRAINT `animatronicos_ibfk_1` FOREIGN KEY (`id_gama`) REFERENCES `tipos_animatronicos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `animatronico_local`
+--
+ALTER TABLE `animatronico_local`
+  ADD CONSTRAINT `animatronico_local_ibfk_1` FOREIGN KEY (`id_animatronico`) REFERENCES `animatronicos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `animatronico_local_ibfk_2` FOREIGN KEY (`id_local`) REFERENCES `locales` (`id`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `locales`
 --
 ALTER TABLE `locales`
   ADD CONSTRAINT `locales_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `tipos_animatronicos`
---
-ALTER TABLE `tipos_animatronicos`
-  ADD CONSTRAINT `tipos_animatronicos_ibfk_1` FOREIGN KEY (`id_local`) REFERENCES `locales` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,9 +1,179 @@
-<h2>Roles</h2>
+<!-- Ventana flotante de gestión de roles -->
+<div class="window-overlay" [class.hidden]="isMinimized">
+  <div class="window-container" [class.maximized]="isMaximized">
+    <div class="window">
 
-<div *ngFor="let t of tipos">
-  {{ t.nombre }}
-  <button (click)="editar(t)">Editar</button>
-  <button (click)="borrar(t.id)">Eliminar</button>
+      <!-- Barra de título -->
+      <div class="window-header">
+        <div class="window-title">
+          <img src="/Icons/springlock_icon.png" alt="Roles" class="window-icon-img">
+          <span>Gestión de Roles del Sistema</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
+          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+        </div>
+      </div>
+
+      <!-- Contenido -->
+      <div class="window-content">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="btn-add" (click)="abrirFormularioNuevo()">
+              <span class="btn-icon">➕</span>
+              Nuevo Rol
+            </button>
+          </div>
+          <div class="toolbar-right">
+            <div class="info-badge">
+              <span class="badge-icon">🏷️</span>
+              <span>Total de roles: {{ roles.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de roles -->
+        <div class="roles-list">
+          @for (rol of roles; track rol.id) {
+            <div class="rol-card" (click)="abrirFormularioEditar(rol)">
+              <div class="rol-icon">
+                <span>{{ obtenerIconoRol(rol.rol) }}</span>
+              </div>
+              <div class="rol-info">
+                <h3 class="rol-nombre">{{ rol.rol }}</h3>
+                <p class="rol-id">ID: {{ rol.id }}</p>
+              </div>
+              <div class="rol-actions">
+                <button class="btn-edit" (click)="abrirFormularioEditar(rol); $event.stopPropagation()">
+                  ✏️ Editar
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (roles.length === 0) {
+            <div class="empty-state">
+              <img src="/FNaF_Icons/fazbearInc.png" alt="Sin roles" class="empty-icon-img">
+              <p>No hay roles registrados en el sistema</p>
+              <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+                Añadir el primero
+              </button>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
-<button (click)="crear()">Nuevo</button>
+<!-- BARRA DE TAREAS -->
+<div class="taskbar" *ngIf="!isMinimized">
+  <div class="start-button">
+    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+    <span>Inicio</span>
+  </div>
+  <div class="taskbar-separator"></div>
+  <div class="taskbar-windows">
+    <button
+      *ngFor="let window of ventanasAbiertas$ | async"
+      class="taskbar-window-btn"
+      [class.minimized]="window.isMinimized"
+      [class.active]="!window.isMinimized && window.id === 'roles'"
+      (click)="restaurarVentana(window.id)"
+    >
+      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+      <span>{{ window.title }}</span>
+    </button>
+  </div>
+  <div class="system-tray">
+    <div class="system-tray-user" *ngIf="usuario">
+      <span class="user-icon">👤</span>
+      <span class="user-name">{{ usuario.usuario }}</span>
+    </div>
+    <div class="system-tray-separator"></div>
+    <div class="system-tray-time">{{ getHoraActual() }}</div>
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+      <span>🚪</span>
+    </button>
+  </div>
+</div>
+
+<!-- Modal nuevo rol -->
+@if (mostrarFormularioNuevo) {
+  <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
+    <div class="modal-window" (click)="$event.stopPropagation()">
+      <div class="window-header">
+        <div class="window-title">
+          <img src="/Icons/springlock_icon.png" alt="Nuevo Rol" class="window-icon-img">
+          <span>Nuevo Rol</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
+        </div>
+      </div>
+      <div class="modal-content">
+        <form class="form-rol">
+          <div class="form-group">
+            <label for="nuevo-nombre">Nombre del Rol *:</label>
+            <input
+              type="text"
+              id="nuevo-nombre"
+              [(ngModel)]="nuevoRol.rol"
+              name="rol"
+              placeholder="Ej: Técnico, Guardia..."
+              required>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
+            <button type="button" class="btn-save" (click)="guardarNuevo()">✅ Crear Rol</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal editar rol -->
+@if (mostrarFormularioEditar && rolEditando) {
+  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
+    <div class="modal-window" (click)="$event.stopPropagation()">
+      <div class="window-header">
+        <div class="window-title">
+          <img src="/Icons/springlock_icon.png" alt="Editar Rol" class="window-icon-img">
+          <span>Editar Rol — {{ rolEditando.rol }}</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+        </div>
+      </div>
+      <div class="modal-content">
+        <form class="form-rol">
+          <div class="form-group">
+            <label>ID del Rol:</label>
+            <input type="text" [value]="rolEditando.id" disabled style="background-color: #f5f5f5; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label for="edit-nombre">Nombre del Rol *:</label>
+            <input
+              type="text"
+              id="edit-nombre"
+              [(ngModel)]="rolEditando.rol"
+              name="rol"
+              required>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-delete" (click)="eliminarRol()">🗑️ Eliminar</button>
+            <div class="form-actions-right">
+              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
+              <button type="button" class="btn-save" (click)="actualizarRol()">Actualizar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-02-2026 a las 10:59:16
+-- Tiempo de generación: 15-02-2026 a las 11:05:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -73,6 +73,30 @@ CREATE TABLE `animatronico_local` (
   `fecha_instalacion` date DEFAULT NULL,
   `estado` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `animatronico_local`
+--
+
+INSERT INTO `animatronico_local` (`id_animatronico`, `id_local`, `fecha_instalacion`, `estado`) VALUES
+(1, 4, '1991-04-07', 'Operativo'),
+(2, 4, '1991-04-07', 'Operativo'),
+(3, 4, '1991-04-07', 'Operativo'),
+(4, 4, '1991-04-07', 'Operativo'),
+(5, 1, '1983-06-01', 'Fuera de servicio'),
+(6, 1, '1983-06-01', 'Fuera de servicio'),
+(7, 1, '1983-06-01', 'Fuera de servicio'),
+(8, 1, '1983-06-01', 'Fuera de servicio'),
+(9, 2, '1987-08-08', 'Fuera de servicio'),
+(10, 2, '1987-08-08', 'Fuera de servicio'),
+(11, 2, '1987-08-08', 'Fuera de servicio'),
+(12, 2, '1987-08-08', 'Fuera de servicio'),
+(13, 2, '1987-08-08', 'Fuera de servicio'),
+(14, 2, '1987-08-08', 'Fuera de servicio'),
+(15, 3, '1997-05-03', 'Fuera de servicio'),
+(16, 3, '1997-05-03', 'Fuera de servicio'),
+(17, 3, '1997-05-03', 'Fuera de servicio'),
+(18, 3, '1997-05-03', 'Fuera de servicio');
 
 -- --------------------------------------------------------
 
@@ -165,26 +189,27 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `usuario`, `pass`, `correo`, `id_rol`, `id_local`) VALUES
-(1, 'admin_fazbear', 'admin123', 'admin@fazbear.com', 1, 2),
-(2, 'tecnico_1', 'tech123', 'tech@fazbear.com', 2, 3),
-(3, 'guardia_noche', 'night123', 'guard@fazbear.com', 3, 2),
-(4, 'juan', '123456', 'gabriel@gmail.com', 3, 1),
-(5, 'William Afton', '1234', 'wafton@fazbear.com', 1, 3),
-(6, 'Henry Emily', '1234', 'hemily@fazbear.com', 1, 1),
-(7, 'Michael Afton', '1234', 'mafton@fazbear.com', 2, 1),
-(8, 'Ralph', '1234', 'phoneguy@fazbear.com', 2, 1),
-(9, 'Clay Burke', '1234', 'cburke@fazbear.com', 2, 2),
-(10, 'Jeremy Fitzgerald', '1234', 'jfitzgerald@fazbear.com', 3, 1),
-(11, 'Vanessa Shelley', '1234', 'vshelley@fazbear.com', 3, 4),
-(12, 'Fritz Smith', '1234', 'fsmith@fazbear.com', 3, 3),
-(13, 'Cassidy', '1234', 'cassidy@fazbear.com', 4, 1),
-(14, 'Susie', '1234', 'susie@fazbear.com', 4, 3),
-(15, 'Gabriel', '1234', 'gabriel@fazbear.com', 4, 4),
-(16, 'Oliver Brown', '1234', 'obrown@fazbear.com', 5, 3),
-(17, 'Mary Schmidt', '1234', 'mschmidt@fazbear.com', 5, 2),
-(18, 'Edward Collins', '1234', 'ecollins@fazbear.com', 5, 4),
-(19, 'Robert Fazbear', '1234', 'rfazbear@fazbear.com', 1, 4),
-(20, 'ejemplo', '123456', 'ejem2@gmail.com', 3, 0);
+(1, 'admin_fazbear', '$2a$10$nKQa40bvwiAJW10Qd0koPuy0PWxNy3AVtWckWDPi5QPQf37vWAHoC', 'admin@fazbear.com', 1, 2),
+(2, 'tecnico_1', '$2a$10$N.OKPIJG/3XzHwWFflOH4ugO5BdRPQ8wwoXpGEMqelDSbNBxXSkre', 'tech@fazbear.com', 2, 3),
+(3, 'guardia_noche', '$2a$10$HiZ5JLjgQucu8OcaJJNP1OBuRbap0JMgW2LYP5D.hZXuB.fbb7Jnu', 'guard@fazbear.com', 3, 2),
+(4, 'juan', '$2a$10$QQ/uRfB4P67G9M5Of9rBG.AlJF5Z0RJUe3StemkcEv9z8ykovoQSa', 'gabriel@gmail.com', 3, 1),
+(5, 'William Afton', '$2a$10$IdlDYY8uxBBWd2luFXAKL.Yps8Gpy2ItjbNH5/jvKPGjwgTMsEz.S', 'wafton@fazbear.com', 1, 3),
+(6, 'Henry Emily', '$2a$10$Qc/Jay5UF2Fe1/xMLP9gj.n7tVlCSO4T7pfrb4BgUqun6uQXOmAMe', 'hemily@fazbear.com', 1, 1),
+(7, 'Michael Afton', '$2a$10$OHs4Sab125hoa5FOXUN0U.1xgbyeCtt.Xesdr5b8Vaf6E.iQWD28K', 'mafton@fazbear.com', 2, 1),
+(8, 'Ralph', '$2a$10$1KGT/1voWRrR5zYzFMfm4OCl3/wo74BhrMjaZTDQ6ucaBEYbAabGK', 'phoneguy@fazbear.com', 2, 1),
+(9, 'Clay Burke', '$2a$10$yo8CHGs9p8LsSA8llenQDermM0T3datTFwcdufjgMGHRCikpoF656', 'cburke@fazbear.com', 2, 2),
+(10, 'Jeremy Fitzgerald', '$2a$10$Lzr1HCCvF4qfQ8KbulXCMuMUVd2D7qsh0ZxI8Ot4wYUUslIa6oHqq', 'jfitzgerald@fazbear.com', 3, 1),
+(11, 'Vanessa Shelley', '$2a$10$37B19NvMcDe1nC/9AtYGm.MLgHgG0F2D9XPKqcvkemqMqsV/WmjYu', 'vshelley@fazbear.com', 3, 4),
+(12, 'Fritz Smith', '$2a$10$7PC9QgAc2F1MavIGEhWqkOl8VL0FjIsuRjL8VjOonMi0acSunKrL6', 'fsmith@fazbear.com', 3, 3),
+(13, 'Cassidy', '$2a$10$.pfjqnepK7yp2IHAHcZay.LBJNVfQoduCqa6dpiGKcDxgtJkjgFnq', 'cassidy@fazbear.com', 4, 1),
+(14, 'Susie', '$2a$10$E7mO8uwtrej5eE9CisPWxe2F4xedzfgM6cIPPjmXFPwNdGLGUt3D.', 'susie@fazbear.com', 4, 3),
+(15, 'Gabriel', '$2a$10$R5jdTpntXxElVkBCBB.g9ekDg3ytycGTBSocWu05gf2rzJLws8PaS', 'gabriel@fazbear.com', 4, 4),
+(16, 'Oliver Brown', '$2a$10$VOSw.ij3AtiBDUAi47X4iu9E4nLIHNjKssk4UuC6NGs.glboir3dC', 'obrown@fazbear.com', 5, 3),
+(17, 'Mary Schmidt', '$2a$10$dfuMcvGtSHhIxN8SeqMU2u5HwUGTN958hDrskXiVoiDtUOgdz05fq', 'mschmidt@fazbear.com', 5, 2),
+(18, 'Edward Collins', '$2a$10$4DFyWx6.nE5sN9SMpy0BmOtBrwObor.bBBnzY/4qfXGrnFhBDH6J.', 'ecollins@fazbear.com', 5, 4),
+(19, 'Robert Fazbear', '$2a$10$Y7V8RpQ6l3S4a/YX6jvfS.S3nHP/OJUnlLzLIdlp3eHT8tYafC3cu', 'rfazbear@fazbear.com', 1, 4),
+(20, 'ejemplo', '$2a$10$pVrrb3b97DWKYn505rrTPeZ23ddYOrd3rsVZ82RvjmAMeuZtchsaG', 'ejem2@gmail.com', 6, 0),
+(21, 'William2', '$2a$10$PzTM1Y4m/amkDEvusQXsRes8kqMfsoCOupWfEjBBUrwZUr58ta9gy', 'ana@tm.com', 3, 0);
 
 --
 -- Índices para tablas volcadas
@@ -261,7 +286,7 @@ ALTER TABLE `tipos_animatronicos`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Restricciones para tablas volcadas

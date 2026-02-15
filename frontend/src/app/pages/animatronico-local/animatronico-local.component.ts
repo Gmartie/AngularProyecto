@@ -37,6 +37,7 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
   animatronicos: Animatronico[] = [];
   locales: Local[] = [];
   asignacionEditando: AnimatronicoLocal | null = null;
+  localOriginal: number = 0; // Guarda el local original al abrir editar
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
   
@@ -180,6 +181,7 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
 
   abrirFormularioEditar(asignacion: AnimatronicoLocal): void {
     this.asignacionEditando = {...asignacion};
+    this.localOriginal = asignacion.id_local; // Guardar local original
     this.mostrarFormularioEditar = true;
   }
 
@@ -191,22 +193,65 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
   actualizarEstado(): void {
     if (!this.asignacionEditando) return;
 
-    this.animatronicoLocalService.actualizarEstado(
-      this.asignacionEditando.id_animatronico,
-      this.asignacionEditando.id_local,
-      this.asignacionEditando.estado
-    ).subscribe({
-      next: (response) => {
-        console.log('Estado actualizado:', response);
-        this.cargarAsignaciones();
-        this.cerrarFormularioEditar();
-        alert('Estado actualizado exitosamente');
-      },
-      error: (error) => {
-        console.error('Error al actualizar estado:', error);
-        alert('Error al actualizar el estado');
+    const nuevoLocal = Number(this.asignacionEditando.id_local);
+    const localAnterior = Number(this.localOriginal);
+
+    // Si cambió el local → mover el animatrónico (DELETE + INSERT)
+    if (nuevoLocal !== localAnterior) {
+      const yaExiste = this.asignaciones.some(
+        a => a.id_animatronico === this.asignacionEditando!.id_animatronico &&
+             Number(a.id_local) === nuevoLocal
+      );
+      if (yaExiste) {
+        alert('Este animatrónico ya está asignado en el local de destino.');
+        return;
       }
-    });
+
+      this.animatronicoLocalService.remover(
+        this.asignacionEditando.id_animatronico,
+        localAnterior
+      ).subscribe({
+        next: () => {
+          this.animatronicoLocalService.asignar({
+            id_animatronico: this.asignacionEditando!.id_animatronico,
+            id_local: nuevoLocal,
+            fecha_instalacion: this.asignacionEditando!.fecha_instalacion,
+            estado: this.asignacionEditando!.estado
+          }).subscribe({
+            next: () => {
+              this.cargarAsignaciones();
+              this.cerrarFormularioEditar();
+              alert('Animatrónico movido al nuevo local exitosamente');
+            },
+            error: (error) => {
+              this.cargarAsignaciones();
+              alert('Error al mover el animatrónico: ' + (error.error?.message || 'Error desconocido'));
+            }
+          });
+        },
+        error: (error) => {
+          alert('Error al mover el animatrónico');
+        }
+      });
+    } else {
+      // Solo cambió el estado → PATCH normal
+      this.animatronicoLocalService.actualizarEstado(
+        this.asignacionEditando.id_animatronico,
+        localAnterior,
+        this.asignacionEditando.estado
+      ).subscribe({
+        next: (response) => {
+          console.log('Estado actualizado:', response);
+          this.cargarAsignaciones();
+          this.cerrarFormularioEditar();
+          alert('Estado actualizado exitosamente');
+        },
+        error: (error) => {
+          console.error('Error al actualizar estado:', error);
+          alert('Error al actualizar el estado');
+        }
+      });
+    }
   }
 
   eliminarAsignacion(): void {

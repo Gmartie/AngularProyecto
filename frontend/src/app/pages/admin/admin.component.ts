@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService, Window } from '../../services/window.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { RolesService } from '../../services/roles.service';
 
 interface SeccionAdmin {
   id: string;
@@ -121,7 +123,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly windowService: WindowService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly usuarioService: UsuarioService,
+    private readonly rolesService: RolesService
   ) {}
 
   ngOnInit(): void {
@@ -146,6 +150,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         console.warn('⚠️ Acceso denegado: usuario no es administrador');
         this.router.navigate(['/home2']);
       }
+
+      if (usuario && this.esAdministrador()) {
+        this.cargarEstadisticas();
+      }
     });
   }
 
@@ -153,6 +161,26 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (this.windowSubscription) {
       this.windowSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Carga los conteos reales desde la API
+   */
+  cargarEstadisticas(): void {
+    this.usuarioService.obtenerTodos().subscribe({
+      next: (usuarios) => {
+        const s = this.secciones.find(s => s.id === 'usuarios');
+        if (s?.estadisticas) s.estadisticas.valor = usuarios.length;
+      },
+      error: () => {}
+    });
+    this.rolesService.obtenerTodos().subscribe({
+      next: (roles) => {
+        const s = this.secciones.find(s => s.id === 'roles');
+        if (s?.estadisticas) s.estadisticas.valor = roles.length;
+      },
+      error: () => {}
+    });
   }
 
   /**

@@ -6,10 +6,9 @@ class UsuarioDTO {
       pass: usuario.pass,
       correo: usuario.correo,
       id_rol: usuario.id_rol,
-      id_propietario: usuario.id_propietario
+      id_local: usuario.id_local
     };
   }
-
 }
 
 module.exports = UsuarioDTO;

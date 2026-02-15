@@ -75,6 +75,12 @@
   font-size: 14px;
 }
 
+.window-icon-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 .window-controls {
   display: flex;
   gap: 4px;

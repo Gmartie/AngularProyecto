@@ -45,7 +45,7 @@ export class AppComponent {
     // Ocultar Helpy en home, home2, login, registro y rutas de programas
     const ocultarEn = ['/', '/home', '/home2', '/login', '/registro', 
                        '/animatronicos', '/locales', '/tipos', '/perfil', 
-                       '/admin', '/usuario'];
+                       '/admin', '/usuario', '/roles', '/animatronico-local'];
     
     const esRutaOculta = ocultarEn.some(ruta => 
       url === ruta || url.startsWith(ruta + '?') || url.startsWith(ruta + '#')
@@ -54,7 +54,8 @@ export class AppComponent {
     // También ocultar en rutas que no existen
     const rutasValidas = [
       '/', '/home', '/home2', '/login', '/registro', '/dashboard',
-      '/admin', '/animatronicos', '/locales', '/tipos', '/perfil', '/usuario'
+      '/admin', '/animatronicos', '/locales', '/tipos', '/perfil', '/usuario',
+      '/roles', '/animatronico-local'
     ];
     
     const esRutaValida = rutasValidas.some(ruta => 
@@ -70,7 +71,7 @@ export class AppComponent {
    */
   mostrarNavbar(): boolean {
     const rutasSinNavbar = ['/home2', '/animatronicos', '/locales', '/tipos', 
-                            '/perfil', '/admin', '/usuario'];
+                            '/perfil', '/admin', '/usuario', '/roles', '/animatronico-local'];
     
     return !rutasSinNavbar.some(ruta => 
       this.rutaActual === ruta || 

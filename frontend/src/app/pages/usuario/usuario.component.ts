@@ -64,14 +64,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.ventanasAbiertas$ = this.windowService.windows$;
-    
+
+    // Obtener usuario actual sincrónicamente (no depender del observable)
+    this.usuarioActual = this.authService.obtenerUsuario();
+
+    // Suscribirse para detectar cambios futuros
     this.authService.usuario$.subscribe(usuario => {
       this.usuarioActual = usuario;
-      if (usuario) {
-        this.cargarDatos();
-      }
     });
-    
+
+    // Cargar datos directamente — el interceptor añade el token automáticamente
+    this.cargarDatos();
+
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
       const thisWindow = windows.find(w => w.id === 'usuario');
       if (thisWindow) {

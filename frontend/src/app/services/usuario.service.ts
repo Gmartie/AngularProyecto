@@ -5,15 +5,9 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Usuario } from '../models/usuario.model';
-
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -25,45 +19,38 @@ export class UsuarioService {
   constructor(private http: HttpClient) {}
 
   obtenerTodos(): Observable<Usuario[]> {
-    return this.http.get<ApiResponse<Usuario[]>>(this.apiUrl).pipe(
-      map(response => response.data || [])
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => {
+        console.log('UsuarioService.obtenerTodos respuesta:', response);
+        // El backend devuelve { success: true, data: [...] }
+        return response.data || response || [];
+      }),
+      catchError(error => {
+        console.error('UsuarioService.obtenerTodos error:', error);
+        return of([]);
+      })
     );
   }
 
   obtenerPorId(id: number): Observable<Usuario> {
-    return this.http.get<ApiResponse<Usuario>>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response.data)
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(response => response.data || response)
     );
   }
 
-  crear(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<ApiResponse<Usuario>>(this.apiUrl, usuario).pipe(
-      map(response => response.data)
+  crear(usuario: any): Observable<Usuario> {
+    return this.http.post<any>(this.apiUrl, usuario).pipe(
+      map(response => response.data || response)
     );
   }
 
   actualizar(id: number, usuario: any): Observable<Usuario> {
-    return this.http.put<ApiResponse<Usuario>>(`${this.apiUrl}/${id}`, usuario).pipe(
-      map(response => response.data)
+    return this.http.put<any>(`${this.apiUrl}/${id}`, usuario).pipe(
+      map(response => response.data || response)
     );
   }
 
-  login(usuario: string, pass: string) {
-    return this.http.post<any>(`${this.apiUrl}/api/auth/login`, {
-      usuario,
-      password: pass
-    });
-  }
-
-  register(usuario: string, email: string, password: string) {
-    return this.http.post(`${this.apiUrl}/api/auth/register`, {
-      usuario,
-      email,
-      password
-    });
-  }
-
   eliminar(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }

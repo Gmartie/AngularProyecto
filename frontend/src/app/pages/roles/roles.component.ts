@@ -51,12 +51,16 @@ export class RolesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.ventanasAbiertas$ = this.windowService.windows$;
 
+    // Obtener usuario actual sincrónicamente
+    this.usuario = this.authService.obtenerUsuario();
+
+    // Suscribirse para cambios futuros
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
-      if (usuario) {
-        this.cargarRoles();
-      }
     });
+
+    // Cargar datos directamente — el interceptor añade el token
+    this.cargarRoles();
 
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
       const thisWindow = windows.find(w => w.id === 'roles');
@@ -76,8 +80,8 @@ export class RolesComponent implements OnInit, OnDestroy {
   cargarRoles(): void {
     this.rolesService.obtenerTodos().subscribe({
       next: (roles: any) => {
-        const data = roles?.data || roles;
-        this.roles = Array.isArray(data) ? data : [];
+        console.log('Roles cargados:', roles);
+        this.roles = Array.isArray(roles) ? roles : [];
       },
       error: (error) => {
         console.error('Error al cargar roles:', error);

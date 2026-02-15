@@ -5,12 +5,12 @@
  * Centraliza la lógica de permisos para ser usada en todos los componentes
  * 
  * ROLES:
- * 1 - Propietario: Editar local, VER animatronicos, Editar tipos
- * 2 - Técnico: Ver local, CRUD Tipos, CRUD Animátronicos
+ * 1 - Propietario: Editar local, VER animatronicos, CRUD tipos
+ * 2 - Técnico: Ver local, CRUD tipos, CRUD animatrónicos
  * 3 - Guardia de seguridad: Solo VER locales y animatrónicos
  * 4 - Empleado: Solo VER locales y animatrónicos
  * 5 - Cocinero: Solo VER locales y animatrónicos
- * 6 - Administrador Master: Panel admin especial
+ * 6 - Administrador Master: CRUD COMPLETO en TODO (locales, animatrónicos, tipos) + Panel admin
  */
 
 import { Injectable } from '@angular/core';
@@ -56,10 +56,11 @@ export class PermisosService {
    * - Propietario (1): Solo VER
    * - Técnico (2): CRUD completo
    * - Guardia/Empleado/Cocinero (3,4,5): Solo VER
+   * - Administrador (6): CRUD completo
    */
   private getPermisosAnimatronicos(idRol: number): Permisos {
-    const puedeVer = [1, 2, 3, 4, 5].includes(idRol);
-    const puedeEditar = [2].includes(idRol);
+    const puedeVer = [1, 2, 3, 4, 5, 6].includes(idRol);
+    const puedeEditar = [2, 6].includes(idRol);
 
     return {
       ver: puedeVer,
@@ -74,16 +75,18 @@ export class PermisosService {
    * - Propietario (1): Ver y Editar
    * - Técnico (2): Solo VER
    * - Guardia/Empleado/Cocinero (3,4,5): Solo VER
+   * - Administrador (6): CRUD completo
    */
   private getPermisosLocales(idRol: number): Permisos {
-    const puedeVer = [1, 2, 3, 4, 5].includes(idRol);
-    const puedeEditar = [1].includes(idRol);
+    const puedeVer = [1, 2, 3, 4, 5, 6].includes(idRol);
+    const puedeEditar = [1, 6].includes(idRol);
+    const puedeCrearEliminar = [6].includes(idRol);
 
     return {
       ver: puedeVer,
-      crear: false,  // Nadie puede crear nuevos locales
+      crear: puedeCrearEliminar,
       editar: puedeEditar,
-      eliminar: false  // Nadie puede eliminar locales
+      eliminar: puedeCrearEliminar
     };
   }
 
@@ -91,9 +94,10 @@ export class PermisosService {
    * Permisos específicos para TIPOS
    * - Propietario (1): CRUD completo
    * - Técnico (2): CRUD completo
+   * - Administrador (6): CRUD completo
    */
   private getPermisosTipos(idRol: number): Permisos {
-    const puedeGestionar = [1, 2].includes(idRol);
+    const puedeGestionar = [1, 2, 6].includes(idRol);
 
     return {
       ver: puedeGestionar,

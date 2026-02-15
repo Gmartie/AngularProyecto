@@ -23,10 +23,9 @@ class AuthService {
     const user = users[0];
     console.log(`✅ LOGIN: Usuario encontrado:`, user.usuario);
     console.log(`🔍 LOGIN: Contraseña ingresada: ${password}`);
-    console.log(`🔍 LOGIN: Contraseña en BD: ${user.pass}`);
 
-    // Comparar contraseñas (en texto plano en la BD original)
-    const isValidPassword = password === user.pass;
+    // Comparar contraseñas usando bcrypt
+    const isValidPassword = await bcrypt.compare(password, user.pass);
     console.log(`🔍 LOGIN: Validación de contraseña: ${isValidPassword}`);
 
     if (!isValidPassword) {
@@ -76,11 +75,15 @@ class AuthService {
       throw new ValidationError('El usuario o email ya existe');
     }
 
-    // Insertar nuevo usuario con contraseña en texto plano (como está en la BD original)
+    // Encriptar la contraseña con bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Insertar nuevo usuario con contraseña encriptada
     // Por defecto asignar rol 3 (Guardia de seguridad / Usuario registrado)
     const [result] = await pool.query(
       'INSERT INTO usuario (usuario, pass, correo, id_rol) VALUES (?, ?, ?, ?)',
-      [usuario, password, email, 3]
+      [usuario, hashedPassword, email, 3]
     );
 
     const userId = result.insertId;

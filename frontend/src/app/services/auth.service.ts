@@ -26,7 +26,7 @@ export class AuthService {
   public usuario$ = this.usuarioSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    const guardado = localStorage.getItem(this.STORAGE_KEY);
+    const guardado = sessionStorage.getItem(this.STORAGE_KEY);
     if (guardado) {
       this.usuarioSubject.next(JSON.parse(guardado));
     }
@@ -55,7 +55,7 @@ export class AuthService {
         
         console.log('Usuario procesado:', user);
         
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
+        sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
         this.usuarioSubject.next(user);
       })
     );
@@ -70,7 +70,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.STORAGE_KEY);
+    sessionStorage.removeItem(this.STORAGE_KEY);
     this.usuarioSubject.next(null);
   }
 

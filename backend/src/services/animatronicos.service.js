@@ -247,4 +247,30 @@ class AnimatronicoService {
   }
 }
 
+  async getInforme(id) {
+    const query = `
+      SELECT
+        a.id,
+        a.nombre,
+        a.reconocimiento,
+        a.num_piezas,
+        a.foto,
+        a.planos,
+        ta.nombre      AS nombre_gama,
+        l.ciudad       AS local_ciudad,
+        l.direccion    AS local_direccion,
+        al.estado      AS estado,
+        al.fecha_instalacion
+      FROM animatronicos a
+      INNER JOIN tipos_animatronicos ta ON a.id_gama = ta.id
+      LEFT JOIN animatronico_local al   ON al.id_animatronico = a.id
+      LEFT JOIN locales l               ON l.id = al.id_local
+      WHERE a.id = ?
+      LIMIT 1
+    `;
+    const [rows] = await pool.query(query, [id]);
+    if (!rows.length) throw new NotFoundError('Animatrónico no encontrado');
+    return rows[0];
+  }
+
 module.exports = new AnimatronicoService();

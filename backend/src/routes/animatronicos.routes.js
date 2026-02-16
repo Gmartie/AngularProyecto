@@ -14,6 +14,7 @@ const uploadFields = upload.fields([
 
 // Rutas
 router.get('/', authMiddleware, animatronicosController.getAll);
+router.get('/:id/informe', authMiddleware, animatronicosController.getInforme);
 router.get('/:id', authMiddleware, animatronicosController.getById);
 router.post('/', 
   authMiddleware, 

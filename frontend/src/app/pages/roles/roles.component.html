@@ -40,7 +40,7 @@
           @for (rol of roles; track rol.id) {
             <div class="rol-card" (click)="abrirFormularioEditar(rol)">
               <div class="rol-icon">
-                <span>{{ obtenerIconoRol(rol.rol) }}</span>
+                <img [src]="obtenerIconoRol(rol.rol)" [alt]="rol.rol" class="rol-icon-img">
               </div>
               <div class="rol-info">
                 <h3 class="rol-nombre">{{ rol.rol }}</h3>

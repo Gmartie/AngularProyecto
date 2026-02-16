@@ -92,14 +92,14 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   obtenerIconoRol(nombreRol: string): string {
     const iconos: { [key: string]: string } = {
-      'Propietario': '👑',
-      'Técnico': '🔧',
-      'Guardia de seguridad': '🛡️',
-      'Empleado': '👤',
-      'Cocinero': '👨‍🍳',
-      'Administrador': '⚙️'
+      'Administrador': '/FNAF_Rol_Icons/admin_icon.png',
+      'Propietario':   '/FNAF_Rol_Icons/owner_icon.png',
+      'Técnico':       '/FNAF_Rol_Icons/tech_icon.png',
+      'Guardia de seguridad': '/FNAF_Rol_Icons/guard_icon.png',
+      'Empleado':      '/FNAF_Rol_Icons/employee_icon.png',
+      'Cocinero':      '/FNAF_Rol_Icons/chef_icon.png'
     };
-    return iconos[nombreRol] || '🏷️';
+    return iconos[nombreRol] || '/FNAF_Rol_Icons/employee_icon.png';
   }
 
   // ── NUEVO ──────────────────────────────────────

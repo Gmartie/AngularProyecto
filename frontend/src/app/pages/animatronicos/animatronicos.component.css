@@ -216,6 +216,8 @@
 
 .card-actions {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
   justify-content: flex-end;
 }
 
@@ -232,6 +234,25 @@
 }
 
 .btn-edit:active {
+  border-style: inset;
+}
+
+.btn-pdf {
+  padding: 6px 12px;
+  background: linear-gradient(to bottom, #003399 0%, #000080 100%);
+  border: 2px outset #4444aa;
+  cursor: pointer;
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.btn-pdf:hover {
+  background: linear-gradient(to bottom, #1144bb 0%, #003399 100%);
+}
+
+.btn-pdf:active {
   border-style: inset;
 }
 

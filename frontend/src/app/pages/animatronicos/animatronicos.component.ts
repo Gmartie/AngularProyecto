@@ -312,6 +312,159 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     return this.tiposAnimatronicos.find(t => t.id === id_gama)?.nombre || 'Desconocido';
   }
 
+  descargarInforme(animatronico: Animatronico): void {
+    const token = this.authService.obtenerToken();
+    const id = animatronico.id;
+
+    fetch(`http://localhost:3000/api/animatronicos/${id}/informe`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(r => r.json())
+    .then(resp => {
+      const data = resp.data || resp;
+      this.generarPDF(data);
+    })
+    .catch(() => alert('Error al obtener los datos del informe'));
+  }
+
+  private generarPDF(data: any): void {
+    // Carga jsPDF dinámicamente desde CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = () => {
+      const { jsPDF } = (window as any).jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const W = 210;
+      const margen = 20;
+      let y = 0;
+
+      // ── CABECERA ────────────────────────────────────
+      doc.setFillColor(0, 0, 128);      // Azul Windows 95
+      doc.rect(0, 0, W, 36, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FAZBEAR ENTERTAINMENT', margen, 14);
+
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Informe Técnico de Animatrónico', margen, 22);
+
+      doc.setFontSize(9);
+      doc.text(`Generado: ${new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'long', year:'numeric' })}`, margen, 30);
+      y = 48;
+
+      // ── NOMBRE ──────────────────────────────────────
+      doc.setTextColor(0, 0, 128);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text(data.nombre || '—', margen, y);
+      y += 4;
+
+      doc.setDrawColor(0, 0, 128);
+      doc.setLineWidth(0.5);
+      doc.line(margen, y, W - margen, y);
+      y += 8;
+
+      // ── FICHA TÉCNICA ────────────────────────────────
+      const campos = [
+        ['ID',                   String(data.id ?? '—')],
+        ['Tipo / Gama',          data.nombre_gama     || '—'],
+        ['Número de piezas',     String(data.num_piezas ?? '—')],
+        ['Reconocimiento facial',data.reconocimiento ? 'Sí' : 'No'],
+        ['Estado actual',        data.estado          || 'Sin asignar'],
+        ['Local asignado',       data.local_ciudad
+                                   ? `${data.local_ciudad} — ${data.local_direccion}`
+                                   : 'Sin local asignado'],
+        ['Fecha de instalación', data.fecha_instalacion
+                                   ? new Date(data.fecha_instalacion).toLocaleDateString('es-ES')
+                                   : '—'],
+        ['Archivo de planos',    data.planos          || '—'],
+      ];
+
+      doc.setFontSize(10);
+      campos.forEach(([label, valor], i) => {
+        const bgColor = i % 2 === 0 ? [240, 240, 245] : [255, 255, 255];
+        doc.setFillColor(...(bgColor as [number,number,number]));
+        doc.rect(margen, y - 4, W - margen * 2, 9, 'F');
+
+        doc.setTextColor(80, 80, 80);
+        doc.setFont('helvetica', 'bold');
+        doc.text(label + ':', margen + 2, y + 1);
+
+        doc.setTextColor(30, 30, 30);
+        doc.setFont('helvetica', 'normal');
+        doc.text(valor, margen + 55, y + 1);
+        y += 9;
+      });
+
+      y += 6;
+
+      // ── ESTADO BADGE ─────────────────────────────────
+      const estadoColores: { [k: string]: number[] } = {
+        'Operativo':          [40, 167, 69],
+        'Fuera de servicio':  [220, 53, 69],
+        'En mantenimiento':   [255, 193, 7],
+        'En reparación':      [23, 162, 184],
+        'Desactivado':        [108, 117, 125],
+      };
+      const estadoNombre = data.estado || 'Sin asignar';
+      const color = estadoColores[estadoNombre] || [108, 117, 125];
+
+      doc.setFillColor(...(color as [number,number,number]));
+      doc.roundedRect(margen, y, 60, 10, 2, 2, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Estado: ${estadoNombre}`, margen + 4, y + 6.5);
+      y += 20;
+
+      // ── NOTAS ────────────────────────────────────────
+      doc.setTextColor(0, 0, 128);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Notas del sistema', margen, y);
+      y += 5;
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.3);
+      doc.line(margen, y, W - margen, y);
+      y += 5;
+
+      doc.setTextColor(80, 80, 80);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      const notas = [
+        'Este informe ha sido generado automáticamente por el sistema Fazbear OS v1.87.',
+        'Los datos reflejan el estado en el momento de la generación.',
+        data.reconocimiento
+          ? 'Este animatrónico cuenta con sistema de reconocimiento facial activo.'
+          : 'Este animatrónico NO dispone de reconocimiento facial.',
+      ];
+      notas.forEach(n => { doc.text(n, margen, y); y += 6; });
+
+      // ── PIE DE PÁGINA ─────────────────────────────────
+      const pageH = 297;
+      doc.setFillColor(220, 220, 220);
+      doc.rect(0, pageH - 14, W, 14, 'F');
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text('© Fazbear Entertainment Inc. — Documento confidencial', margen, pageH - 5);
+      doc.text(`Ref: ANIMA-${data.id}-${Date.now()}`, W - margen - 50, pageH - 5);
+
+      // ── DESCARGA ─────────────────────────────────────
+      doc.save(`informe_${(data.nombre || 'animatronico').replace(/\s+/g, '_')}.pdf`);
+    };
+
+    // Evitar duplicar el script si ya existe
+    if (!document.querySelector('script[src*="jspdf"]')) {
+      document.head.appendChild(script);
+    } else {
+      script.onload?.(new Event('load'));
+    }
+  }
+
   obtenerRutaFoto(nombreFoto: string): string {
   if (!nombreFoto) return 'http://localhost:3000/FNaF_Profile/freddy_clasico.jpg';
   return `http://localhost:3000/FNaF_Profile/${nombreFoto}`;

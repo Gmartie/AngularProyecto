@@ -42,6 +42,7 @@
     <!-- USER CONSOLE -->
     <li *ngIf="usuario" class="user-menu">
       <a class="user-link" (click)="toggleSubmenu()" role="button" tabindex="0">
+        <img [src]="obtenerIconoRol(obtenerRolTexto())" [alt]="obtenerRolTexto()" class="user-rol-icon">
         {{ usuario.usuario }} ▸
       </a>
 

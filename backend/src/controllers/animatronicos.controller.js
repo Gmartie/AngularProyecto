@@ -17,6 +17,15 @@ class AnimatronicosController {
     }
   }
 
+  async getInforme(req, res) {
+    try {
+      const informe = await AnimatronicoService.getInforme(req.params.id);
+      return ResponseUtil.success(res, informe, 'Informe obtenido exitosamente');
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, error.statusCode || 500);
+    }
+  }
+
   async getById(req, res) {
     try {
       const anima = await AnimatronicoService.getById(req.params.id);

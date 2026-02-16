@@ -100,6 +100,18 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  obtenerIconoRol(nombreRol: string): string {
+    const iconos: { [key: string]: string } = {
+      'Administrador':        '/FNAF_Rol_Icons/admin_icon.png',
+      'Propietario':          '/FNAF_Rol_Icons/owner_icon.png',
+      'Técnico':              '/FNAF_Rol_Icons/tech_icon.png',
+      'Guardia de seguridad': '/FNAF_Rol_Icons/guard_icon.png',
+      'Empleado':             '/FNAF_Rol_Icons/employee_icon.png',
+      'Cocinero':             '/FNAF_Rol_Icons/chef_icon.png'
+    };
+    return iconos[nombreRol] || '/FNAF_Rol_Icons/employee_icon.png';
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['']);

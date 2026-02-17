@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 :root {
-  --bg-main: #c0c0c0;       /* gris clásico */
+  --bg-main: #c0c0c0;
   --bg-window: #ffffff;
-  --blue-main: #003399;    /* azul 90s */
+  --blue-main: #003399;
   --blue-light: #3366cc;
   --border-dark: #404040;
   --border-light: #ffffff;
@@ -18,18 +18,14 @@ body {
   transition: background 0.3s ease;
 }
 
-/* ===== FONDOS DINÁMICOS ===== */
 
-/* Fondo para Login y Registro - EN MOSAICO (REPEAT) */
 body.bg-web {
   background-image: url('/Wallpapers/WebBackground.jpg');
-  background-size: auto;           /* Tamaño original de la imagen */
-  background-position: top left;   /* Comenzar desde arriba a la izquierda */
-  background-repeat: repeat;       /* REPETIR en mosaico */
-  background-attachment: scroll;   /* Se desplaza con el contenido */
+  background-size: auto; 
+  background-position: top left;
+  background-attachment: scroll;
 }
 
-/* Fondo para Dashboard (usuario autenticado) */
 body.bg-dashboard {
   background-image: url('/Wallpapers/Background.jpg');
   background-size: cover;
@@ -38,8 +34,3 @@ body.bg-dashboard {
   background-attachment: fixed;
 }
 
-/* Fondo por defecto (sin imagen) */
-body.bg-none {
-  background: var(--bg-main);
-  background-image: none;
-}

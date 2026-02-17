@@ -1,13 +1,12 @@
 .faz-navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Logo a la izquierda, menú a la derecha */
+  justify-content: space-between;
   padding: 10px 20px;
   background: #003399;
   color: #e0e0e0;
 }
 
-/* Contenedor para logo + imagen */
 .logo-container {
   display: flex;
   align-items: center;
@@ -15,7 +14,7 @@
 }
 
 .logo-img {
-  width: 40px;   /* Ajusta tamaño de la imagen */
+  width: 40px;
   height: 40px;
   margin-right: 10px;
 }
@@ -94,7 +93,6 @@
   box-shadow: 0 0 8px var(--primary);
 }
 
-/* Icono de rol del usuario en la barra de navegación */
 .user-rol-icon {
   width: 22px;
   height: 22px;

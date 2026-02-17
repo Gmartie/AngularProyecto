@@ -1,12 +1,3 @@
-/**
- * COMPONENTE: TiposComponent - VERSIÓN CON CONTROL DE PERMISOS
- * 
- * Gestión de tipos de animatrónicos con permisos según rol:
- * - id_rol = 1 (Propietario): CRUD completo
- * - id_rol = 2 (Técnico): CRUD completo
- * - Otros roles: NO tienen acceso (el icono no aparece en home2)
- */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +6,7 @@ import { WindowService } from '../../services/window.service';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { TiposAnimatronicosService } from '../../services/tiposanimatronicos.service';
 import { LocalesService } from '../../services/locales.service';
-import { PermisosService } from '../../services/permisos.service';  // NUEVO
+import { PermisosService } from '../../services/permisos.service';
 import { TipoAnimatronico } from '../../models/tiposanimatronicos.model';
 import { Local } from '../../models/local.model';
 import { Subscription, Observable } from 'rxjs';
@@ -29,30 +20,36 @@ import { Window } from '../../services/window.service';
   styleUrls: ['./tipos.component.css']
 })
 export class TiposComponent implements OnInit, OnDestroy {
-  
+
   tipos: TipoAnimatronico[] = [];
   locales: Local[] = [];
   tipoEditando: TipoAnimatronico | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
-  
-  // NUEVO: Variables de control de permisos
-  puedeEditar: boolean = false;
-  puedeCrear: boolean = false;
+
+  puedeEditar:   boolean = false;
+  puedeCrear:    boolean = false;
   puedeEliminar: boolean = false;
-  
-  // Control de ventana
+  esAdmin:       boolean = false;
+
   isMinimized: boolean = false;
   isMaximized: boolean = false;
   private windowSubscription?: Subscription;
-  
-  // Usuario y ventanas
+
   usuario: UsuarioAutenticado | null = null;
   ventanasAbiertas$!: Observable<Window[]>;
-  
-  nuevoTipo: Partial<TipoAnimatronico> = {
-    nombre: ''
-  };
+
+  nuevoTipo: Partial<TipoAnimatronico> = { nombre: '' };
+
+  iconoNuevoFile:    File | null   = null;
+  iconoNuevoPreview: string | null = null;
+  iconoEditFile:     File | null   = null;
+  iconoEditPreview:  string | null = null;
+
+  // Diagnóstico visible
+  debugInfo:  string  = '';
+  errorCarga: string  = '';
+  cargando:   boolean = false;
 
   constructor(
     private windowService: WindowService,
@@ -60,229 +57,183 @@ export class TiposComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private tiposService: TiposAnimatronicosService,
     private localesService: LocalesService,
-    public permisosService: PermisosService  // NUEVO - public para usar en template
+    public  permisosService: PermisosService
   ) {}
 
   ngOnInit(): void {
-    // Obtener ventanas abiertas para la taskbar
     this.ventanasAbiertas$ = this.windowService.windows$;
-    
-    // Obtener usuario autenticado
+
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
-      console.log('Usuario en tipos component:', this.usuario);
-      
       if (usuario) {
-        // NUEVO: Configurar permisos
-        this.configurarPermisos();
+        this.esAdmin       = usuario.id_rol === 6;
+        this.puedeEditar   = this.permisosService.puedeEditarTipos();
+        this.puedeCrear    = this.permisosService.puedeCrearTipos();
+        this.puedeEliminar = this.permisosService.puedeEliminarTipos();
         this.cargarLocales();
-        this.cargarTipos();
+        this.cargarTipos(usuario);
       }
     });
-    
-    // Suscribirse al estado de la ventana
+
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
-      const thisWindow = windows.find(w => w.id === 'tipos');
-      if (thisWindow) {
-        this.isMinimized = thisWindow.isMinimized;
-        this.isMaximized = thisWindow.isMaximized;
-      }
+      const w = windows.find(w => w.id === 'tipos');
+      if (w) { this.isMinimized = w.isMinimized; this.isMaximized = w.isMaximized; }
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.windowSubscription) {
-      this.windowSubscription.unsubscribe();
-    }
-  }
-
-  /**
-   * NUEVO: Configura los permisos del usuario actual
-   */
-  private configurarPermisos(): void {
-    this.puedeEditar = this.permisosService.puedeEditarTipos();
-    this.puedeCrear = this.permisosService.puedeCrearTipos();
-    this.puedeEliminar = this.permisosService.puedeEliminarTipos();
-    
-    console.log('Permisos de Tipos configurados:', {
-      puedeEditar: this.puedeEditar,
-      puedeCrear: this.puedeCrear,
-      puedeEliminar: this.puedeEliminar,
-      rol: this.permisosService.obtenerNombreRol()
-    });
-  }
+  ngOnDestroy(): void { this.windowSubscription?.unsubscribe(); }
 
   cargarLocales(): void {
     this.localesService.obtenerTodos().subscribe({
-      next: (locales) => {
-        this.locales = locales;
-        console.log('Locales cargados:', locales);
+      next: (l) => { this.locales = l; },
+      error: () => { this.locales = []; }
+    });
+  }
+
+  cargarTipos(usuario: UsuarioAutenticado = this.usuario!): void {
+    // Admin ve todos; el resto solo los tipos con animatrónicos en su local
+    const idLocal = (usuario.id_rol === 6) ? undefined : (usuario.id_local ?? undefined);
+    const urlInfo = idLocal !== undefined
+      ? `filtrando por local ${idLocal}`
+      : `mostrando todos (admin)`;
+
+    this.debugInfo  = `${usuario.usuario} | rol=${usuario.id_rol} | local=${usuario.id_local} | ${urlInfo}`;
+    this.errorCarga = '';
+    this.cargando   = true;
+
+    this.tiposService.obtenerTodos(idLocal).subscribe({
+      next: (tipos) => {
+        this.cargando = false;
+        this.tipos    = tipos;
+        this.debugInfo += ` | ✅ ${tipos.length} tipos`;
       },
-      error: (error) => {
-        console.error('Error al cargar locales:', error);
-        this.locales = [];
+      error: (err) => {
+        this.cargando   = false;
+        this.tipos      = [];
+        this.errorCarga = `HTTP ${err?.status}: ${err?.error?.message || err?.message}`;
       }
     });
   }
 
-  cargarTipos(): void {
-    console.log('');
-    console.log('═══════════════════════════════════════════════════════');
-    console.log('📦 CARGANDO TIPOS DE ANIMATRÓNICOS');
-    console.log('═══════════════════════════════════════════════════════');
-    
-    this.tiposService.obtenerTodos().subscribe({
-      next: (tipos) => {
-        console.log('📥 Tipos recibidos:', tipos);
-        this.tipos = tipos;
-        console.log('✅ Tipos cargados:', this.tipos.length);
-        console.log('═══════════════════════════════════════════════════════');
-      },
-      error: (error) => {
-        console.error('❌ Error al cargar tipos:', error);
-        this.tipos = [];
-      }
-    });
+  private readonly backendUrl = 'http://localhost:3000';
+
+  obtenerIcono(tipo: TipoAnimatronico): string {
+    if (tipo.icono) {
+      // Iconos subidos al backend → servidos por Express en puerto 3000
+      return `${this.backendUrl}${tipo.icono}`;
+    }
+    // Iconos estáticos del frontend → Angular en puerto 4200
+    const n = tipo.nombre.toLowerCase();
+    if (n.includes('unwithered') || n.includes('withered')) return '/Icons/w_freddy_icon.png';
+    if (n.includes('toy'))     return '/Icons/t_freddy_icon.png';
+    if (n.includes('funtime')) return '/Icons/f_freddy_icon.png';
+    return '/Icons/freddy_icon.png';
   }
+
+  // ── NUEVO ────────────────────────────────────────
 
   abrirFormularioNuevo(): void {
-    // NUEVO: Verificar permisos antes de abrir formulario
-    if (!this.puedeCrear) {
-      alert('No tienes permisos para crear nuevos tipos de animatrónicos.');
-      return;
-    }
-    
+    if (!this.puedeCrear) { alert('Sin permisos.'); return; }
+    this.nuevoTipo         = { nombre: '' };
+    this.iconoNuevoFile    = null;
+    this.iconoNuevoPreview = null;
     this.mostrarFormularioNuevo = true;
-    this.nuevoTipo = {
-      nombre: ''
-    };
   }
 
   cerrarFormularioNuevo(): void {
     this.mostrarFormularioNuevo = false;
+    this.iconoNuevoFile    = null;
+    this.iconoNuevoPreview = null;
   }
 
-  guardarNuevo(): void {
-    if (!this.nuevoTipo.nombre) {
-      alert('Por favor completa todos los campos obligatorios');
-      return;
-    }
+  onIconoNuevoSeleccionado(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('Máximo 5MB.'); return; }
+    this.iconoNuevoFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => { this.iconoNuevoPreview = e.target?.result as string; };
+    reader.readAsDataURL(file);
+  }
 
-    this.tiposService.crear(this.nuevoTipo as TipoAnimatronico).subscribe({
-      next: (response) => {
-        console.log('Tipo creado:', response);
-        this.cargarTipos();
-        this.cerrarFormularioNuevo();
-      },
-      error: (error) => {
-        console.error('Error al crear tipo:', error);
-        alert('Error al guardar el tipo de animatrónico. Verifica la conexión con el servidor.');
+  quitarIconoNuevo(): void { this.iconoNuevoFile = null; this.iconoNuevoPreview = null; }
+
+  guardarNuevo(): void {
+    if (!this.nuevoTipo.nombre?.trim()) { alert('El nombre es obligatorio'); return; }
+
+    this.tiposService.crear(this.nuevoTipo as TipoAnimatronico, this.iconoNuevoFile || undefined).subscribe({
+      next: () => { this.cargarTipos(); this.cerrarFormularioNuevo(); },
+      error: (err) => {
+        const msg = err?.error?.errors?.map((e: any) => e.msg).join(', ')
+                 || err?.error?.message || err.message;
+        alert('Error al guardar: ' + msg);
       }
     });
   }
 
+  // ── EDITAR ───────────────────────────────────────
+
   abrirFormularioEditar(tipo: TipoAnimatronico): void {
-    // NUEVO: Verificar permisos antes de abrir formulario
-    if (!this.puedeEditar) {
-      alert('No tienes permisos para editar tipos de animatrónicos.');
-      return;
-    }
-    
-    this.tipoEditando = {...tipo};
+    if (!this.puedeEditar) { alert('Sin permisos.'); return; }
+    this.tipoEditando     = { ...tipo };
+    this.iconoEditFile    = null;
+    this.iconoEditPreview = tipo.icono || null;
     this.mostrarFormularioEditar = true;
   }
 
   cerrarFormularioEditar(): void {
     this.mostrarFormularioEditar = false;
-    this.tipoEditando = null;
+    this.tipoEditando     = null;
+    this.iconoEditFile    = null;
+    this.iconoEditPreview = null;
+  }
+
+  onIconoEditSeleccionado(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('Máximo 5MB.'); return; }
+    this.iconoEditFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => { this.iconoEditPreview = e.target?.result as string; };
+    reader.readAsDataURL(file);
+  }
+
+  quitarIconoEdit(): void {
+    this.iconoEditFile    = null;
+    this.iconoEditPreview = this.tipoEditando?.icono || null;
   }
 
   actualizarTipo(): void {
-    if (!this.tipoEditando || !this.tipoEditando.id) return;
+    if (!this.tipoEditando?.id)     return;
+    if (!this.tipoEditando.nombre?.trim()) { alert('El nombre es obligatorio'); return; }
 
-    if (!this.tipoEditando.nombre) {
-      alert('Por favor completa todos los campos obligatorios');
-      return;
-    }
-
-    this.tiposService.actualizar(this.tipoEditando.id, this.tipoEditando).subscribe({
-      next: (response) => {
-        console.log('Tipo actualizado:', response);
-        this.cargarTipos();
-        this.cerrarFormularioEditar();
-      },
-      error: (error) => {
-        console.error('Error al actualizar tipo:', error);
-        alert('Error al actualizar el tipo de animatrónico. Verifica la conexión con el servidor.');
-      }
+    this.tiposService.actualizar(this.tipoEditando.id, this.tipoEditando, this.iconoEditFile || undefined).subscribe({
+      next: () => { this.cargarTipos(); this.cerrarFormularioEditar(); },
+      error: (err) => alert('Error al actualizar: ' + (err?.error?.message || err.message))
     });
   }
 
   eliminarTipo(): void {
-    if (!this.tipoEditando || !this.tipoEditando.id) return;
-    
-    // NUEVO: Verificar permisos antes de eliminar
-    if (!this.puedeEliminar) {
-      alert('No tienes permisos para eliminar tipos de animatrónicos.');
-      return;
-    }
-    
-    if (!confirm(`¿Estás seguro de que deseas eliminar el tipo "${this.tipoEditando.nombre}"?`)) {
-      return;
-    }
+    if (!this.tipoEditando?.id)  return;
+    if (!this.puedeEliminar)    { alert('Sin permisos.'); return; }
+    if (!confirm(`¿Eliminar "${this.tipoEditando.nombre}"?`)) return;
 
     this.tiposService.eliminar(this.tipoEditando.id).subscribe({
-      next: (response) => {
-        console.log('Tipo eliminado:', response);
-        this.cargarTipos();
-        this.cerrarFormularioEditar();
-      },
-      error: (error) => {
-        console.error('Error al eliminar tipo:', error);
-        alert('Error al eliminar el tipo. Verifica la conexión con el servidor.');
-      }
+      next: () => { this.cargarTipos(); this.cerrarFormularioEditar(); },
+      error: () => alert('Error al eliminar.')
     });
   }
 
-  /**
-   * Obtiene el icono de animatrónico según el nombre del tipo
-   */
-  obtenerIconoPorTipo(nombreTipo: string): string {
-    const nombreLower = nombreTipo.toLowerCase();
-    
-    if (nombreLower.includes('unwithered') || nombreLower.includes('withered')) {
-      return '/Icons/w_freddy_icon.png';
-    } else if (nombreLower.includes('toy')) {
-      return '/Icons/t_freddy_icon.png';
-    } else if (nombreLower.includes('funtime')) {
-      return '/Icons/f_freddy_icon.png';
-    } else if (nombreLower.includes('clásico') || nombreLower.includes('clasico')) {
-      return '/Icons/freddy_icon.png';
-    } else {
-      return '/Icons/freddy_icon.png'; // Default
-    }
-  }
+  // ── VENTANA ──────────────────────────────────────
 
-  cerrarVentana(): void {
-    this.windowService.closeWindow('tipos');
-    this.router.navigate(['/home2']);
-  }
-
-  minimizarVentana(): void {
-    this.windowService.minimizeWindow('tipos');
-    this.router.navigate(['/home2']);
-  }
-
-  toggleMaximizar(): void {
-    this.windowService.toggleMaximize('tipos');
-  }
+  cerrarVentana():    void { this.windowService.closeWindow('tipos');    this.router.navigate(['/home2']); }
+  minimizarVentana(): void { this.windowService.minimizeWindow('tipos'); this.router.navigate(['/home2']); }
+  toggleMaximizar():  void { this.windowService.toggleMaximize('tipos'); }
 
   restaurarVentana(windowId: string): void {
     this.windowService.restoreWindow(windowId);
-    const window = this.windowService.getWindow(windowId);
-    if (window?.route) {
-      this.router.navigate([window.route]);
-    }
+    const w = this.windowService.getWindow(windowId);
+    if (w?.route) this.router.navigate([w.route]);
   }
 
   cerrarSesion(): void {
@@ -292,7 +243,6 @@ export class TiposComponent implements OnInit, OnDestroy {
   }
 
   getHoraActual(): string {
-    const ahora = new Date();
-    return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 }

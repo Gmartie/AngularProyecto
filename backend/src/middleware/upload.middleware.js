@@ -5,7 +5,8 @@ const fs = require('fs');
 // Crear directorios si no existen
 const directorios = [
   path.join(__dirname, '../../../frontend/public/FNaF_Profile'),
-  path.join(__dirname, '../../../frontend/public/FNAF_Blueprints')
+  path.join(__dirname, '../../../frontend/public/FNAF_Blueprints'),
+  path.join(__dirname, '../../../frontend/public/Icons/tipos')
 ];
 
 directorios.forEach(dir => {
@@ -22,6 +23,8 @@ const storage = multer.diskStorage({
       cb(null, path.join(__dirname, '../../../frontend/public/FNaF_Profile'));
     } else if (file.fieldname === 'planos') {
       cb(null, path.join(__dirname, '../../../frontend/public/FNAF_Blueprints'));
+    } else if (file.fieldname === 'icono') {
+      cb(null, path.join(__dirname, '../../../frontend/public/Icons/tipos'));
     } else {
       cb(new Error('Campo de archivo no válido'), null);
     }
@@ -40,7 +43,8 @@ const fileFilter = (req, file, cb) => {
   // Tipos de archivo permitidos
   const allowedMimes = {
     foto: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-    planos: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+    planos: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+    icono: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
   };
 
   if (allowedMimes[file.fieldname] && allowedMimes[file.fieldname].includes(file.mimetype)) {

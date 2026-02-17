@@ -81,12 +81,10 @@
           <div class="toolbar">
             @if (puedeEditar) {
               <div class="info-badge">
-                <span class="badge-icon">📍</span>
                 <span>Local asignado - Modo edición</span>
               </div>
             } @else {
               <div class="info-badge">
-                <span class="badge-icon">👁️</span>
                 <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
               </div>
             }
@@ -137,11 +135,11 @@
             <div class="card-actions">
               @if (puedeEditar) {
                 <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
-                  ✏️ Editar Local
+                  Editar Local
                 </button>
               } @else {
                 <button class="btn-view" disabled title="Solo el Propietario puede editar el local">
-                  👁️ Solo lectura
+                  Solo lectura
                 </button>
               }
             </div>

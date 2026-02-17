@@ -678,3 +678,238 @@
   flex-direction: column;
   gap: 16px;
 }
+/* ── Filtro badge ────────────────────────────────────────── */
+.filter-badge {
+  font-size: 11px;
+  color: #888;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-left: 8px;
+}
+
+/* ── Preview de icono en modal edición ───────────────────── */
+.icono-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.icono-preview {
+  width: 72px;
+  height: 72px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.icono-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.icono-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn-upload-icono {
+  display: inline-block;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.btn-upload-icono:hover { background: rgba(255,255,255,0.18); }
+
+.icono-hint {
+  font-size: 10px;
+  color: #777;
+}
+
+.icono-filename {
+  font-size: 11px;
+  color: #aef;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-quitar-icono {
+  background: transparent;
+  border: none;
+  color: #f88;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+.btn-quitar-icono:hover { color: #f44; }
+
+/* ── Icono placeholder (cuando no hay imagen aún) ── */
+.icono-placeholder {
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.5;
+}
+
+/* ── Filtro badge ── */
+.filter-badge {
+  font-size: 11px;
+  color: #888;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-left: 8px;
+}
+
+/* ── Preview de icono en modales ── */
+.icono-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.icono-preview {
+  width: 72px;
+  height: 72px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.icono-preview-img { width: 100%; height: 100%; object-fit: contain; }
+.icono-actions { display: flex; flex-direction: column; gap: 6px; }
+.btn-upload-icono {
+  display: inline-block;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.btn-upload-icono:hover { background: rgba(255,255,255,0.18); }
+.icono-hint { font-size: 10px; color: #777; }
+.icono-filename {
+  font-size: 11px;
+  color: #aef;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-quitar-icono {
+  background: transparent;
+  border: none;
+  color: #f88;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-quitar-icono:hover { color: #f44; }
+
+/* ── Panel de diagnóstico (temporal) ── */
+.debug-panel {
+  background: #1a1a2e;
+  border: 1px solid #4a9eff;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: #4a9eff;
+  font-family: monospace;
+  word-break: break-all;
+}
+.debug-error {
+  color: #ff6b6b;
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+/* ── Resto de estilos de icono ── */
+.icono-placeholder {
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.5;
+}
+.filter-badge {
+  font-size: 11px;
+  color: #888;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-left: 8px;
+}
+.icono-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.icono-preview {
+  width: 72px;
+  height: 72px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.icono-preview-img { width: 100%; height: 100%; object-fit: contain; }
+.icono-actions { display: flex; flex-direction: column; gap: 6px; }
+.btn-upload-icono {
+  display: inline-block;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.btn-upload-icono:hover { background: rgba(255,255,255,0.18); }
+.icono-hint { font-size: 10px; color: #777; }
+.icono-filename {
+  font-size: 11px;
+  color: #aef;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-quitar-icono {
+  background: transparent;
+  border: none;
+  color: #f88;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-quitar-icono:hover { color: #f44; }

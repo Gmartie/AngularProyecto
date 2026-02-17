@@ -1,57 +1,50 @@
-<!-- Ventana flotante de tipos de animatrónicos -->
+<!-- Ventana flotante -->
 <div class="window-overlay" [class.hidden]="isMinimized">
   <div class="window-container" [class.maximized]="isMaximized">
     <div class="window">
-      <!-- Barra de título de la ventana -->
+
       <div class="window-header">
         <div class="window-title">
           <img src="/Icons/springlock_icon.png" alt="Tipos" class="window-icon-img">
           <span>Gestión de Tipos de Animatrónicos</span>
         </div>
         <div class="window-controls">
-          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
-          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
-          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+          <button class="window-btn minimize" (click)="minimizarVentana()">_</button>
+          <button class="window-btn maximize" (click)="toggleMaximizar()">□</button>
+          <button class="window-btn close"    (click)="cerrarVentana()">×</button>
         </div>
       </div>
 
-      <!-- Contenido de la ventana -->
       <div class="window-content">
-        
-        <!-- Botón para añadir nuevo tipo -->
+
         <div class="toolbar">
-          <button class="btn-add" (click)="abrirFormularioNuevo()">
-            <span class="btn-icon">➕</span>
-            Añadir Tipo
+          <button class="btn-add" (click)="abrirFormularioNuevo()" *ngIf="puedeCrear">
+            <span class="btn-icon">➕</span> Añadir Tipo
           </button>
+          <span class="filter-badge" *ngIf="!esAdmin">📍 Solo tipos de tu local</span>
         </div>
 
-        <!-- Lista de tipos de animatrónicos -->
         <div class="tipos-list">
           @for (tipo of tipos; track tipo.id) {
             <div class="tipo-card">
               <div class="card-icon">
-                <img [src]="obtenerIconoPorTipo(tipo.nombre)" alt="Animatrónico" style="width: 100%; height: 100%; object-fit: contain;">
+                <img [src]="obtenerIcono(tipo)" [alt]="tipo.nombre"
+                     style="width:100%;height:100%;object-fit:contain;">
               </div>
-
               <div class="card-info">
                 <h3 class="tipo-nombre">{{ tipo.nombre }}</h3>
               </div>
-
-              <div class="card-actions">
-                <button class="btn-edit" (click)="abrirFormularioEditar(tipo)">
-                  ✏️ Editar
-                </button>
+              <div class="card-actions" *ngIf="puedeEditar">
+                <button class="btn-edit" (click)="abrirFormularioEditar(tipo)">✏️ Editar</button>
               </div>
             </div>
           }
 
-          <!-- Mensaje si no hay tipos -->
-          @if (tipos.length === 0) {
+          @if (tipos.length === 0 && !cargando && !errorCarga) {
             <div class="empty-state">
               <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
               <p class="empty-text">No hay tipos de animatrónicos registrados</p>
-              <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+              <button class="btn-add-empty" (click)="abrirFormularioNuevo()" *ngIf="puedeCrear">
                 Añadir el primero
               </button>
             </div>
@@ -63,83 +56,84 @@
   </div>
 </div>
 
-<!-- BARRA DE TAREAS -->
+<!-- TASKBAR -->
 <div class="taskbar" *ngIf="!isMinimized">
-  <!-- Botón Start -->
   <div class="start-button">
     <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
     <span>Inicio</span>
   </div>
-
-  <!-- Separador -->
   <div class="taskbar-separator"></div>
-
-  <!-- Ventanas abiertas (botones en la taskbar) -->
   <div class="taskbar-windows">
-    <button 
-      *ngFor="let window of ventanasAbiertas$ | async"
+    <button *ngFor="let window of ventanasAbiertas$ | async"
       class="taskbar-window-btn"
       [class.minimized]="window.isMinimized"
       [class.active]="!window.isMinimized && window.id === 'tipos'"
-      (click)="restaurarVentana(window.id)"
-    >
+      (click)="restaurarVentana(window.id)">
       <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
       <span>{{ window.title }}</span>
     </button>
   </div>
-
-  <!-- Bandeja del sistema -->
   <div class="system-tray">
     <div class="system-tray-user" *ngIf="usuario">
       <span class="user-icon">👤</span>
       <span class="user-name">{{ usuario.usuario }}</span>
     </div>
-    
     <div class="system-tray-separator"></div>
-    
-    <div class="system-tray-time">
-      {{ getHoraActual() }}
-    </div>
-    
-    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span>🚪</span>
-    </button>
+    <div class="system-tray-time">{{ getHoraActual() }}</div>
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión"><span>🚪</span></button>
   </div>
 </div>
 
-<!-- Modal para añadir nuevo tipo -->
+
+<!-- ═══ MODAL: NUEVO TIPO ═══ -->
 @if (mostrarFormularioNuevo) {
   <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
     <div class="modal-window" (click)="$event.stopPropagation()">
       <div class="window-header">
         <div class="window-title">
-          <img src="/Icons/springlock_icon.png" alt="Nuevo" class="window-icon-img" style="width: 16px; height: 16px;">
+          <img src="/Icons/springlock_icon.png" alt="" class="window-icon-img" style="width:16px;height:16px;">
           <span>Nuevo Tipo de Animatrónico</span>
         </div>
         <div class="window-controls">
           <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
         </div>
       </div>
-
       <div class="modal-content">
         <form class="form-tipo">
+
           <div class="form-group">
-            <label for="nuevo-nombre">Nombre del Tipo *:</label>
-            <input type="text" 
-                   id="nuevo-nombre" 
-                   [(ngModel)]="nuevoTipo.nombre"
-                   name="nombre"
-                   placeholder="Ej: Clásicos, Toys, Funtime..."
-                   required>
+            <label for="nuevo-nombre">Nombre del Tipo *</label>
+            <input type="text" id="nuevo-nombre"
+                   [(ngModel)]="nuevoTipo.nombre" name="nombre"
+                   placeholder="Ej: Clásicos, Toys, Funtime..." required>
+          </div>
+
+          <!-- Icono -->
+          <div class="form-group">
+            <label>Icono (opcional)</label>
+            <div class="icono-preview-container">
+              <div class="icono-preview">
+                <img *ngIf="iconoNuevoPreview" [src]="iconoNuevoPreview" alt="Preview" class="icono-preview-img">
+                <span *ngIf="!iconoNuevoPreview" class="icono-placeholder">🤖</span>
+              </div>
+              <div class="icono-actions">
+                <label class="btn-upload-icono" for="icono-nuevo-input">📁 Elegir imagen</label>
+                <input type="file" id="icono-nuevo-input"
+                       accept="image/png,image/jpeg,image/webp,image/gif"
+                       (change)="onIconoNuevoSeleccionado($event)"
+                       style="display:none">
+                <span class="icono-hint" *ngIf="!iconoNuevoFile">PNG, JPG o WebP · máx 5MB</span>
+                <span class="icono-filename" *ngIf="iconoNuevoFile">{{ iconoNuevoFile.name }}</span>
+                <button type="button" class="btn-quitar-icono" *ngIf="iconoNuevoFile" (click)="quitarIconoNuevo()">
+                  ✕ Quitar
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
-              Cancelar
-            </button>
-            <button type="button" class="btn-save" (click)="guardarNuevo()">
-              Guardar
-            </button>
+            <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
+            <button type="button" class="btn-save"   (click)="guardarNuevo()">Guardar</button>
           </div>
         </form>
       </div>
@@ -147,38 +141,59 @@
   </div>
 }
 
-<!-- Modal para editar tipo -->
+
+<!-- ═══ MODAL: EDITAR TIPO ═══ -->
 @if (mostrarFormularioEditar && tipoEditando) {
   <div class="modal-overlay" (click)="cerrarFormularioEditar()">
     <div class="modal-window" (click)="$event.stopPropagation()">
-
       <div class="window-header">
-        <span>✏️ Editar Tipo de Animatrónico</span>
-        <button (click)="cerrarFormularioEditar()">×</button>
+        <div class="window-title">
+          <img src="/Icons/springlock_icon.png" alt="" class="window-icon-img" style="width:16px;height:16px;">
+          <span>✏️ Editar Tipo de Animatrónico</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+        </div>
       </div>
-
       <div class="modal-content">
         <form class="form-tipo">
+
           <div class="form-group">
-            <label for="edit-nombre">Nombre del Tipo *:</label>
-            <input type="text" 
-                   id="edit-nombre" 
-                   [(ngModel)]="tipoEditando.nombre"
-                   name="nombre"
-                   required>
+            <label for="edit-nombre">Nombre del Tipo *</label>
+            <input type="text" id="edit-nombre"
+                   [(ngModel)]="tipoEditando.nombre" name="nombre" required>
+          </div>
+
+          <!-- Icono -->
+          <div class="form-group">
+            <label>Icono del tipo</label>
+            <div class="icono-preview-container">
+              <div class="icono-preview">
+                <img [src]="iconoEditPreview || obtenerIcono(tipoEditando)"
+                     alt="Preview" class="icono-preview-img">
+              </div>
+              <div class="icono-actions">
+                <label class="btn-upload-icono" for="icono-edit-input">📁 Cambiar imagen</label>
+                <input type="file" id="icono-edit-input"
+                       accept="image/png,image/jpeg,image/webp,image/gif"
+                       (change)="onIconoEditSeleccionado($event)"
+                       style="display:none">
+                <span class="icono-hint" *ngIf="!iconoEditFile">PNG, JPG o WebP · máx 5MB</span>
+                <span class="icono-filename" *ngIf="iconoEditFile">{{ iconoEditFile.name }}</span>
+                <button type="button" class="btn-quitar-icono" *ngIf="iconoEditFile" (click)="quitarIconoEdit()">
+                  ✕ Quitar selección
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-delete" (click)="eliminarTipo()">
+            <button type="button" class="btn-delete" (click)="eliminarTipo()" *ngIf="puedeEliminar">
               🗑️ Eliminar
             </button>
             <div class="form-actions-right">
-              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
-                Cancelar
-              </button>
-              <button type="button" class="btn-save" (click)="actualizarTipo()">
-                Actualizar
-              </button>
+              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
+              <button type="button" class="btn-save"   (click)="actualizarTipo()">Actualizar</button>
             </div>
           </div>
         </form>

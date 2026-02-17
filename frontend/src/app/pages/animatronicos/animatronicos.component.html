@@ -122,6 +122,17 @@
         </div>
 
         <!-- El tipo se asigna automáticamente según el local del usuario -->
+        <!-- Admin: puede elegir la gama libremente -->
+        @if (esAdmin) {
+          <div class="form-group">
+            <label for="nuevo-gama">Tipo / Gama *</label>
+            <select id="nuevo-gama" [(ngModel)]="nuevoAnimatronico.id_gama" name="id_gama" class="form-input">
+              @for (tipo of tiposAnimatronicos; track tipo.id) {
+                <option [value]="tipo.id">{{ tipo.nombre }}</option>
+              }
+            </select>
+          </div>
+        }
 
         <div class="form-group">
           <label for="nuevo-piezas">Número de Piezas *</label>
@@ -193,7 +204,28 @@
             class="form-input">
         </div>
 
-        <!-- El tipo NO se puede modificar - es fijo según el local -->
+        <!-- Tipo/Gama: editable para admin, solo lectura para el resto -->
+        @if (esAdmin) {
+          <div class="form-group">
+            <label for="edit-gama">Tipo / Gama *</label>
+            <select id="edit-gama" [(ngModel)]="animatronicoEditando.id_gama" name="id_gama" class="form-input">
+              @for (tipo of tiposAnimatronicos; track tipo.id) {
+                <option [value]="tipo.id">{{ tipo.nombre }}</option>
+              }
+            </select>
+          </div>
+        } @else {
+          <div class="form-group">
+            <label>Tipo (fijo)</label>
+            <input
+              type="text"
+              [value]="obtenerNombreGama(animatronicoEditando.id_gama)"
+              class="form-input"
+              disabled
+              readonly>
+            <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
+          </div>
+        }
         <div class="form-group">
           <label>Tipo (fijo)</label>
           <input 
@@ -295,8 +327,8 @@
 
   <div class="system-tray">
     <div class="system-tray-user" *ngIf="usuario">
-      <span class="user-icon">👤</span>
-      <span class="user-name">{{ usuario.usuario }}</span>
+        <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
+        <span class="user-name">{{ usuario.usuario }}</span>
     </div>
     
     <div class="system-tray-separator"></div>

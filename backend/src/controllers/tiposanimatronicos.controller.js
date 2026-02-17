@@ -3,9 +3,12 @@ const TipoDTO = require('../dto/tiposanimatronicos.dto');
 const ResponseUtil = require('../utils/response.util');
 
 class TiposAnimatronicosController {
+
   async getAll(req, res) {
     try {
-      const tipos = await TipoAnimatronicosService.getAll();
+      // Si viene id_local en query, filtrar por ese local (usuarios no-admin)
+      const idLocal = req.query.id_local ? parseInt(req.query.id_local) : null;
+      const tipos = await TipoAnimatronicosService.getAll(idLocal);
       const response = tipos.map(t => TipoDTO.toResponse(t));
       return ResponseUtil.success(res, response);
     } catch (error) {
@@ -25,7 +28,11 @@ class TiposAnimatronicosController {
 
   async create(req, res) {
     try {
-      const tipo = await TipoAnimatronicosService.create(req.body);
+      const data = { ...req.body };
+      if (req.files?.icono?.[0]) {
+        data.icono = `/Icons/tipos/${req.files.icono[0].filename}`;
+      }
+      const tipo = await TipoAnimatronicosService.create(data);
       const response = TipoDTO.toResponse(tipo);
       return ResponseUtil.created(res, response, 'Tipo creado exitosamente');
     } catch (error) {
@@ -35,7 +42,12 @@ class TiposAnimatronicosController {
 
   async update(req, res) {
     try {
-      const tipo = await TipoAnimatronicosService.update(req.params.id, req.body);
+      const data = { ...req.body };
+      // Si se subió un nuevo icono, construir la ruta pública
+      if (req.files?.icono?.[0]) {
+        data.icono = `/Icons/tipos/${req.files.icono[0].filename}`;
+      }
+      const tipo = await TipoAnimatronicosService.update(req.params.id, data);
       const response = TipoDTO.toResponse(tipo);
       return ResponseUtil.success(res, response, 'Tipo actualizado exitosamente');
     } catch (error) {

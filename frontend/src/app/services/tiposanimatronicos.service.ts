@@ -10,9 +10,7 @@ interface ApiResponse<T> {
   data: T;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TiposAnimatronicosService {
 
   private apiUrl = 'http://localhost:3000/api/tipos-animatronicos';
@@ -20,14 +18,12 @@ export class TiposAnimatronicosService {
   constructor(private http: HttpClient) {}
 
   obtenerTodos(idLocal?: number): Observable<TipoAnimatronico[]> {
-    const url = idLocal ? `${this.apiUrl}?id_local=${idLocal}` : this.apiUrl;
+    const url = (idLocal !== undefined && idLocal !== null)
+      ? `${this.apiUrl}?id_local=${idLocal}`
+      : this.apiUrl;
+    console.log('🌐 GET tipos URL:', url);
     return this.http.get<ApiResponse<TipoAnimatronico[]>>(url).pipe(
-      map(response => {
-        console.log('📥 Respuesta del backend:', response);
-        const tipos = response.data || [];
-        console.log('📋 Tipos extraídos:', tipos);
-        return tipos;
-      })
+      map(response => response.data || [])
     );
   }
 
@@ -37,13 +33,31 @@ export class TiposAnimatronicosService {
     );
   }
 
-  crear(tipo: TipoAnimatronico): Observable<TipoAnimatronico> {
+  /** Crea un tipo. Si se proporciona icono, usa FormData. */
+  crear(tipo: TipoAnimatronico, iconoFile?: File): Observable<TipoAnimatronico> {
+    if (iconoFile) {
+      const formData = new FormData();
+      formData.append('nombre', tipo.nombre);
+      formData.append('icono', iconoFile, iconoFile.name);
+      return this.http.post<ApiResponse<TipoAnimatronico>>(this.apiUrl, formData).pipe(
+        map(response => response.data)
+      );
+    }
     return this.http.post<ApiResponse<TipoAnimatronico>>(this.apiUrl, tipo).pipe(
       map(response => response.data)
     );
   }
 
-  actualizar(id: number, tipo: TipoAnimatronico): Observable<TipoAnimatronico> {
+  /** Actualiza un tipo. Si se proporciona icono, usa FormData. */
+  actualizar(id: number, tipo: Partial<TipoAnimatronico>, iconoFile?: File): Observable<TipoAnimatronico> {
+    if (iconoFile) {
+      const formData = new FormData();
+      if (tipo.nombre !== undefined) formData.append('nombre', tipo.nombre);
+      formData.append('icono', iconoFile, iconoFile.name);
+      return this.http.put<ApiResponse<TipoAnimatronico>>(`${this.apiUrl}/${id}`, formData).pipe(
+        map(response => response.data)
+      );
+    }
     return this.http.put<ApiResponse<TipoAnimatronico>>(`${this.apiUrl}/${id}`, tipo).pipe(
       map(response => response.data)
     );

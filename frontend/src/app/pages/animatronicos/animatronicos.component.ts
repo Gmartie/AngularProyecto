@@ -60,6 +60,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
   puedeCrear: boolean = false;
   puedeEliminar: boolean = false;
   soloLectura: boolean = false;
+  esAdmin: boolean = false;
   
   // Control de ventana
   isMinimized: boolean = false;
@@ -128,6 +129,7 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
     
     // Si no puede editar ni crear ni eliminar, está en modo solo lectura
     this.soloLectura = !this.puedeEditar && !this.puedeCrear && !this.puedeEliminar;
+    this.esAdmin = this.usuario?.id_rol === 6;
     
     console.log('Permisos configurados:', {
       puedeEditar: this.puedeEditar,
@@ -529,7 +531,18 @@ onImageError(event: Event): void {
       this.router.navigate([window.route]);
     }
   }
-
+   obtenerIconoRol(): string {
+    const mapaRoles: { [key: number]: string } = {
+      1: '/FNAF_Rol_Icons/owner_icon.png',
+      2: '/FNAF_Rol_Icons/tech_icon.png',
+      3: '/FNAF_Rol_Icons/guard_icon.png',
+      4: '/FNAF_Rol_Icons/employee_icon.png',
+      5: '/FNAF_Rol_Icons/chef_icon.png',
+      6: '/FNAF_Rol_Icons/admin_icon.png'
+    };
+    const idRol = this.usuario?.id_rol ?? 0;
+    return mapaRoles[idRol] || '/FNAF_Rol_Icons/employee_icon.png';
+  }
   cerrarSesion(): void {
     this.windowService.closeAllWindows();
     this.authService.logout();

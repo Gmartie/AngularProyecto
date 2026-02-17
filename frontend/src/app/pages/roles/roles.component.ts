@@ -195,7 +195,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       this.router.navigate([window.route]);
     }
   }
-
+  
   cerrarSesion(): void {
     this.windowService.closeAllWindows();
     this.authService.logout();

@@ -5,8 +5,8 @@
  * Centraliza la lógica de permisos para ser usada en todos los componentes
  * 
  * ROLES:
- * 1 - Propietario: Editar local, VER animatronicos, CRUD tipos
- * 2 - Técnico: Ver local, CRUD tipos, CRUD animatrónicos
+ * 1 - Propietario: Editar local, VER animatronicos, VER+EDITAR tipos
+ * 2 - Técnico: Ver local, VER tipos, CRUD animatrónicos
  * 3 - Guardia de seguridad: Solo VER locales y animatrónicos
  * 4 - Empleado: Solo VER locales y animatrónicos
  * 5 - Cocinero: Solo VER locales y animatrónicos
@@ -97,13 +97,15 @@ export class PermisosService {
    * - Administrador (6): CRUD completo
    */
   private getPermisosTipos(idRol: number): Permisos {
-    const puedeGestionar = [1, 2, 6].includes(idRol);
-
+    // 6 - Administrador: CRUD completo
+    // 1 - Propietario:   ver + editar (sin crear ni eliminar)
+    // 2 - Técnico:       solo ver
+    // 3,4,5:             solo ver
     return {
-      ver: puedeGestionar,
-      crear: puedeGestionar,
-      editar: puedeGestionar,
-      eliminar: puedeGestionar
+      ver:      [1, 2, 3, 4, 5, 6].includes(idRol),
+      crear:    [6].includes(idRol),
+      editar:   [1, 6].includes(idRol),
+      eliminar: [6].includes(idRol)
     };
   }
 

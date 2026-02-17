@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-02-2026 a las 11:05:07
+-- Tiempo de generación: 17-02-2026 a las 18:53:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,9 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `fazbear_entertaiment`
 --
-DROP DATABASE IF EXISTS fazbear_entertaiment;
-CREATE DATABASE fazbear_entertaiment;
-USE fazbear_entertaiment;
+
 -- --------------------------------------------------------
 
 --
@@ -158,18 +156,20 @@ INSERT INTO `roles` (`id`, `rol`) VALUES
 
 CREATE TABLE `tipos_animatronicos` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(255) NOT NULL
+  `nombre` varchar(255) NOT NULL,
+  `icono` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipos_animatronicos`
 --
 
-INSERT INTO `tipos_animatronicos` (`id`, `nombre`) VALUES
-(1, 'Clásicos'),
-(2, 'Unwithered'),
-(3, 'Toys'),
-(4, 'Funtime');
+INSERT INTO `tipos_animatronicos` (`id`, `nombre`, `icono`) VALUES
+(1, 'Clásicos', NULL),
+(2, 'Unwithered', NULL),
+(3, 'Toys', NULL),
+(4, 'Funtime', NULL),
+(6, 'foxy', '/Icons/tipos/ToyFoxyP-1771346153052-585266879.png');
 
 -- --------------------------------------------------------
 
@@ -211,7 +211,7 @@ INSERT INTO `usuario` (`id`, `usuario`, `pass`, `correo`, `id_rol`, `id_local`) 
 (18, 'Edward Collins', '$2a$10$4DFyWx6.nE5sN9SMpy0BmOtBrwObor.bBBnzY/4qfXGrnFhBDH6J.', 'ecollins@fazbear.com', 5, 4),
 (19, 'Robert Fazbear', '$2a$10$Y7V8RpQ6l3S4a/YX6jvfS.S3nHP/OJUnlLzLIdlp3eHT8tYafC3cu', 'rfazbear@fazbear.com', 1, 4),
 (20, 'ejemplo', '$2a$10$pVrrb3b97DWKYn505rrTPeZ23ddYOrd3rsVZ82RvjmAMeuZtchsaG', 'ejem2@gmail.com', 6, 0),
-(21, 'William2', '$2a$10$PzTM1Y4m/amkDEvusQXsRes8kqMfsoCOupWfEjBBUrwZUr58ta9gy', 'ana@tm.com', 3, 0);
+(21, 'William2', '$2a$10$PzTM1Y4m/amkDEvusQXsRes8kqMfsoCOupWfEjBBUrwZUr58ta9gy', 'ana@tm.com', 3, 1);
 
 --
 -- Índices para tablas volcadas
@@ -254,7 +254,8 @@ ALTER TABLE `tipos_animatronicos`
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKdc3yt6c0ifauu675sn383tpih` (`id_rol`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -282,7 +283,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `tipos_animatronicos`
 --
 ALTER TABLE `tipos_animatronicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -312,6 +313,12 @@ ALTER TABLE `animatronico_local`
 --
 ALTER TABLE `locales`
   ADD CONSTRAINT `locales_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `FKdc3yt6c0ifauu675sn383tpih` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

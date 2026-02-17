@@ -245,7 +245,6 @@ class AnimatronicoService {
       // No lanzar error, solo registrar - no queremos que falle la eliminación del registro
     }
   }
-}
 
   async getInforme(id) {
     const query = `
@@ -272,5 +271,6 @@ class AnimatronicoService {
     if (!rows.length) throw new NotFoundError('Animatrónico no encontrado');
     return rows[0];
   }
+}
 
 module.exports = new AnimatronicoService();

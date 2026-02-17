@@ -277,6 +277,19 @@ export class AdminComponent implements OnInit, OnDestroy {
   /**
    * Obtiene la hora actual para la taskbar
    */
+  obtenerIconoRol(): string {
+    const mapaRoles: { [key: number]: string } = {
+      1: "/FNAF_Rol_Icons/owner_icon.png",
+      2: "/FNAF_Rol_Icons/tech_icon.png",
+      3: "/FNAF_Rol_Icons/guard_icon.png",
+      4: "/FNAF_Rol_Icons/employee_icon.png",
+      5: "/FNAF_Rol_Icons/chef_icon.png",
+      6: "/FNAF_Rol_Icons/admin_icon.png"
+    };
+    const idRol = this.usuario?.id_rol ?? 0;
+    return mapaRoles[idRol] || "/FNAF_Rol_Icons/employee_icon.png";
+  }
+
   getHoraActual(): string {
     const ahora = new Date();
     return ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });

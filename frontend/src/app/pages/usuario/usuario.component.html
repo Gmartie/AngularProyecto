@@ -91,7 +91,7 @@
   <!-- Bandeja del sistema -->
   <div class="system-tray">
     <div class="system-tray-user" *ngIf="usuarioActual">
-      <span class="user-icon">👤</span>
+      <img [src]="obtenerIconoRol()" [alt]="usuarioActual.usuario" class="user-rol-icon">
       <span class="user-name">{{ usuarioActual.usuario }}</span>
     </div>
     

@@ -808,3 +808,15 @@
   display: flex;
   gap: 8px;
 }
+
+/* ── Icono de rol en system-tray ── */
+.user-rol-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 1px;
+  flex-shrink: 0;
+}

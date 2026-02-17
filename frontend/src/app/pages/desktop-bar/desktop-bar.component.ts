@@ -14,6 +14,7 @@ export interface Usuario {
   usuario: string;
   nombre?: string;
   email?: string;
+  id_rol?: number;
 }
 
 @Component({
@@ -75,5 +76,18 @@ export class DesktopBarComponent implements OnInit, OnDestroy {
   // Método auxiliar para obtener la hora actual (usado en el template)
   getHoraActual(): string {
     return this.horaActual;
+  }
+
+  obtenerIconoRol(): string {
+    const mapaRoles: { [key: number]: string } = {
+      1: '/FNAF_Rol_Icons/owner_icon.png',
+      2: '/FNAF_Rol_Icons/tech_icon.png',
+      3: '/FNAF_Rol_Icons/guard_icon.png',
+      4: '/FNAF_Rol_Icons/employee_icon.png',
+      5: '/FNAF_Rol_Icons/chef_icon.png',
+      6: '/FNAF_Rol_Icons/admin_icon.png'
+    };
+    const idRol = this.usuario?.id_rol ?? 0;
+    return mapaRoles[idRol] || '/FNAF_Rol_Icons/employee_icon.png';
   }
 }

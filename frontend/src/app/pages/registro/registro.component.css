@@ -4,8 +4,12 @@
   justify-content: center;
   min-height: calc(100vh - 70px);
   padding: 2rem;
-  /* Se eliminó el background gris para dejar ver el fondo de imagen */
-  position: relative; /* Para posicionar Helpy */
+    background-image: url('/Wallpapers/WebBackground.jpg');
+ background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: scroll;
+  position: relative;
 }
 
 /* Caja principal */
@@ -14,8 +18,8 @@
   padding: 2rem;
   width: 100%;
   max-width: 420px;
-  border: 3px solid #003399; /* marco azul clásico */
-  box-shadow: 4px 4px 0 #666666; /* sombra dura */
+  border: 3px solid #003399;
+  box-shadow: 4px 4px 0 #666666;
 }
 
 /* Título */

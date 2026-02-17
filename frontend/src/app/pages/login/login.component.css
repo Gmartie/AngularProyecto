@@ -6,7 +6,12 @@
   justify-content: center;
   min-height: calc(100vh - 70px);
   padding: 2rem;
-  /* Se eliminó el background gris para dejar ver el fondo de imagen */
+    background-image: url('/Wallpapers/WebBackground.jpg');
+ background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: scroll;
+  position: relative;
 }
 
 /* Wrapper para contener el formulario y Helpy */
@@ -16,7 +21,7 @@
   max-width: 420px;
 }
 
-/* ===== HELPY PLANK en esquina superior derecha ===== */
+/* ===== HELPY en esquina superior derecha ===== */
 .helpy-login-corner {
   position: absolute;
   top: -110px;  /* Más arriba */

@@ -14,10 +14,14 @@
             </div>
             <div class="window-content">
                 <div class="toolbar">
-                    <button class="btn-add" (click)="abrirFormularioNuevo()" *ngIf="puedeCrear">
+                    @if (puedeCrear) {
+                    <button class="btn-add" (click)="abrirFormularioNuevo()">
                         <span class="btn-icon"></span> Añadir Tipo
                     </button>
-                    <span class="filter-badge" *ngIf="!esAdmin"> Solo tipos de tu local</span>
+                    }
+                    @if (!esAdmin) {
+                    <span class="filter-badge"> Solo tipos de tu local</span>
+                    }
                 </div>
                 <div class="tipos-list">
                     @for (tipo of tipos; track tipo.id) {
@@ -29,18 +33,22 @@
                         <div class="card-info">
                             <h3 class="tipo-nombre">{{ tipo.nombre }}</h3>
                         </div>
-                        <div class="card-actions" *ngIf="puedeEditar">
+                        @if (puedeEditar) {
+                        <div class="card-actions">
                             <button class="btn-edit" (click)="abrirFormularioEditar(tipo)"> Editar</button>
                         </div>
+                        }
                     </div>
                     }
                     @if (tipos.length === 0 && !cargando && !errorCarga) {
                     <div class="empty-state">
                         <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
                         <p class="empty-text">No hay tipos de animatrónicos registrados</p>
-                        <button class="btn-add-empty" (click)="abrirFormularioNuevo()" *ngIf="puedeCrear">
+                        @if (puedeCrear) {
+                        <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
                             Añadir el primero
                         </button>
+                        }
                     </div>
                     }
                 </div>
@@ -48,30 +56,7 @@
         </div>
     </div>
 </div>
-<div class="taskbar" *ngIf="!isMinimized">
-    <div class="start-button">
-        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-        <span>Inicio</span>
-    </div>
-    <div class="taskbar-separator"></div>
-    <div class="taskbar-windows">
-        <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
-            [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized && window.id === 'tipos'"
-            (click)="restaurarVentana(window.id)">
-            <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-            <span>{{ window.title }}</span>
-        </button>
-    </div>
-    <div class="system-tray">
-        <div class="system-tray-user" *ngIf="usuario">
-            <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
-            <span class="user-name">{{ usuario.usuario }}</span>
-        </div>
-        <div class="system-tray-separator"></div>
-        <div class="system-tray-time">{{ getHoraActual() }}</div>
-        <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión"><span></span></button>
-    </div>
-</div>
+<app-taskbar windowId="tipos"></app-taskbar>
 @if (mostrarFormularioNuevo) {
 <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
     <div class="modal-window" (click)="$event.stopPropagation()">
@@ -95,20 +80,29 @@
                     <label>Icono (opcional)</label>
                     <div class="icono-preview-container">
                         <div class="icono-preview">
-                            <img *ngIf="iconoNuevoPreview" [src]="iconoNuevoPreview" alt="Preview"
-                                class="icono-preview-img">
-                            <span *ngIf="!iconoNuevoPreview" class="icono-placeholder"></span>
+                            @if (iconoNuevoPreview) {
+                            <img [src]="iconoNuevoPreview" alt="Preview" class="icono-preview-img">
+                            }
+                            @if (!iconoNuevoPreview) {
+                            <span class="icono-placeholder"></span>
+                            }
                         </div>
                         <div class="icono-actions">
                             <label class="btn-upload-icono" for="icono-nuevo-input"> Elegir imagen</label>
                             <input type="file" id="icono-nuevo-input" accept="image/png,image/jpeg,image/webp,image/gif"
                                 (change)="onIconoNuevoSeleccionado($event)" style="display:none">
-                            <span class="icono-hint" *ngIf="!iconoNuevoFile">PNG, JPG o WebP · máx 5MB</span>
-                            <span class="icono-filename" *ngIf="iconoNuevoFile">{{ iconoNuevoFile.name }}</span>
-                            <button type="button" class="btn-quitar-icono" *ngIf="iconoNuevoFile"
+                            @if (!iconoNuevoFile) {
+                            <span class="icono-hint">PNG, JPG o WebP · máx 5MB</span>
+                            }
+                            @if (iconoNuevoFile) {
+                            <span class="icono-filename">{{ iconoNuevoFile.name }}</span>
+                            }
+                            @if (iconoNuevoFile) {
+                            <button type="button" class="btn-quitar-icono"
                                 (click)="quitarIconoNuevo()">
                                 Quitar
                             </button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -150,19 +144,27 @@
                             <label class="btn-upload-icono" for="icono-edit-input"> Cambiar imagen</label>
                             <input type="file" id="icono-edit-input" accept="image/png,image/jpeg,image/webp,image/gif"
                                 (change)="onIconoEditSeleccionado($event)" style="display:none">
-                            <span class="icono-hint" *ngIf="!iconoEditFile">PNG, JPG o WebP · máx 5MB</span>
-                            <span class="icono-filename" *ngIf="iconoEditFile">{{ iconoEditFile.name }}</span>
-                            <button type="button" class="btn-quitar-icono" *ngIf="iconoEditFile"
+                            @if (!iconoEditFile) {
+                            <span class="icono-hint">PNG, JPG o WebP · máx 5MB</span>
+                            }
+                            @if (iconoEditFile) {
+                            <span class="icono-filename">{{ iconoEditFile.name }}</span>
+                            }
+                            @if (iconoEditFile) {
+                            <button type="button" class="btn-quitar-icono"
                                 (click)="quitarIconoEdit()">
                                 Quitar selección
                             </button>
+                            }
                         </div>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn-delete" (click)="eliminarTipo()" *ngIf="puedeEliminar">
+                    @if (puedeEliminar) {
+                    <button type="button" class="btn-delete" (click)="eliminarTipo()">
                         Eliminar
                     </button>
+                    }
                     <div class="form-actions-right">
                         <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
                         <button type="button" class="btn-save" (click)="actualizarTipo()">Actualizar</button>

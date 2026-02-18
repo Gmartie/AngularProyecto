@@ -9,6 +9,7 @@ import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { RolesService } from '../../services/roles.service';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 
 interface RolVista {
   id: number;
@@ -18,7 +19,7 @@ interface RolVista {
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TaskbarComponent],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css']
 })

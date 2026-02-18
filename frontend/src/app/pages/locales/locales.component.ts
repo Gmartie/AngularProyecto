@@ -10,10 +10,11 @@ import { PermisosService } from '../../services/permisos.service';
 import { Local } from '../../models/local.model';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 @Component({
     selector: 'app-locales',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TaskbarComponent],
     templateUrl: './locales.component.html',
     styleUrls: ['./locales.component.css']
 })

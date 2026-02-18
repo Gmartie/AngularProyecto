@@ -4,7 +4,7 @@
 <div class="window">
 <div class="window-header">
 <div class="window-title">
-<span class="window-icon-small"></span>
+<img src="/Icons/computer_icon.png" alt="Admin" class="window-icon-img">
 <span>Panel de Administración - Fazbear Entertainment</span>
 </div>
 <div class="window-controls">
@@ -17,22 +17,28 @@
 <div class="admin-welcome">
 <div class="welcome-icon"></div>
 <h2>Panel de Administración</h2>
-<p *ngIf="usuario">Bienvenido, <strong>{{ usuario.usuario }}</strong></p>
+@if (usuario) {
+<p>Bienvenido, <strong>{{ usuario.usuario }}</strong></p>
+}
 <p class="role-badge">{{ nombreRol() }}</p>
 </div>
-<div class="access-denied" *ngIf="!esAdministrador()">
+@if (!esAdministrador()) {
+<div class="access-denied">
 <div class="denied-icon"></div>
 <h3>Acceso Denegado</h3>
 <p>Solo los usuarios con rol de <strong>Administrador</strong> pueden acceder a este panel.</p>
 <p>Tu rol actual: <strong>{{ nombreRol() }}</strong></p>
 <button class="btn-volver" (click)="cerrarVentana()">Volver al Escritorio</button>
 </div>
-<div class="admin-panel" *ngIf="esAdministrador()">
+}
+@if (esAdministrador()) {
+<div class="admin-panel">
 <div class="panel-info">
 <p>Gestiona todos los aspectos del sistema Fazbear Entertainment</p>
 </div>
 <div class="admin-grid">
-<div *ngFor="let seccion of secciones" class="admin-card"
+@for (seccion of secciones; track seccion.titulo) {
+<div class="admin-card"
 (click)="navegarSeccion(seccion)"
 >
 <div class="card-header">
@@ -41,15 +47,18 @@
 </div>
 <div class="card-body">
 <p class="card-description">{{ seccion.descripcion }}</p>
-<div class="card-stats" *ngIf="seccion.estadisticas">
+@if (seccion.estadisticas) {
+<div class="card-stats">
 <span class="stats-label">{{ seccion.estadisticas.label }}:</span>
 <span class="stats-value">{{ seccion.estadisticas.valor }}</span>
 </div>
+}
 </div>
 <div class="card-footer">
 <span class="card-link">Abrir →</span>
 </div>
 </div>
+}
 </div>
 <div class="system-info">
 <div class="info-header">
@@ -76,38 +85,9 @@
 </div>
 </div>
 </div>
+}
 </div>
 </div>
 </div>
 </div>
-<div class="taskbar" *ngIf="!isMinimized">
-<div class="start-button">
-<img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-<span>Inicio</span>
-</div>
-<div class="taskbar-separator"></div>
-<div class="taskbar-windows">
-<button *ngFor="let window of ventanasAbiertas$ | async"
-class="taskbar-window-btn"
-[class.minimized]="window.isMinimized"
-[class.active]="!window.isMinimized && window.id === 'admin'"
-(click)="restaurarVentana(window.id)"
->
-<img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-<span>{{ window.title }}</span>
-</button>
-</div>
-<div class="system-tray">
-<div class="system-tray-user" *ngIf="usuario">
-<img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
-<span class="user-name">{{ usuario.usuario }}</span>
-</div>
-<div class="system-tray-separator"></div>
-<div class="system-tray-time">
-{{ getHoraActual() }}
-</div>
-<button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-<span></span>
-</button>
-</div>
-</div>
+<app-taskbar windowId="admin"></app-taskbar>

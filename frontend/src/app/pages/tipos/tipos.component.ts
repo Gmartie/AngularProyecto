@@ -11,10 +11,11 @@ import { TipoAnimatronico } from '../../models/tiposanimatronicos.model';
 import { Local } from '../../models/local.model';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 @Component({
     selector: 'app-tipos',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TaskbarComponent],
     templateUrl: './tipos.component.html',
     styleUrls: ['./tipos.component.css']
 })

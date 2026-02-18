@@ -7,10 +7,11 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { WindowService, Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 @Component({
     selector: 'app-perfil',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TaskbarComponent],
     templateUrl: './perfil.component.html',
     styleUrls: ['./perfil.component.css']
 })

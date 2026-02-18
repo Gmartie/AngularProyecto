@@ -10,6 +10,7 @@ import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService, Window } from '../../services/window.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { RolesService } from '../../services/roles.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 interface SeccionAdmin {
 id: string;
 titulo: string;
@@ -24,7 +25,7 @@ valor: string | number;
 @Component({
 selector: 'app-admin',
 standalone: true,
-imports: [CommonModule],
+imports: [CommonModule, TaskbarComponent],
 templateUrl: './admin.component.html',
 styleUrls: ['./admin.component.css']
 })

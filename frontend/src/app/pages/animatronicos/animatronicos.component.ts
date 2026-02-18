@@ -8,6 +8,7 @@ import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { AnimatronicosService } from '../../services/animatronicos.service';import { PermisosService } from '../../services/permisos.service';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 interface Animatronico {
 id?: number;
 nombre: string;
@@ -25,7 +26,7 @@ nombre: string;
 @Component({
 selector: 'app-animatronicos',
 standalone: true,
-imports: [CommonModule, FormsModule],
+imports: [CommonModule, FormsModule, TaskbarComponent],
 templateUrl: './animatronicos.component.html',
 styleUrls: ['./animatronicos.component.css']
 })

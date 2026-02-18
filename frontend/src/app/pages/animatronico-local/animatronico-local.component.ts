@@ -12,6 +12,7 @@ import { AnimatronicoLocal } from '../../models/animatronico-local.model';
 import { Animatronico } from '../../models/animatronico.model';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 interface Local {
     id: number;
     ciudad: string;
@@ -20,7 +21,7 @@ interface Local {
 @Component({
     selector: 'app-animatronico-local',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TaskbarComponent],
     templateUrl: './animatronico-local.component.html',
     styleUrls: ['./animatronico-local.component.css']
 })

@@ -9,6 +9,7 @@ import { UsuarioService } from '../../services/usuario.service';
 import { RolesService } from '../../services/roles.service';
 import { Usuario } from '../../models/usuario.model';
 import { Subscription, Observable } from 'rxjs';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 import { Window } from '../../services/window.service'; interface UsuarioVista {
     id: number;
     usuario: string;
@@ -25,7 +26,7 @@ interface Rol {
 @Component({
     selector: 'app-usuario',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TaskbarComponent],
     templateUrl: './usuario.component.html',
     styleUrls: ['./usuario.component.css']
 })

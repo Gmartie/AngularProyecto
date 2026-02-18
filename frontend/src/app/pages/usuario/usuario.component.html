@@ -50,34 +50,7 @@
         </div>
     </div>
 </div>
-<div class="taskbar" *ngIf="!isMinimized">
-    <div class="start-button">
-        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-        <span>Inicio</span>
-    </div>
-    <div class="taskbar-separator"></div>
-    <div class="taskbar-windows">
-        <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
-            [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized && window.id === 'usuario'"
-            (click)="restaurarVentana(window.id)">
-            <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-            <span>{{ window.title }}</span>
-        </button>
-    </div>
-    <div class="system-tray">
-        <div class="system-tray-user" *ngIf="usuarioActual">
-            <img [src]="obtenerIconoRol()" [alt]="usuarioActual.usuario" class="user-rol-icon">
-            <span class="user-name">{{ usuarioActual.usuario }}</span>
-        </div>
-        <div class="system-tray-separator"></div>
-        <div class="system-tray-time">
-            {{ getHoraActual() }}
-        </div>
-        <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-            <span></span>
-        </button>
-    </div>
-</div>
+<app-taskbar windowId="usuario"></app-taskbar>
 @if (mostrarFormularioEditar && usuarioEditando) {
 <div class="modal-overlay" (click)="cerrarFormularioEditar()">
     <div class="modal-window" (click)="$event.stopPropagation()">

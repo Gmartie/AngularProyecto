@@ -1,16 +1,22 @@
 <h1>Panel Principal</h1>
 
-<div *ngIf="rol === 1">
+@if (rol === 1) {
+<div>
   <a routerLink="/locales">Gestionar Locales</a>
   <a routerLink="/animatronicos">Gestionar Animatrónicos</a>
 </div>
+}
 
-<div *ngIf="rol === 2">
+@if (rol === 2) {
+<div>
   <a routerLink="/animatronicos">Animatrónicos (CRUD)</a>
   <a routerLink="/tipos">Tipos de Animatrónicos</a>
 </div>
+}
 
-<div *ngIf="rol === 3">
+@if (rol === 3) {
+<div>
   <a routerLink="/locales">Ver Local</a>
   <a routerLink="/animatronicos">Ver Animatrónicos</a>
 </div>
+}

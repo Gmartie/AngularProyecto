@@ -6,6 +6,7 @@ import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { WindowService } from '../../services/window.service';
 import { Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
+import { TaskbarComponent } from '../../components/taskbar/taskbar.component';
 interface ProgramaIcono {
     id: string;
     nombre: string;
@@ -18,7 +19,7 @@ interface ProgramaIcono {
 @Component({
     selector: 'app-home2',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, TaskbarComponent],
     templateUrl: './home2.component.html',
     styleUrls: ['./home2.component.css']
 })

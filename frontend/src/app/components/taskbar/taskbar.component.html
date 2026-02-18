@@ -1,4 +1,3 @@
-
 <div class="taskbar">
   <div class="start-button">
     <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
@@ -10,7 +9,7 @@
     <button
       class="taskbar-window-btn"
       [class.minimized]="window.isMinimized"
-      [class.active]="!window.isMinimized"
+      [class.active]="!window.isMinimized && window.id === windowId"
       (click)="restaurarVentana(window.id)"
     >
       <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
@@ -25,15 +24,8 @@
       <span class="user-name">{{ usuario.usuario }}</span>
     </div>
     }
-    
     <div class="system-tray-separator"></div>
-    
-    <div class="system-tray-time">
-      {{ horaActual }}
-    </div>
-    
-    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span></span>
-    </button>
+    <div class="system-tray-time">{{ horaActual }}</div>
+    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">🚪</button>
   </div>
 </div>

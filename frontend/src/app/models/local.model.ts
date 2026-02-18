@@ -1,8 +1,3 @@
-/**
- * MODELO: Local
- *
- * Define un local de Fazbear Entertainment
- */
 
 export interface Local {
   id: number;
@@ -13,7 +8,6 @@ export interface Local {
   direccion: string;
   abierto: boolean;
 
-  // Datos relacionados (opcional)
   tipos_animatronicos?: {
     id: number;
     nombre: string;

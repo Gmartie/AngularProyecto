@@ -1,9 +1,3 @@
-/**
- * PUNTO DE ENTRADA PRINCIPAL
- * 
- * Bootstrap de la aplicación Angular
- * Inicia la aplicación y carga el componente raíz
- */
 
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';

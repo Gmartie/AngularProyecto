@@ -1,3 +1,4 @@
+
 export interface TipoAnimatronico {
   id: number;
   nombre: string;

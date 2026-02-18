@@ -106,17 +106,6 @@ export class AdminComponent implements OnInit, OnDestroy {
         label: 'Asignaciones activas',
         valor: 18
       }
-    },
-    {
-      id: 'reportes',
-      titulo: 'Reportes y Estadísticas',
-      icono: '📊',
-      descripcion: 'Generar reportes del sistema',
-      ruta: '#',
-      estadisticas: {
-        label: 'Próximamente',
-        valor: '...'
-      }
     }
   ];
 

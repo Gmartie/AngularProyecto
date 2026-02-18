@@ -1,13 +1,10 @@
-/* ============================================
-   VENTANA FLOTANTE ESTILO WINDOWS 95
-   ============================================ */
 
 .window-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 40px; /* Espacio para la taskbar */
+  bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +20,6 @@
   pointer-events: all;
 }
 
-/* Contenedor de la ventana */
 .window-container {
   width: 90%;
   max-width: 900px;
@@ -60,7 +56,7 @@
   height: 28px;
   cursor: move;
   user-select: none;
-  position: relative; /* Añadido para posicionar a Helpy */
+  position: relative;
 }
 
 .window-title {
@@ -78,23 +74,23 @@
   object-fit: contain;
 }
 
-/* Helpy en la esquina superior derecha de la ventana */
+/* Helpy */
 .helpy-hanging {
   position: absolute;
-  top: -60px; /* Sobresale mucho más arriba de la barra */
-  right: -90px; /* En la esquina derecha de la ventana */
+  top: -60px;
+  right: -90px;
   z-index: 10;
-  pointer-events: none; /* No interfiere con clics */
+  pointer-events: none;
 }
 
 .helpy-hanging img {
-  width: 150px; /* Más grande */
+  width: 150px;
   height: auto;
   display: block;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6)); /* Sombra más pronunciada */
 }
 
-/* Ajuste responsive para pantallas pequeñas */
+/* Movil */
 @media (max-width: 768px) {
   .helpy-hanging {
     right: -15px;
@@ -102,7 +98,7 @@
   }
   
   .helpy-hanging img {
-    width: 80px; /* Tamaño más pequeño en móviles */
+    width: 80px;
   }
 }
 
@@ -150,7 +146,6 @@
   background: #c0c0c0;
 }
 
-/* Toolbar */
 .toolbar {
   margin-bottom: 20px;
   padding: 8px;
@@ -177,7 +172,6 @@
   font-size: 14px;
 }
 
-/* Card del local */
 .local-card {
   background: #ffffff;
   border: 2px outset #ffffff;
@@ -280,7 +274,6 @@
   border-style: inset;
 }
 
-/* Estado vacío */
 .empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -307,7 +300,6 @@
   margin: 0;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -339,7 +331,7 @@
   flex: 1;
 }
 
-/* Formulario */
+
 .form-local {
   display: flex;
   flex-direction: column;
@@ -492,10 +484,6 @@
     width: 100%;
   }
 }
-
-/* ============================================
-   BARRA DE TAREAS (copiada de animatrónicos)
-   ============================================ */
 
 .taskbar {
   position: fixed;
@@ -664,7 +652,6 @@
 .logout-btn:active {
   border-style: inset;
 }
-/* Estilos para vista de administrador (todos los locales) */
 .locales-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -769,7 +756,6 @@
   opacity: 0.5;
 }
 
-/* ── Icono de rol en system-tray ── */
 .user-rol-icon {
   width: 20px;
   height: 20px;

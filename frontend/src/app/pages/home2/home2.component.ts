@@ -1,15 +1,3 @@
-/**
- * COMPONENTE: Home2Component - VERSIÓN CON CONTROL DE PERMISOS POR ROL
- * 
- * Escritorio estilo Windows 95 con iconos de programas
- * Los iconos y permisos cambian según el id_rol del usuario
- * 
- * ROLES Y PERMISOS:
- * - id_rol = 1 (Propietario): Editar local, VER animatronicos (no editar), Editar tipos
- * - id_rol = 2 (Técnico): Ver local, CRUD Tipos, CRUD Animátronicos
- * - id_rol = 3,4,5 (Guardia/Empleado/Cocinero): Solo VER locales y animatrónicos
- * - id_rol = 6 (Administrador Master): Panel admin especial (ya implementado)
- */
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -25,7 +13,7 @@ interface ProgramaIcono {
   icono: string;
   ruta?: string;
   descripcion: string;
-  rolesPermitidos?: number[];  // CAMBIO: Ahora usa números (id_rol) en lugar de nombres
+  rolesPermitidos?: number[];
   funcional: boolean;
 }
 
@@ -56,9 +44,6 @@ export class Home2Component implements OnInit {
     });
   }
 
-  /**
-   * Obtiene los iconos según el id_local del usuario
-   */
   private getIconoAnimatronicos(): string {
     const idLocal = (this.usuario as any)?.id_local;
     
@@ -82,21 +67,16 @@ export class Home2Component implements OnInit {
       default: return '/Icons/restaurant_icon.png';
     }
   }
-
-  /**
-   * Crea la lista de programas con iconos dinámicos
-   * NUEVO: Cada programa tiene definidos los roles que pueden acceder a él
-   */
+/*  Programas */
   private crearProgramas(): ProgramaIcono[] {
     return [
-      // PROGRAMAS FUNCIONALES
       {
         id: 'animatronicos',
         nombre: 'Animatrónicos',
         icono: this.getIconoAnimatronicos(),
         ruta: '/animatronicos',
         descripcion: 'Gestión de Animatrónicos',
-        rolesPermitidos: [1, 2, 3, 4, 5], // Todos excepto Admin Master (6)
+        rolesPermitidos: [1, 2, 3, 4, 5],
         funcional: true
       },
       {
@@ -105,7 +85,7 @@ export class Home2Component implements OnInit {
         icono: this.getIconoLocales(),
         ruta: '/locales',
         descripcion: 'Control de Locales',
-        rolesPermitidos: [1, 2, 3, 4, 5], // Todos excepto Admin Master (6)
+        rolesPermitidos: [1, 2, 3, 4, 5],
         funcional: true
       },
       {
@@ -114,7 +94,7 @@ export class Home2Component implements OnInit {
         icono: '/Icons/springlock_icon.png',
         ruta: '/tipos',
         descripcion: 'Tipos de Animatrónicos',
-        rolesPermitidos: [1, 2], // Solo Propietario y Técnico
+        rolesPermitidos: [1, 2],
         funcional: true
       },
       {
@@ -123,7 +103,7 @@ export class Home2Component implements OnInit {
         icono: '/Icons/profile_icon.png',
         ruta: '/perfil',
         descripcion: 'Perfil de Operador',
-        rolesPermitidos: [1, 2, 3, 4, 5, 6], // Todos los roles
+        rolesPermitidos: [1, 2, 3, 4, 5, 6],
         funcional: true
       },
       {
@@ -132,7 +112,7 @@ export class Home2Component implements OnInit {
         icono: '/Icons/computer_icon.png',
         ruta: '/admin',
         descripcion: 'Panel de Administración',
-        rolesPermitidos: [6], // Solo Administrador Master
+        rolesPermitidos: [6],
         funcional: true
       },
       {
@@ -141,11 +121,11 @@ export class Home2Component implements OnInit {
         icono: '/Icons/delivery_box.png',
         ruta: '/animatronico-local',
         descripcion: 'Gestión de Asignaciones',
-        rolesPermitidos: [6], // Solo Administrador Master
+        rolesPermitidos: [6],
         funcional: true
       },
       
-      // PROGRAMAS DECORATIVOS (visibles para todos)
+      // Programas sin utilidad
       {
         id: 'cameras',
         nombre: 'Cámaras',
@@ -177,9 +157,6 @@ export class Home2Component implements OnInit {
     ];
   }
 
-  /**
-   * NUEVO: Filtra los programas según el id_rol del usuario
-   */
   filtrarProgramas(): void {
     if (!this.usuario) {
       this.programasFiltrados = [];
@@ -190,56 +167,46 @@ export class Home2Component implements OnInit {
     const idRol = this.usuario.id_rol;
 
     this.programasFiltrados = programas.filter(programa => {
-      // Los programas decorativos siempre se muestran
       if (!programa.funcional) {
         return true;
       }
 
-      // Si no tiene restricciones de roles, se muestra a todos
       if (!programa.rolesPermitidos || programa.rolesPermitidos.length === 0) {
         return true;
       }
 
-      // Verificar si el id_rol del usuario está en la lista de roles permitidos
       return programa.rolesPermitidos.includes(idRol);
     });
   }
 
-  /**
-   * NUEVO: Verifica si el usuario tiene un rol específico por ID
-   */
+
   tieneRol(idRol: number): boolean {
     return this.usuario?.id_rol === idRol;
   }
 
-  /**
-   * NUEVO: Obtiene los permisos del usuario para cada módulo
-   * Esto se usará en los componentes hijos
-   */
   obtenerPermisos() {
     const idRol = this.usuario?.id_rol;
     
     return {
-      // Permisos para ANIMATRONICOS
       animatronicos: {
         ver: [1, 2, 3, 4, 5].includes(idRol || 0),
-        crear: [2].includes(idRol || 0),  // Solo Técnico
-        editar: [2].includes(idRol || 0),  // Solo Técnico
-        eliminar: [2].includes(idRol || 0)  // Solo Técnico
+        crear: [2].includes(idRol || 0),
+        editar: [2].includes(idRol || 0),
+        eliminar: [2].includes(idRol || 0)
       },
-      // Permisos para LOCALES
+
       locales: {
         ver: [1, 2, 3, 4, 5].includes(idRol || 0),
-        crear: false,  // Nadie puede crear locales
-        editar: [1].includes(idRol || 0),  // Solo Propietario
-        eliminar: false  // Nadie puede eliminar locales
+        crear: false,
+        editar: [1].includes(idRol || 0),
+        eliminar: false
       },
-      // Permisos para TIPOS
+
       tipos: {
-        ver: [1, 2].includes(idRol || 0),  // Solo Propietario y Técnico
-        crear: [1, 2].includes(idRol || 0),  // Propietario y Técnico
-        editar: [1, 2].includes(idRol || 0),  // Propietario y Técnico
-        eliminar: [1, 2].includes(idRol || 0)  // Propietario y Técnico
+        ver: [1, 2].includes(idRol || 0),
+        crear: [1, 2].includes(idRol || 0),
+        editar: [1, 2].includes(idRol || 0),
+        eliminar: [1, 2].includes(idRol || 0)
       }
     };
   }

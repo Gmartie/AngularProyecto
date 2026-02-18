@@ -1,4 +1,3 @@
-/* Estilos retro/vintage para el componente de login */
 
 .login-container {
   display: flex;
@@ -14,18 +13,17 @@
   position: relative;
 }
 
-/* Wrapper para contener el formulario y Helpy */
 .login-wrapper {
   position: relative;
   width: 100%;
   max-width: 420px;
 }
 
-/* ===== HELPY en esquina superior derecha ===== */
+/* Helpy  */
 .helpy-login-corner {
   position: absolute;
-  top: -110px;  /* Más arriba */
-  right: -30px; /* Más a la derecha */
+  top: -110px;
+  right: -30px;
   z-index: 10;
   pointer-events: none;
 }
@@ -35,18 +33,16 @@
   display: block;
 }
 
-/* Caja principal */
 .login-box {
   background: #eeeeee;
   padding: 2rem;
   width: 100%;
-  border: 3px solid #003399; /* marco azul clásico */
-  box-shadow: 4px 4px 0 #666666; /* sombra dura */
+  border: 3px solid #003399;
+  box-shadow: 4px 4px 0 #666666;
   position: relative;
   z-index: 1;
 }
 
-/* Título */
 .login-box h2 {
   color: #003399;
   text-align: center;
@@ -55,7 +51,6 @@
   text-transform: uppercase;
 }
 
-/* Subtítulo */
 .subtitle {
   text-align: center;
   color: #555;
@@ -63,7 +58,6 @@
   font-size: 0.9rem;
 }
 
-/* Grupos */
 .form-group {
   margin-bottom: 1.3rem;
 }
@@ -76,7 +70,6 @@
   font-size: 0.85rem;
 }
 
-/* Inputs simples */
 .form-group input {
   width: 100%;
   padding: 0.5rem;
@@ -92,7 +85,6 @@
   background: #f8f8ff;
 }
 
-/* Error */
 .error-message {
   background: #ffffff;
   color: #990000;
@@ -102,7 +94,6 @@
   font-size: 0.85rem;
 }
 
-/* Botón clásico */
 .btn-login {
   width: 100%;
   padding: 0.55rem;
@@ -123,7 +114,6 @@
   cursor: not-allowed;
 }
 
-/* Link */
 .registro-link {
   text-align: center;
   margin-top: 1rem;
@@ -140,7 +130,7 @@
   color: #000080;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 480px) {
   .login-box {
     padding: 1.4rem;
@@ -150,7 +140,7 @@
     font-size: 1.4rem;
   }
 
-  /* Helpy más pequeño en móvil */
+  /* Helpy en móvil */
   .helpy-plank-img {
     width: 80px;
   }

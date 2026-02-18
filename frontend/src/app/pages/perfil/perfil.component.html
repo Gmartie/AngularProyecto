@@ -1,4 +1,3 @@
-<!-- Ventana flotante de perfil -->
 <div class="window-overlay" [class.hidden]="isMinimized">
   <div class="window-container" [class.maximized]="isMaximized">
     <div class="window">
@@ -19,7 +18,6 @@
       <div class="window-content">
         <div class="perfil-card" *ngIf="usuario()">
           <div class="info-section">
-            <!-- INFO NORMAL -->
             <div class="info-row" *ngIf="!editando() && usuario()">
               <div class="info-item">
                 <label>Usuario</label>
@@ -110,25 +108,21 @@
               </button>
             </div>
 
-          </div> <!-- CIERRE info-section -->
-        </div> <!-- CIERRE perfil-card -->
-      </div> <!-- CIERRE window-content -->
-    </div> <!-- CIERRE window -->
-  </div> <!-- CIERRE window-container -->
-</div> <!-- CIERRE window-overlay -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- Barra de tareas -->
 <div class="taskbar" *ngIf="!isMinimized">
-  <!-- Botón Start -->
   <div class="start-button">
     <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
     <span>Inicio</span>
   </div>
 
-  <!-- Separador -->
   <div class="taskbar-separator"></div>
 
-  <!-- Ventanas abiertas (botones en la taskbar) -->
   <div class="taskbar-windows">
     <button 
       *ngFor="let window of ventanasAbiertas$ | async"
@@ -142,7 +136,7 @@
     </button>
   </div>
 
-  <!-- Bandeja del sistema -->
+  <!-- Barra de tareas -->
   <div class="system-tray">
     <div class="system-tray-user" *ngIf="usuario()">
       <img [src]="obtenerIconoRol()" [alt]="usuario()?.usuario" class="user-rol-icon">

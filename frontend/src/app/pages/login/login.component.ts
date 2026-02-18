@@ -1,8 +1,3 @@
-/**
- * COMPONENTE: LoginComponent
- * 
- * Formulario de inicio de sesión
- */
 
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -38,7 +33,6 @@ export class LoginComponent {
       next: (res: any) => {
         console.log('Login exitoso:', res);
         this.cargando = false;
-        // Redirigir a home2 (escritorio Windows 95)
         this.router.navigate(['/home2']);
       },
       error: (err) => {

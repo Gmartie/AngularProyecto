@@ -6,7 +6,6 @@
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  /* Fondo con WebBackground.jpg */
   background-image: url('/Wallpapers/WebBackground.jpg');
  background-size: cover;
   background-repeat: no-repeat;

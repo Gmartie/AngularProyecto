@@ -1,11 +1,3 @@
-/**
- * COMPONENTE: LocalesComponent - VERSIÓN CON CONTROL DE PERMISOS
- * 
- * Gestión de locales con permisos según rol:
- * - id_rol = 1 (Propietario): Ver y Editar
- * - id_rol = 2 (Técnico): Solo VER
- * - id_rol = 3,4,5 (Guardia/Empleado/Cocinero): Solo VER
- */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,7 +6,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '../../services/window.service';
 import { AuthService, UsuarioAutenticado } from '../../services/auth.service';
 import { LocalesService } from '../../services/locales.service';
-import { PermisosService } from '../../services/permisos.service';  // NUEVO
+import { PermisosService } from '../../services/permisos.service';
 import { Local } from '../../models/local.model';
 import { Subscription, Observable } from 'rxjs';
 import { Window } from '../../services/window.service';
@@ -27,27 +19,23 @@ import { Window } from '../../services/window.service';
   styleUrls: ['./locales.component.css']
 })
 export class LocalesComponent implements OnInit, OnDestroy {
-  
-  // El local donde trabaja el usuario
+
   localUsuario: Local | null = null;
-  // NUEVO: Todos los locales (para administradores)
   todosLosLocales: Local[] = [];
   esAdministrador: boolean = false;
   
   localEditando: Local | null = null;
   mostrarFormularioNuevo: boolean = false;
   mostrarFormularioEditar: boolean = false;
-  
-  // NUEVO: Variables de control de permisos
+   
   puedeEditar: boolean = false;
   soloLectura: boolean = false;
   
-  // Control de ventana
   isMinimized: boolean = false;
   isMaximized: boolean = false;
   private windowSubscription?: Subscription;
   
-  // Usuario y ventanas
+
   usuario: UsuarioAutenticado | null = null;
   ventanasAbiertas$!: Observable<Window[]>;
   
@@ -65,21 +53,18 @@ export class LocalesComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private localesService: LocalesService,
-    public permisosService: PermisosService  // NUEVO - public para usar en template
+    public permisosService: PermisosService
   ) {}
 
   ngOnInit(): void {
     console.log('LocalesComponent inicializado');
     
-    // Obtener ventanas abiertas para la taskbar
     this.ventanasAbiertas$ = this.windowService.windows$;
     
-    // Obtener usuario autenticado
     this.authService.usuario$.subscribe(usuario => {
       console.log('Usuario recibido en LocalesComponent:', usuario);
       this.usuario = usuario;
       if (usuario) {
-        // NUEVO: Configurar permisos
         this.configurarPermisos();
         console.log('ID Local del usuario:', usuario.id_local);
         this.cargarLocalUsuario();
@@ -88,7 +73,6 @@ export class LocalesComponent implements OnInit, OnDestroy {
       }
     });
     
-    // Suscribirse al estado de la ventana
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
       const thisWindow = windows.find(w => w.id === 'locales');
       if (thisWindow) {
@@ -104,14 +88,11 @@ export class LocalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * NUEVO: Configura los permisos del usuario actual
-   */
   private configurarPermisos(): void {
     this.puedeEditar = this.permisosService.puedeEditarLocales();
     this.soloLectura = !this.puedeEditar;
     
-    // Verificar si es administrador (rol 6)
+    // Verificar si es administrador
     this.esAdministrador = this.usuario?.id_rol === 6;
     
     console.log('Permisos de Locales configurados:', {
@@ -125,13 +106,11 @@ export class LocalesComponent implements OnInit, OnDestroy {
   cargarLocalUsuario(): void {
     console.log('Usuario actual:', this.usuario);
     
-    // Si es administrador, cargar TODOS los locales
     if (this.esAdministrador) {
       this.cargarTodosLosLocales();
       return;
     }
-    
-    // Verificar que el usuario existe y tiene un id_local válido (mayor que 0)
+
     if (!this.usuario || this.usuario.id_local === undefined || this.usuario.id_local === null || this.usuario.id_local === 0) {
       console.log('Usuario no tiene local asignado (id_local:', this.usuario?.id_local, ')');
       this.localUsuario = null;
@@ -140,7 +119,6 @@ export class LocalesComponent implements OnInit, OnDestroy {
 
     console.log('Intentando cargar local con ID:', this.usuario.id_local);
 
-    // Obtener el local específico del usuario
     this.localesService.obtenerPorId(this.usuario.id_local).subscribe({
       next: (local) => {
         this.localUsuario = local;
@@ -154,27 +132,23 @@ export class LocalesComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * NUEVO: Carga todos los locales (solo para administradores)
-   */
   cargarTodosLosLocales(): void {
-    console.log('🔑 Cargando TODOS los locales (modo administrador)');
+    console.log('Cargando TODOS los locales (modo administrador)');
     
     this.localesService.obtenerTodos().subscribe({
       next: (locales) => {
         this.todosLosLocales = locales;
-        console.log('✅ Todos los locales cargados:', locales.length, 'locales');
+        console.log('Todos los locales cargados:', locales.length, 'locales');
         console.log('Locales:', locales);
       },
       error: (error) => {
-        console.error('❌ Error al cargar todos los locales:', error);
+        console.error('Error al cargar todos los locales:', error);
         this.todosLosLocales = [];
       }
     });
   }
 
   abrirFormularioNuevo(): void {
-    // Los locales no se pueden crear (nadie tiene permiso)
     alert('La creación de nuevos locales está deshabilitada.');
   }
 
@@ -183,12 +157,10 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   guardarNuevo(): void {
-    // Método deshabilitado - nadie puede crear locales
     alert('No tienes permisos para crear nuevos locales.');
   }
-
+  //Verificar permisos 
   abrirFormularioEditar(local: Local): void {
-    // NUEVO: Verificar permisos antes de abrir formulario
     if (!this.puedeEditar) {
       alert('No tienes permisos para editar el local.\nSolo el Propietario puede modificar la información del local.');
       return;
@@ -225,7 +197,7 @@ export class LocalesComponent implements OnInit, OnDestroy {
   }
 
   eliminarLocal(): void {
-    // NUEVO: Los locales no se pueden eliminar
+
     alert('La eliminación de locales está deshabilitada por seguridad.');
   }
 

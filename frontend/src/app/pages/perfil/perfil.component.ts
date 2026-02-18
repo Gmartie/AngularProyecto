@@ -27,6 +27,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   error = signal('');
 
   formulario = signal({
+    usuario: '',
     correo: '',
     password: '',
     confirmPassword: ''
@@ -63,7 +64,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const usuarioData = this.authService.obtenerUsuario();
     this.usuario.set(usuarioData);
     if (usuarioData) {
-      this.formulario.update(f => ({ ...f, correo: usuarioData.correo }));
+      this.formulario.update(f => ({ ...f, usuario: usuarioData.usuario, correo: usuarioData.correo }));
     }
   }
 
@@ -77,6 +78,10 @@ export class PerfilComponent implements OnInit, OnDestroy {
     this.editando.update(e => !e);
     this.error.set('');
     this.exito.set(false);
+  }
+
+  updateUsuario(valor: string): void {
+    this.formulario.update(f => ({ ...f, usuario: valor }));
   }
 
   updateCorreo(valor: string) {
@@ -103,6 +108,12 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   guardarCambios(): void {
     const form = this.formulario();
+
+    if (!form.usuario || form.usuario.trim().length < 3) {
+      this.error.set('El nombre de usuario debe tener al menos 3 caracteres');
+      return;
+    }
+
     if (!form.correo) {
       this.error.set('El correo es obligatorio');
       return;
@@ -132,7 +143,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const usuarioActual = this.usuario();
       if (usuarioActual) {
-        this.usuario.set({ ...usuarioActual, correo: form.correo });
+        this.usuario.set({ ...usuarioActual, usuario: form.usuario, correo: form.correo });
       }
       this.exito.set(true);
       this.editando.set(false);
@@ -146,6 +157,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const usuarioActual = this.usuario();
     if (usuarioActual) {
       this.formulario.set({
+        usuario: usuarioActual.usuario,
         correo: usuarioActual.correo,
         password: '',
         confirmPassword: ''

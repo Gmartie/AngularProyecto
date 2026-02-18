@@ -45,6 +45,16 @@
             <div *ngIf="editando()" class="formulario">
 
               <div class="form-group">
+                <label>Nombre de Usuario</label>
+                <input
+                  type="text"
+                  [ngModel]="formulario().usuario"
+                  (ngModelChange)="updateUsuario($event)"
+                  placeholder="Nombre de usuario"
+                />
+              </div>
+
+              <div class="form-group">
                 <label>Email</label>
                 <input
                   type="email"

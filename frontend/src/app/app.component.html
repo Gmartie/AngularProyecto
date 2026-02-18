@@ -1,25 +1,19 @@
-<!-- COMPONENTE RAÍZ: App -->
 <!-- Contenedor principal de la aplicación -->
-
 <!-- Navbar solo se muestra si NO estamos en home2 ni en rutas de programas -->
 <app-navbar *ngIf="mostrarNavbar()"></app-navbar>
-
 <router-outlet></router-outlet>
-
-<!-- Helpy solo aparece en páginas que NO sean home, login, registro, home2 ni programas -->
 @if (mostrarHelpy()) {
-  <div class="helpy-container">
-    <!-- Bocadillo solo si no hay usuario logueado -->
-    @if (mostrarMensaje()) {
-      <div class="helpy-bubble">
-        <span>No olvides <br>Iniciar Sesión</span>
-      </div>
-    }
-
-    <img
-      src="/Helpy/helpy.png"
-      alt="Helpy"
-      class="helpy-img"
-    />
-  </div>
+<div class="helpy-container">
+<!-- Bocadillo solo si no hay usuario logueado -->
+@if (mostrarMensaje()) {
+<div class="helpy-bubble">
+<span>No olvides <br>Iniciar Sesión</span>
+</div>
+}
+<img
+src="/Helpy/helpy.png"
+alt="Helpy"
+class="helpy-img"
+/>
+</div>
 }

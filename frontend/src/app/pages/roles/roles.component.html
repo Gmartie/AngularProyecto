@@ -1,9 +1,7 @@
-<!-- Ventana flotante de gestión de roles -->
+
 <div class="window-overlay" [class.hidden]="isMinimized">
   <div class="window-container" [class.maximized]="isMaximized">
     <div class="window">
-
-      <!-- Barra de título -->
       <div class="window-header">
         <div class="window-title">
           <img src="/Icons/springlock_icon.png" alt="Roles" class="window-icon-img">
@@ -15,27 +13,21 @@
           <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
         </div>
       </div>
-
-      <!-- Contenido -->
       <div class="window-content">
-
-        <!-- Toolbar -->
         <div class="toolbar">
           <div class="toolbar-left">
             <button class="btn-add" (click)="abrirFormularioNuevo()">
-              <span class="btn-icon">➕</span>
+              <span class="btn-icon"></span>
               Nuevo Rol
             </button>
           </div>
           <div class="toolbar-right">
             <div class="info-badge">
-              <span class="badge-icon">🏷️</span>
+              <span class="badge-icon"></span>
               <span>Total de roles: {{ roles.length }}</span>
             </div>
           </div>
         </div>
-
-        <!-- Lista de roles -->
         <div class="roles-list">
           @for (rol of roles; track rol.id) {
             <div class="rol-card" (click)="abrirFormularioEditar(rol)">
@@ -48,7 +40,7 @@
               </div>
               <div class="rol-actions">
                 <button class="btn-edit" (click)="abrirFormularioEditar(rol); $event.stopPropagation()">
-                  ✏️ Editar
+                   Editar
                 </button>
               </div>
             </div>
@@ -69,8 +61,6 @@
     </div>
   </div>
 </div>
-
-<!-- BARRA DE TAREAS -->
 <div class="taskbar" *ngIf="!isMinimized">
   <div class="start-button">
     <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
@@ -97,12 +87,10 @@
     <div class="system-tray-separator"></div>
     <div class="system-tray-time">{{ getHoraActual() }}</div>
     <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span>🚪</span>
+      <span></span>
     </button>
   </div>
 </div>
-
-<!-- Modal nuevo rol -->
 @if (mostrarFormularioNuevo) {
   <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
     <div class="modal-window" (click)="$event.stopPropagation()">
@@ -129,15 +117,13 @@
           </div>
           <div class="form-actions">
             <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
-            <button type="button" class="btn-save" (click)="guardarNuevo()">✅ Crear Rol</button>
+            <button type="button" class="btn-save" (click)="guardarNuevo()"> Crear Rol</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 }
-
-<!-- Modal editar rol -->
 @if (mostrarFormularioEditar && rolEditando) {
   <div class="modal-overlay" (click)="cerrarFormularioEditar()">
     <div class="modal-window" (click)="$event.stopPropagation()">
@@ -166,7 +152,7 @@
               required>
           </div>
           <div class="form-actions">
-            <button type="button" class="btn-delete" (click)="eliminarRol()">🗑️ Eliminar</button>
+            <button type="button" class="btn-delete" (click)="eliminarRol()"> Eliminar</button>
             <div class="form-actions-right">
               <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
               <button type="button" class="btn-save" (click)="actualizarRol()">Actualizar</button>

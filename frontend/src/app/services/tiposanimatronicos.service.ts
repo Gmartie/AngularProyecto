@@ -21,7 +21,7 @@ export class TiposAnimatronicosService {
     const url = (idLocal !== undefined && idLocal !== null)
       ? `${this.apiUrl}?id_local=${idLocal}`
       : this.apiUrl;
-    console.log('🌐 GET tipos URL:', url);
+    console.log(' GET tipos URL:', url);
     return this.http.get<ApiResponse<TipoAnimatronico[]>>(url).pipe(
       map(response => response.data || [])
     );

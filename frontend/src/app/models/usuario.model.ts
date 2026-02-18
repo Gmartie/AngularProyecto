@@ -1,8 +1,4 @@
-/**
- * MODELO: Usuario
- *
- * Define la estructura de los usuarios del sistema
- */
+
 
 export interface Usuario {
   id: number;
@@ -11,7 +7,6 @@ export interface Usuario {
   correo: string;
   id_rol: number;
 
-  // Datos relacionados (opcional)
   rol?: {
     id: number;
     rol: string;

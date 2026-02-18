@@ -1,13 +1,10 @@
-/* ============================================
-   VENTANA FLOTANTE ESTILO WINDOWS 95
-   ============================================ */
 
 .window-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 40px; /* Espacio para la taskbar */
+  bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +20,6 @@
   pointer-events: all;
 }
 
-/* Contenedor de la ventana */
 .window-container {
   width: 90%;
   max-width: 1200px;
@@ -189,7 +185,6 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
- /* object-fit: cover; */
 }
 
 .card-info {
@@ -241,7 +236,7 @@
   border-style: inset;
 }
 
-/* Estado vacío */
+/* Vacío */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -278,7 +273,6 @@
   border-style: inset;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -310,7 +304,7 @@
   flex: 1;
 }
 
-/* Formulario */
+/* formulario */
 .form-animatronico {
   display: flex;
   flex-direction: column;
@@ -369,17 +363,17 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /*object-fit: cover;*/
+
 }
 
-/* ===== HELPY EN EL ESCRITORIO ===== */
+/* Helpy */
 .helpy-desktop {
   position: fixed;
   bottom: 70px;
   right: 20px;
   width: 200px;
   pointer-events: none;
-  z-index: 2; /* Encima del escritorio pero debajo de ventanas */
+  z-index: 2;
 }
 
 .helpy-desktop-img {
@@ -484,7 +478,7 @@
   border-style: inset;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 768px) {
   .animatronicos-list {
     grid-template-columns: 1fr;
@@ -509,10 +503,6 @@
     width: 100%;
   }
 }
-
-/* ============================================
-   BARRA DE TAREAS (copiada de home2)
-   ============================================ */
 
 .taskbar {
   position: fixed;
@@ -681,7 +671,6 @@
 .logout-btn:active {
   border-style: inset;
 }
-/* Estilos específicos para usuarios */
 .usuarios-list {
   display: flex;
   flex-direction: column;
@@ -809,7 +798,6 @@
   gap: 8px;
 }
 
-/* ── Icono de rol en system-tray ── */
 .user-rol-icon {
   width: 20px;
   height: 20px;

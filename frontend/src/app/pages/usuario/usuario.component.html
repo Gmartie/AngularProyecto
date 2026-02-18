@@ -1,184 +1,133 @@
-<!-- Ventana flotante de gestión de usuarios -->
 <div class="window-overlay" [class.hidden]="isMinimized">
-  <div class="window-container" [class.maximized]="isMaximized">
-    <div class="window">
-      <!-- Barra de título de la ventana -->
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/profile_icon.png" alt="Usuarios" class="window-icon-img">
-          <span>Gestión de Usuarios del Sistema</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
-          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
-          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
-        </div>
-      </div>
-
-      <!-- Contenido de la ventana -->
-      <div class="window-content">
-        
-        <!-- Toolbar con información -->
-        <div class="toolbar">
-          <div class="info-badge">
-            <span class="badge-icon">👥</span>
-            <span>Total de usuarios: {{ usuarios.length }}</span>
-          </div>
-        </div>
-
-        <!-- Lista de usuarios -->
-        <div class="usuarios-list">
-          @for (usuario of usuarios; track usuario.id) {
-            <div class="usuario-card" (click)="abrirFormularioEditar(usuario)">
-              <div class="usuario-icon">
-                <img src="/Icons/profile_icon.png" alt="Usuario">
-              </div>
-
-              <div class="usuario-info">
-                <h3 class="usuario-nombre">{{ usuario.usuario }}</h3>
-                <p class="usuario-correo">📧 {{ usuario.correo }}</p>
-                <div class="usuario-detalles">
-                  <span class="badge-rol">{{ obtenerNombreRol(usuario.id_rol) }}</span>
-                  <span class="badge-local">Local {{ usuario.id_local || 'N/A' }}</span>
+    <div class="window-container" [class.maximized]="isMaximized">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <img src="/Icons/profile_icon.png" alt="Usuarios" class="window-icon-img">
+                    <span>Gestión de Usuarios del Sistema</span>
                 </div>
-              </div>
-
-              <div class="usuario-actions">
-                <button class="btn-edit">✏️ Editar</button>
-              </div>
+                <div class="window-controls">
+                    <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+                    <button class="window-btn maximize" (click)="toggleMaximizar()"
+                        title="Maximizar/Restaurar">□</button>
+                    <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+                </div>
             </div>
-          }
-
-          <!-- Mensaje si no hay usuarios -->
-          @if (usuarios.length === 0) {
-            <div class="empty-state">
-              <img src="/FNaF_Icons/fazbearInc.png" alt="No hay usuarios" class="empty-icon">
-              <p>No hay usuarios registrados en el sistema</p>
+            <div class="window-content">
+                <div class="toolbar">
+                    <div class="info-badge">
+                        <span class="badge-icon"></span>
+                        <span>Total de usuarios: {{ usuarios.length }}</span>
+                    </div>
+                </div>
+                <div class="usuarios-list">
+                    @for (usuario of usuarios; track usuario.id) {
+                    <div class="usuario-card" (click)="abrirFormularioEditar(usuario)">
+                        <div class="usuario-icon">
+                            <img src="/Icons/profile_icon.png" alt="Usuario">
+                        </div>
+                        <div class="usuario-info">
+                            <h3 class="usuario-nombre">{{ usuario.usuario }}</h3>
+                            <p class="usuario-correo"> {{ usuario.correo }}</p>
+                            <div class="usuario-detalles">
+                                <span class="badge-rol">{{ obtenerNombreRol(usuario.id_rol) }}</span>
+                                <span class="badge-local">Local {{ usuario.id_local || 'N/A' }}</span>
+                            </div>
+                        </div>
+                        <div class="usuario-actions">
+                            <button class="btn-edit"> Editar</button>
+                        </div>
+                    </div>
+                    }
+                    @if (usuarios.length === 0) {
+                    <div class="empty-state">
+                        <img src="/FNaF_Icons/fazbearInc.png" alt="No hay usuarios" class="empty-icon">
+                        <p>No hay usuarios registrados en el sistema</p>
+                    </div>
+                    }
+                </div>
             </div>
-          }
         </div>
-
-      </div>
     </div>
-  </div>
 </div>
-
-<!-- BARRA DE TAREAS -->
 <div class="taskbar" *ngIf="!isMinimized">
-  <!-- Botón Start -->
-  <div class="start-button">
-    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-    <span>Inicio</span>
-  </div>
-
-  <!-- Separador -->
-  <div class="taskbar-separator"></div>
-
-  <!-- Ventanas abiertas -->
-  <div class="taskbar-windows">
-    <button 
-      *ngFor="let window of ventanasAbiertas$ | async"
-      class="taskbar-window-btn"
-      [class.minimized]="window.isMinimized"
-      [class.active]="!window.isMinimized && window.id === 'usuario'"
-      (click)="restaurarVentana(window.id)"
-    >
-      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-      <span>{{ window.title }}</span>
-    </button>
-  </div>
-
-  <!-- Bandeja del sistema -->
-  <div class="system-tray">
-    <div class="system-tray-user" *ngIf="usuarioActual">
-      <img [src]="obtenerIconoRol()" [alt]="usuarioActual.usuario" class="user-rol-icon">
-      <span class="user-name">{{ usuarioActual.usuario }}</span>
+    <div class="start-button">
+        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+        <span>Inicio</span>
     </div>
-    
-    <div class="system-tray-separator"></div>
-    
-    <div class="system-tray-time">
-      {{ getHoraActual() }}
+    <div class="taskbar-separator"></div>
+    <div class="taskbar-windows">
+        <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
+            [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized && window.id === 'usuario'"
+            (click)="restaurarVentana(window.id)">
+            <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+            <span>{{ window.title }}</span>
+        </button>
     </div>
-    
-    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span>🚪</span>
-    </button>
-  </div>
+    <div class="system-tray">
+        <div class="system-tray-user" *ngIf="usuarioActual">
+            <img [src]="obtenerIconoRol()" [alt]="usuarioActual.usuario" class="user-rol-icon">
+            <span class="user-name">{{ usuarioActual.usuario }}</span>
+        </div>
+        <div class="system-tray-separator"></div>
+        <div class="system-tray-time">
+            {{ getHoraActual() }}
+        </div>
+        <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+            <span></span>
+        </button>
+    </div>
 </div>
-
-<!-- Modal para editar usuario -->
 @if (mostrarFormularioEditar && usuarioEditando) {
-  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
+<div class="modal-overlay" (click)="cerrarFormularioEditar()">
     <div class="modal-window" (click)="$event.stopPropagation()">
-
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/profile_icon.png" alt="Editar" class="window-icon-img">
-          <span>Editar Usuario</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
-        </div>
-      </div>
-
-      <div class="modal-content">
-        <form class="form-usuario">
-          <div class="form-group">
-            <label for="edit-usuario">Usuario *:</label>
-            <input type="text" 
-                   id="edit-usuario" 
-                   [(ngModel)]="usuarioEditando.usuario"
-                   name="usuario"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-correo">Correo *:</label>
-            <input type="email" 
-                   id="edit-correo" 
-                   [(ngModel)]="usuarioEditando.correo"
-                   name="correo"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-rol">Rol *:</label>
-            <select id="edit-rol" 
-                    [(ngModel)]="usuarioEditando.id_rol"
-                    name="id_rol"
-                    required>
-              @for (rol of roles; track rol.id) {
-                <option [value]="rol.id">{{ rol.rol }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-local">Local *:</label>
-            <input type="number" 
-                   id="edit-local" 
-                   [(ngModel)]="usuarioEditando.id_local"
-                   name="id_local"
-                   min="0"
-                   required>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" class="btn-delete" (click)="eliminarUsuario()">
-              🗑️ Eliminar
-            </button>
-            <div class="form-actions-right">
-              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
-                Cancelar
-              </button>
-              <button type="button" class="btn-save" (click)="actualizarUsuario()">
-                Actualizar
-              </button>
+        <div class="window-header">
+            <div class="window-title">
+                <img src="/Icons/profile_icon.png" alt="Editar" class="window-icon-img">
+                <span>Editar Usuario</span>
             </div>
-          </div>
-        </form>
-      </div>
+            <div class="window-controls">
+                <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <form class="form-usuario">
+                <div class="form-group">
+                    <label for="edit-usuario">Usuario *:</label>
+                    <input type="text" id="edit-usuario" [(ngModel)]="usuarioEditando.usuario" name="usuario" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-correo">Correo *:</label>
+                    <input type="email" id="edit-correo" [(ngModel)]="usuarioEditando.correo" name="correo" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-rol">Rol *:</label>
+                    <select id="edit-rol" [(ngModel)]="usuarioEditando.id_rol" name="id_rol" required>
+                        @for (rol of roles; track rol.id) {
+                        <option [value]="rol.id">{{ rol.rol }}</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-local">Local *:</label>
+                    <input type="number" id="edit-local" [(ngModel)]="usuarioEditando.id_local" name="id_local" min="0"
+                        required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-delete" (click)="eliminarUsuario()">
+                        Eliminar
+                    </button>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-save" (click)="actualizarUsuario()">
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 }

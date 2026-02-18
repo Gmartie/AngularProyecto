@@ -18,7 +18,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   irLogin() {
     this.router.navigate(['/login']);

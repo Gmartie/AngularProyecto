@@ -1,7 +1,4 @@
-/**
- * COMPONENTE: RolesComponent
- * Gestión de roles del sistema — CRUD completo estilo Windows 95
- */
+
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -58,8 +55,6 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
     });
-
-    // Cargar datos directamente — el interceptor añade el token
     this.cargarRoles();
 
     this.windowSubscription = this.windowService.windows$.subscribe(windows => {
@@ -80,11 +75,9 @@ export class RolesComponent implements OnInit, OnDestroy {
   cargarRoles(): void {
     this.rolesService.obtenerTodos().subscribe({
       next: (roles: any) => {
-        console.log('Roles cargados:', roles);
         this.roles = Array.isArray(roles) ? roles : [];
       },
       error: (error) => {
-        console.error('Error al cargar roles:', error);
         this.roles = [];
       }
     });
@@ -115,8 +108,6 @@ export class RolesComponent implements OnInit, OnDestroy {
     return mapaRoles[idRol] || '/FNAF_Rol_Icons/employee_icon.png';
   }
 
-  // ── NUEVO ──────────────────────────────────────
-
   abrirFormularioNuevo(): void {
     this.nuevoRol = { rol: '' };
     this.mostrarFormularioNuevo = true;
@@ -141,8 +132,6 @@ export class RolesComponent implements OnInit, OnDestroy {
       error: (error) => alert(error.error?.message || 'Error al crear el rol')
     });
   }
-
-  // ── EDITAR ─────────────────────────────────────
 
   abrirFormularioEditar(rol: RolVista): void {
     this.rolEditando = { ...rol };
@@ -184,8 +173,6 @@ export class RolesComponent implements OnInit, OnDestroy {
       error: (error) => alert(error.error?.message || 'Error al eliminar el rol. Puede que tenga usuarios asignados.')
     });
   }
-
-  // ── VENTANA ────────────────────────────────────
 
   cerrarVentana(): void {
     this.windowService.closeWindow('roles');

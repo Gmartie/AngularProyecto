@@ -1,13 +1,10 @@
-/* ============================================
-   VENTANA FLOTANTE ESTILO WINDOWS 95
-   ============================================ */
 
 .window-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 40px; /* Espacio para la taskbar */
+  bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +20,6 @@
   pointer-events: all;
 }
 
-/* Contenedor de la ventana */
 .window-container {
   width: 90%;
   max-width: 1200px;
@@ -125,7 +121,6 @@
   background: #c0c0c0;
 }
 
-/* Toolbar */
 .toolbar {
   margin-bottom: 20px;
   padding: 8px;
@@ -240,7 +235,7 @@
   border-style: inset;
 }
 
-/* Estado vacío */
+/* vacío */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -277,7 +272,6 @@
   border-style: inset;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -370,7 +364,6 @@
   object-fit: cover;
 }
 
-/* Acciones del formulario */
 .form-actions {
   display: flex;
   gap: 8px;
@@ -432,7 +425,7 @@
   border-style: inset;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 768px) {
   .animatronicos-list {
     grid-template-columns: 1fr;
@@ -458,9 +451,6 @@
   }
 }
 
-/* ============================================
-   BARRA DE TAREAS (copiada de home2)
-   ============================================ */
 
 .taskbar {
   position: fixed;
@@ -629,9 +619,6 @@
 .logout-btn:active {
   border-style: inset;
 }
-/* ============================================
-   ESTILOS ESPECÍFICOS PARA TIPOS
-   ============================================ */
 
 .tipos-list {
   display: grid;
@@ -678,7 +665,7 @@
   flex-direction: column;
   gap: 16px;
 }
-/* ── Filtro badge ────────────────────────────────────────── */
+
 .filter-badge {
   font-size: 11px;
   color: #888;
@@ -689,7 +676,6 @@
   margin-left: 8px;
 }
 
-/* ── Preview de icono en modal edición ───────────────────── */
 .icono-preview-container {
   display: flex;
   align-items: center;
@@ -760,14 +746,12 @@
 }
 .btn-quitar-icono:hover { color: #f44; }
 
-/* ── Icono placeholder (cuando no hay imagen aún) ── */
 .icono-placeholder {
   font-size: 28px;
   line-height: 1;
   opacity: 0.5;
 }
 
-/* ── Filtro badge ── */
 .filter-badge {
   font-size: 11px;
   color: #888;
@@ -778,7 +762,6 @@
   margin-left: 8px;
 }
 
-/* ── Preview de icono en modales ── */
 .icono-preview-container {
   display: flex;
   align-items: center;
@@ -830,7 +813,6 @@
 }
 .btn-quitar-icono:hover { color: #f44; }
 
-/* ── Panel de diagnóstico (temporal) ── */
 .debug-panel {
   background: #1a1a2e;
   border: 1px solid #4a9eff;
@@ -848,7 +830,6 @@
   font-weight: bold;
 }
 
-/* ── Resto de estilos de icono ── */
 .icono-placeholder {
   font-size: 28px;
   line-height: 1;

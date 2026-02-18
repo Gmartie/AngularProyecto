@@ -1,75 +1,50 @@
-
 <div class="desktop-container">
-  
-  <div class="desktop-area">
-    <div class="desktop-icons">
-      <div 
-        *ngFor="let programa of programasFiltrados"
-        class="desktop-icon"
-        (dblclick)="abrirPrograma(programa)"
-        [title]="programa.descripcion"
-        [class.decorativo]="!programa.funcional"
-      >
-        <div class="icon-image">
-          <img [src]="programa.icono" [alt]="programa.nombre">
+    <div class="desktop-area">
+        <div class="desktop-icons">
+            <div *ngFor="let programa of programasFiltrados" class="desktop-icon" (dblclick)="abrirPrograma(programa)"
+                [title]="programa.descripcion" [class.decorativo]="!programa.funcional">
+                <div class="icon-image">
+                    <img [src]="programa.icono" [alt]="programa.nombre">
+                </div>
+                <div class="icon-label">{{ programa.nombre }}</div>
+            </div>
         </div>
-        <div class="icon-label">{{ programa.nombre }}</div>
-      </div>
+        <div class="helpy-desktop">
+            <div class="helpy-bubble-desktop">
+                <span>¡Haz doble clic<br>en los iconos!</span>
+            </div>
+            <img src="/Helpy/helpy.png" alt="Helpy asistente" class="helpy-desktop-img" />
+        </div>
     </div>
-
-        <!-- Helpy -->
-    <div class="helpy-desktop">
-      <div class="helpy-bubble-desktop">
-        <span>¡Haz doble clic<br>en los iconos!</span>
-      </div>
-      <img
-        src="/Helpy/helpy.png"
-        alt="Helpy asistente"
-        class="helpy-desktop-img"
-      />
+    <div class="programs-container">
+        <router-outlet></router-outlet>
     </div>
-  </div>
-   
-  <div class="programs-container">
-    <router-outlet></router-outlet>
-  </div>
-
-  <div class="taskbar">
-    <div class="start-button">
-      <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-      <span>Inicio</span>
+    <div class="taskbar">
+        <div class="start-button">
+            <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+            <span>Inicio</span>
+        </div>
+        <div class="taskbar-separator"></div>
+        <div class="taskbar-windows">
+            <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
+                [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized"
+                (click)="restaurarVentana(window.id)">
+                <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+                <span>{{ window.title }}</span>
+            </button>
+        </div>
+        <div class="system-tray">
+            <div class="system-tray-user" *ngIf="usuario">
+                <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
+                <span class="user-name">{{ usuario.usuario }}</span>
+            </div>
+            <div class="system-tray-separator"></div>
+            <div class="system-tray-time">
+                {{ getHoraActual() }}
+            </div>
+            <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+                <span></span>
+            </button>
+        </div>
     </div>
-
-    <div class="taskbar-separator"></div>
-
-    <div class="taskbar-windows">
-      <button 
-        *ngFor="let window of ventanasAbiertas$ | async"
-        class="taskbar-window-btn"
-        [class.minimized]="window.isMinimized"
-        [class.active]="!window.isMinimized"
-        (click)="restaurarVentana(window.id)"
-      >
-        <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-        <span>{{ window.title }}</span>
-      </button>
-    </div>
-
-    <div class="system-tray">
-      <div class="system-tray-user" *ngIf="usuario">
-        <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
-        <span class="user-name">{{ usuario.usuario }}</span>
-      </div>
-      
-      <div class="system-tray-separator"></div>
-      
-      <div class="system-tray-time">
-        {{ getHoraActual() }}
-      </div>
-      
-      <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-        <span>🚪</span>
-      </button>
-    </div>
-  </div>
 </div>

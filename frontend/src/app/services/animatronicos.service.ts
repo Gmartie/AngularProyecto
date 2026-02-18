@@ -25,7 +25,7 @@ export class AnimatronicosService {
   constructor(private http: HttpClient) { }
 
   /**
-   * ⭐ CAMBIO: Ahora usa el endpoint /api/animatronicos sin parámetros
+   *  CAMBIO: Ahora usa el endpoint /api/animatronicos sin parámetros
    * El backend filtra automáticamente por id_local del token JWT
    */
   obtenerTodos(): Observable<Animatronico[]> {

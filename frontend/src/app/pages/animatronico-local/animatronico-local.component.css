@@ -1,13 +1,10 @@
-/* ============================================
-   VENTANA FLOTANTE ESTILO WINDOWS 95
-   ============================================ */
 
 .window-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 40px; /* Espacio para la taskbar */
+  bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +20,6 @@
   pointer-events: all;
 }
 
-/* Contenedor de la ventana */
 .window-container {
   width: 90%;
   max-width: 1200px;
@@ -119,7 +115,6 @@
   background: #c0c0c0;
 }
 
-/* Toolbar */
 .toolbar {
   margin-bottom: 20px;
   padding: 8px;
@@ -151,7 +146,6 @@
   font-size: 16px;
 }
 
-/* Lista de animatrónicos */
 .animatronicos-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -183,7 +177,6 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
- /* object-fit: cover; */
 }
 
 .card-info {
@@ -272,7 +265,6 @@
   border-style: inset;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -363,17 +355,16 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /*object-fit: cover;*/
 }
 
-/* ===== HELPY EN EL ESCRITORIO ===== */
+/* Helpy */
 .helpy-desktop {
   position: fixed;
   bottom: 70px;
   right: 20px;
   width: 200px;
   pointer-events: none;
-  z-index: 2; /* Encima del escritorio pero debajo de ventanas */
+  z-index: 2;
 }
 
 .helpy-desktop-img {
@@ -406,7 +397,7 @@
   color: #000;
   line-height: 1.3;
 }
-
+/* Helpy Animación*/
 @keyframes helpyFloat {
   0%, 100% {
     transform: translateY(0);
@@ -416,7 +407,7 @@
   }
 }
 
-/* Acciones del formulario */
+/*formulario */
 .form-actions {
   display: flex;
   gap: 8px;
@@ -478,7 +469,7 @@
   border-style: inset;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 768px) {
   .animatronicos-list {
     grid-template-columns: 1fr;

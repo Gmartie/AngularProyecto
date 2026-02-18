@@ -1,34 +1,30 @@
 <header class="faz-navbar">
-  <div class="logo-container" (click)="menuAbierto = false; submenuAbierto = false">
-     <a routerLink="/home">
+<div class="logo-container" (click)="menuAbierto = false; submenuAbierto = false">
+<a routerLink="/home">
 <img src="FNaF_Icons/fazbearInc.png" alt="Fazbear Inc." class="logo-img">
-      </a>
-    <div class="logo-text">FAZBEAR OS v1.87</div>
-  </div>
-
-  <div class="menu-toggle"
-       (click)="toggleMenu()"
-       role="button"
-       tabindex="0"
-       (keydown.enter)="toggleMenu()"
-       (keydown.space)="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <ul class="faz-menu" [class.activo]="menuAbierto">
-
-    <li *ngIf="!usuario">
-      <a routerLink="/login" (click)="menuAbierto = false">
-        Acceso al Sistema
-      </a>
-    </li>
-
-    <li *ngIf="!usuario">
-      <a routerLink="/registro" class="btn-retro" (click)="menuAbierto = false">
-        Nuevo Operador
-      </a>
-    </li>
-  </ul>
+</a>
+<div class="logo-text">FAZBEAR OS v1.87</div>
+</div>
+<div class="menu-toggle"
+(click)="toggleMenu()"
+role="button"
+tabindex="0"
+(keydown.enter)="toggleMenu()"
+(keydown.space)="toggleMenu()">
+<span></span>
+<span></span>
+<span></span>
+</div>
+<ul class="faz-menu" [class.activo]="menuAbierto">
+<li *ngIf="!usuario">
+<a routerLink="/login" (click)="menuAbierto = false">
+Acceso al Sistema
+</a>
+</li>
+<li *ngIf="!usuario">
+<a routerLink="/registro" class="btn-retro" (click)="menuAbierto = false">
+Nuevo Operador
+</a>
+</li>
+</ul>
 </header>

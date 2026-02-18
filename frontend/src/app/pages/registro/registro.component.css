@@ -12,7 +12,6 @@
   position: relative;
 }
 
-/* Caja principal */
 .registro-box {
   background: #eeeeee;
   padding: 2rem;
@@ -22,7 +21,6 @@
   box-shadow: 4px 4px 0 #666666;
 }
 
-/* Título */
 .registro-box h2 {
   color: #003399;
   text-align: center;
@@ -31,7 +29,6 @@
   text-transform: uppercase;
 }
 
-/* Subtítulo */
 .subtitle {
   text-align: center;
   color: #555;
@@ -39,7 +36,6 @@
   font-size: 0.9rem;
 }
 
-/* Grupos */
 .form-group {
   margin-bottom: 1.3rem;
 }
@@ -52,7 +48,6 @@
   font-size: 0.85rem;
 }
 
-/* Inputs simples */
 .form-group input {
   width: 100%;
   padding: 0.5rem;
@@ -68,7 +63,6 @@
   background: #f8f8ff;
 }
 
-/* Error */
 .error-message {
   background: #ffffff;
   color: #990000;
@@ -78,12 +72,10 @@
   font-size: 0.85rem;
 }
 
-/* Contenedor de éxito */
 .exito-container {
   width: 100%;
 }
 
-/* Mensaje de éxito con Helpy */
 .exito-message {
   background: #ffffff;
   color: #006600;
@@ -116,7 +108,7 @@
   animation: helpyBounce 0.6s ease-in-out infinite alternate;
 }
 
-/* Animación de rebote para Helpy */
+/* Animación Helpy */
 @keyframes helpyBounce {
   0% {
     transform: translateY(0);
@@ -126,7 +118,6 @@
   }
 }
 
-/* Botón clásico */
 .btn-registro {
   width: 100%;
   padding: 0.55rem;
@@ -147,7 +138,6 @@
   cursor: not-allowed;
 }
 
-/* Link */
 .login-link {
   text-align: center;
   margin-top: 1rem;
@@ -164,7 +154,7 @@
   color: #000080;
 }
 
-/* ===== HELPY en Registro ===== */
+/* Helpy */
 .helpy-registro {
   position: fixed;
   bottom: 10px;
@@ -178,7 +168,7 @@
   display: block;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 480px) {
   .registro-box {
     padding: 1.4rem;
@@ -188,12 +178,11 @@
     font-size: 1.4rem;
   }
 
-  /* Helpy más pequeño en móvil */
+  /* Helpy en móvil */
   .helpy-look-img {
     width: 80px;
   }
 
-  /* Mensaje de éxito en móvil */
   .exito-message {
     flex-direction: column;
     text-align: center;

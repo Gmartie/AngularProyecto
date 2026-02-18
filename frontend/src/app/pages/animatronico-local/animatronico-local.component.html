@@ -1,241 +1,196 @@
-<!-- Ventana flotante de asignación de animatrónicos -->
 <div class="window-overlay" [class.hidden]="isMinimized">
-  <div class="window-container" [class.maximized]="isMaximized">
-    <div class="window">
-      <!-- Barra de título de la ventana -->
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/delivery_box.png" alt="Asignaciones" class="window-icon-img">
-          <span>Gestión de Asignaciones - Animatrónicos a Locales</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
-          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
-          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
-        </div>
-      </div>
-
-      <!-- Contenido de la ventana -->
-      <div class="window-content">
-        
-        <!-- Botón para añadir nueva asignación -->
-        <div class="toolbar">
-          <button class="btn-add" (click)="abrirFormularioNuevo()">
-            <span class="btn-icon">➕</span>
-            Nueva Asignación
-          </button>
-        </div>
-
-        <!-- Lista de asignaciones -->
-        <div class="animatronicos-list">
-          @for (asignacion of asignaciones; track asignacion.id_animatronico + '-' + asignacion.id_local) {
-            <div class="animatronico-card">
-              <div class="card-image">
-                <img [src]="obtenerRutaFoto(asignacion.animatronico_foto || '')" 
-                     [alt]="asignacion.animatronico_nombre"
-                     (error)="onImageError($event)">
-              </div>
-
-              <div class="card-info">
-                <h3 class="animatronico-nombre">{{ asignacion.animatronico_nombre }}</h3>
-                <div class="info-row">
-                  <span class="info-label">Tipo:</span>
-                  <span class="info-value">{{ asignacion.animatronico_gama }}</span>
+    <div class="window-container" [class.maximized]="isMaximized">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <img src="/Icons/delivery_box.png" alt="Asignaciones" class="window-icon-img">
+                    <span>Gestión de Asignaciones - Animatrónicos a Locales</span>
                 </div>
-                <div class="info-row">
-                  <span class="info-label">Local:</span>
-                  <span class="info-value">{{ asignacion.local_ciudad }} - {{ asignacion.local_direccion }}</span>
+                <div class="window-controls">
+                    <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+                    <button class="window-btn maximize" (click)="toggleMaximizar()"
+                        title="Maximizar/Restaurar">□</button>
+                    <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
                 </div>
-                <div class="info-row">
-                  <span class="info-label">Instalación:</span>
-                  <span class="info-value">{{ asignacion.fecha_instalacion | date:'dd/MM/yyyy' }}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Estado:</span>
-                  <span class="badge-estado" [style.background-color]="obtenerColorEstado(asignacion.estado)">
-                    {{ asignacion.estado }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="card-actions">
-                <button class="btn-edit" (click)="abrirFormularioEditar(asignacion)">
-                  ✏️ Editar
-                </button>
-              </div>
             </div>
-          }
-
-          <!-- Mensaje si no hay asignaciones -->
-          @if (asignaciones.length === 0) {
-            <div class="empty-state">
-              <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-              <p class="empty-text">No hay asignaciones registradas</p>
-              <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
-                Añadir la primera
-              </button>
+            <div class="window-content">
+                <div class="toolbar">
+                    <button class="btn-add" (click)="abrirFormularioNuevo()">
+                        <span class="btn-icon"></span>
+                        Nueva Asignación
+                    </button>
+                </div>
+                <div class="animatronicos-list">
+                    @for (asignacion of asignaciones; track asignacion.id_animatronico + '-' + asignacion.id_local) {
+                    <div class="animatronico-card">
+                        <div class="card-image">
+                            <img [src]="obtenerRutaFoto(asignacion.animatronico_foto || '')"
+                                [alt]="asignacion.animatronico_nombre" (error)="onImageError($event)">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="animatronico-nombre">{{ asignacion.animatronico_nombre }}</h3>
+                            <div class="info-row">
+                                <span class="info-label">Tipo:</span>
+                                <span class="info-value">{{ asignacion.animatronico_gama }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Local:</span>
+                                <span class="info-value">{{ asignacion.local_ciudad }} - {{ asignacion.local_direccion
+                                    }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Instalación:</span>
+                                <span class="info-value">{{ asignacion.fecha_instalacion | date:'dd/MM/yyyy' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Estado:</span>
+                                <span class="badge-estado"
+                                    [style.background-color]="obtenerColorEstado(asignacion.estado)">
+                                    {{ asignacion.estado }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-edit" (click)="abrirFormularioEditar(asignacion)">
+                                Editar
+                            </button>
+                        </div>
+                    </div>
+                    }
+                    @if (asignaciones.length === 0) {
+                    <div class="empty-state">
+                        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+                        <p class="empty-text">No hay asignaciones registradas</p>
+                        <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+                            Añadir la primera
+                        </button>
+                    </div>
+                    }
+                </div>
             </div>
-          }
         </div>
-
-      </div>
     </div>
-  </div>
 </div>
-
-<!-- Modal para añadir nueva asignación -->
 @if (mostrarFormularioNuevo) {
-  <div class="modal-overlay" (click)="cerrarFormularioNuevo()">
+<div class="modal-overlay" (click)="cerrarFormularioNuevo()">
     <div class="modal-window" (click)="$event.stopPropagation()">
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/delivery_box.png" alt="Nuevo" class="window-icon-img" style="width: 16px; height: 16px;">
-          <span>Nueva Asignación</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
-        </div>
-      </div>
-
-      <div class="modal-content">
-        <form class="form-animatronico">
-          <div class="form-group">
-            <label for="nuevo-animatronico">Animatrónico *:</label>
-            <select id="nuevo-animatronico" 
-                    [(ngModel)]="nuevaAsignacion.id_animatronico"
-                    name="id_animatronico"
-                    required>
-              @for (animatronico of animatronicos; track animatronico.id) {
-                <option [value]="animatronico.id">
-                  {{ animatronico.nombre }} ({{ animatronico.nombre_gama }})
-                </option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="nuevo-local">Local *:</label>
-            <select id="nuevo-local" 
-                    [(ngModel)]="nuevaAsignacion.id_local"
-                    name="id_local"
-                    required>
-              @for (local of locales; track local.id) {
-                <option [value]="local.id">
-                  {{ local.ciudad }} - {{ local.direccion }}
-                </option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="nuevo-fecha">Fecha de Instalación *:</label>
-            <input type="date" 
-                   id="nuevo-fecha" 
-                   [(ngModel)]="nuevaAsignacion.fecha_instalacion"
-                   name="fecha_instalacion"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="nuevo-estado">Estado *:</label>
-            <select id="nuevo-estado" 
-                    [(ngModel)]="nuevaAsignacion.estado"
-                    name="estado"
-                    required>
-              @for (estado of estadosDisponibles; track estado) {
-                <option [value]="estado">{{ estado }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
-              Cancelar
-            </button>
-            <button type="button" class="btn-save" (click)="guardarNuevo()">
-              Asignar
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-}
-
-<!-- Modal para editar asignación -->
-@if (mostrarFormularioEditar && asignacionEditando) {
-  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
-    <div class="modal-window" (click)="$event.stopPropagation()">
-
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/delivery_box.png" alt="Editar" class="window-icon-img" style="width: 16px; height: 16px;">
-          <span>Editar Asignación</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
-        </div>
-      </div>
-
-      <div class="modal-content">
-        <form class="form-animatronico">
-          <div class="form-group">
-            <label>Animatrónico:</label>
-            <input type="text" 
-                   [value]="asignacionEditando.animatronico_nombre"
-                   disabled
-                   style="background-color: #f5f5f5; cursor: not-allowed;">
-          </div>
-
-          <div class="form-group">
-            <label for="edit-local">Local *:</label>
-            <select id="edit-local"
-                    [(ngModel)]="asignacionEditando.id_local"
-                    name="id_local"
-                    required>
-              @for (local of locales; track local.id) {
-                <option [value]="local.id">
-                  {{ local.ciudad }} - {{ local.direccion }}
-                </option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Fecha de Instalación:</label>
-            <input type="date" 
-                   [value]="asignacionEditando.fecha_instalacion"
-                   disabled
-                   style="background-color: #f5f5f5; cursor: not-allowed;">
-          </div>
-
-          <div class="form-group">
-            <label for="edit-estado">Estado *:</label>
-            <select id="edit-estado" 
-                    [(ngModel)]="asignacionEditando.estado"
-                    name="estado"
-                    required>
-              @for (estado of estadosDisponibles; track estado) {
-                <option [value]="estado">{{ estado }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" class="btn-delete" (click)="eliminarAsignacion()">
-              🗑️ Eliminar Asignación
-            </button>
-            <div class="form-actions-right">
-              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
-                Cancelar
-              </button>
-              <button type="button" class="btn-save" (click)="actualizarEstado()">
-                Guardar Cambios
-              </button>
+        <div class="window-header">
+            <div class="window-title">
+                <img src="/Icons/delivery_box.png" alt="Nuevo" class="window-icon-img"
+                    style="width: 16px; height: 16px;">
+                <span>Nueva Asignación</span>
             </div>
-          </div>
-        </form>
-      </div>
+            <div class="window-controls">
+                <button class="window-btn close" (click)="cerrarFormularioNuevo()">×</button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <form class="form-animatronico">
+                <div class="form-group">
+                    <label for="nuevo-animatronico">Animatrónico *:</label>
+                    <select id="nuevo-animatronico" [(ngModel)]="nuevaAsignacion.id_animatronico" name="id_animatronico"
+                        required>
+                        @for (animatronico of animatronicos; track animatronico.id) {
+                        <option [value]="animatronico.id">
+                            {{ animatronico.nombre }} ({{ animatronico.nombre_gama }})
+                        </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nuevo-local">Local *:</label>
+                    <select id="nuevo-local" [(ngModel)]="nuevaAsignacion.id_local" name="id_local" required>
+                        @for (local of locales; track local.id) {
+                        <option [value]="local.id">
+                            {{ local.ciudad }} - {{ local.direccion }}
+                        </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nuevo-fecha">Fecha de Instalación *:</label>
+                    <input type="date" id="nuevo-fecha" [(ngModel)]="nuevaAsignacion.fecha_instalacion"
+                        name="fecha_instalacion" required>
+                </div>
+                <div class="form-group">
+                    <label for="nuevo-estado">Estado *:</label>
+                    <select id="nuevo-estado" [(ngModel)]="nuevaAsignacion.estado" name="estado" required>
+                        @for (estado of estadosDisponibles; track estado) {
+                        <option [value]="estado">{{ estado }}</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" (click)="cerrarFormularioNuevo()">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-save" (click)="guardarNuevo()">
+                        Asignar
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
+}
+@if (mostrarFormularioEditar && asignacionEditando) {
+<div class="modal-overlay" (click)="cerrarFormularioEditar()">
+    <div class="modal-window" (click)="$event.stopPropagation()">
+        <div class="window-header">
+            <div class="window-title">
+                <img src="/Icons/delivery_box.png" alt="Editar" class="window-icon-img"
+                    style="width: 16px; height: 16px;">
+                <span>Editar Asignación</span>
+            </div>
+            <div class="window-controls">
+                <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <form class="form-animatronico">
+                <div class="form-group">
+                    <label>Animatrónico:</label>
+                    <input type="text" [value]="asignacionEditando.animatronico_nombre" disabled
+                        style="background-color: #f5f5f5; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label for="edit-local">Local *:</label>
+                    <select id="edit-local" [(ngModel)]="asignacionEditando.id_local" name="id_local" required>
+                        @for (local of locales; track local.id) {
+                        <option [value]="local.id">
+                            {{ local.ciudad }} - {{ local.direccion }}
+                        </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha de Instalación:</label>
+                    <input type="date" [value]="asignacionEditando.fecha_instalacion" disabled
+                        style="background-color: #f5f5f5; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label for="edit-estado">Estado *:</label>
+                    <select id="edit-estado" [(ngModel)]="asignacionEditando.estado" name="estado" required>
+                        @for (estado of estadosDisponibles; track estado) {
+                        <option [value]="estado">{{ estado }}</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-delete" (click)="eliminarAsignacion()">
+                        Eliminar Asignación
+                    </button>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-save" (click)="actualizarEstado()">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 }

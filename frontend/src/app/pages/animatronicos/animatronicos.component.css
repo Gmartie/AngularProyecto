@@ -384,17 +384,16 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /*object-fit: cover;*/
 }
 
-/* ===== HELPY EN EL ESCRITORIO ===== */
+/* Helpy */
 .helpy-desktop {
   position: fixed;
   bottom: 70px;
   right: 20px;
   width: 200px;
   pointer-events: none;
-  z-index: 2; /* Encima del escritorio pero debajo de ventanas */
+  z-index: 2;
 }
 
 .helpy-desktop-img {
@@ -437,7 +436,7 @@
   }
 }
 
-/* Acciones del formulario */
+/* formulario */
 .form-actions {
   display: flex;
   gap: 8px;
@@ -499,7 +498,7 @@
   border-style: inset;
 }
 
-/* Responsive */
+/* Movil */
 @media (max-width: 768px) {
   .animatronicos-list {
     grid-template-columns: 1fr;
@@ -525,9 +524,6 @@
   }
 }
 
-/* ============================================
-   BARRA DE TAREAS (copiada de home2)
-   ============================================ */
 
 .taskbar {
   position: fixed;

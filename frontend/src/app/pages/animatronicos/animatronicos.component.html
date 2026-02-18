@@ -1,344 +1,243 @@
-<!-- Ventana flotante de animatrónicos - CON CONTROL DE PERMISOS -->
 <div class="window-overlay" [class.hidden]="isMinimized">
-  <div class="window-container" [class.maximized]="isMaximized">
-    <div class="window">
-      <!-- Barra de título de la ventana -->
-      <div class="window-header">
-        <div class="window-title">
-          <img src="/Icons/freddy_icon.png" alt="Animatrónicos" class="window-icon-img">
-          <span>Gestión de Animatrónicos</span>
-          <!-- NUEVO: Indicador de modo solo lectura -->
-          @if (soloLectura) {
-            <span class="badge-readonly">Solo Lectura</span>
-          }
-        </div>
-        <div class="window-controls">
-          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
-          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
-          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
-        </div>
-      </div>
-      
-      <!-- Contenido de la ventana -->
-      <div class="window-content">
-        
-        <!-- Botón para añadir nuevo animatrónico - SOLO SI TIENE PERMISOS -->
-        <div class="toolbar">
-          @if (puedeCrear) {
-            <button class="btn-add" (click)="abrirFormularioNuevo()">
-              <span class="btn-icon">➕</span>
-              Añadir Animatrónico
-            </button>
-          } @else {
-            <div class="info-badge">
-              <span class="badge-icon">👁️</span>
-              <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
+    <div class="window-container" [class.maximized]="isMaximized">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <img src="/Icons/freddy_icon.png" alt="Animatrónicos" class="window-icon-img">
+                    <span>Gestión de Animatrónicos</span>
+                    @if (soloLectura) {
+                    <span class="badge-readonly">Solo Lectura</span>
+                    }
+                </div>
+                <div class="window-controls">
+                    <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+                    <button class="window-btn maximize" (click)="toggleMaximizar()"
+                        title="Maximizar/Restaurar">□</button>
+                    <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+                </div>
             </div>
-          }
-        </div>
-
-        <!-- Lista de animatrónicos -->
-        <div class="animatronicos-list">
-          @for (animatronico of animatronicos; track animatronico.id) {
-            <div class="animatronico-card">
-              <div class="card-image">
-                <img [src]="obtenerRutaFoto(animatronico.foto)"
-                  [alt]="animatronico.nombre"
-                  (error)="onImageError($event)">
-              </div>
-
-              <div class="card-info">
-                <h3 class="animatronico-nombre">{{ animatronico.nombre }}</h3>
-                <p class="animatronico-tipo">
-                  <strong>Tipo:</strong> {{ obtenerNombreGama(animatronico.id_gama) }}
-                </p>
-                <p class="animatronico-piezas">
-                  <strong>Piezas:</strong> {{ animatronico.num_piezas }}
-                </p>
-                <p class="animatronico-reconocimiento">
-                  <strong>Reconocimiento:</strong> 
-                  <span [class.badge-si]="animatronico.reconocimiento" 
-                        [class.badge-no]="!animatronico.reconocimiento">
-                    {{ animatronico.reconocimiento ? 'Sí' : 'No' }}
-                  </span>
-                </p>
-              </div>
-
-              <!-- NUEVO: Botones según permisos -->
-              <div class="card-actions">
-                @if (puedeEditar) {
-                  <button class="btn-edit" (click)="abrirFormularioEditar(animatronico)">
-                    ✏️ Editar
-                  </button>
-                } @else {
-                  <button class="btn-view" disabled title="No tienes permisos para editar">
-                    👁️ Solo lectura
-                  </button>
-                }
-                <button class="btn-pdf" (click)="descargarInforme(animatronico)" title="Descargar informe PDF">
-                  📄 Informe PDF
-                </button>
-              </div>
+            <div class="window-content">
+                <div class="toolbar">
+                    @if (puedeCrear) {
+                    <button class="btn-add" (click)="abrirFormularioNuevo()">
+                        <span class="btn-icon"></span>
+                        Añadir Animatrónico
+                    </button>
+                    } @else {
+                    <div class="info-badge">
+                        <span class="badge-icon"></span>
+                        <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
+                    </div>
+                    }
+                </div>
+                <div class="animatronicos-list">
+                    @for (animatronico of animatronicos; track animatronico.id) {
+                    <div class="animatronico-card">
+                        <div class="card-image">
+                            <img [src]="obtenerRutaFoto(animatronico.foto)" [alt]="animatronico.nombre"
+                                (error)="onImageError($event)">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="animatronico-nombre">{{ animatronico.nombre }}</h3>
+                            <p class="animatronico-tipo">
+                                <strong>Tipo:</strong> {{ obtenerNombreGama(animatronico.id_gama) }}
+                            </p>
+                            <p class="animatronico-piezas">
+                                <strong>Piezas:</strong> {{ animatronico.num_piezas }}
+                            </p>
+                            <p class="animatronico-reconocimiento">
+                                <strong>Reconocimiento:</strong> <span [class.badge-si]="animatronico.reconocimiento"
+                                    [class.badge-no]="!animatronico.reconocimiento">
+                                    {{ animatronico.reconocimiento ? 'Sí' : 'No' }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-actions">
+                            @if (puedeEditar) {
+                            <button class="btn-edit" (click)="abrirFormularioEditar(animatronico)">
+                                Editar
+                            </button>
+                            } @else {
+                            <button class="btn-view" disabled title="No tienes permisos para editar">
+                                Solo lectura
+                            </button>
+                            }
+                            <button class="btn-pdf" (click)="descargarInforme(animatronico)"
+                                title="Descargar informe PDF">
+                                Informe PDF
+                            </button>
+                        </div>
+                    </div>
+                    }
+                    @if (animatronicos.length === 0) {
+                    <div class="empty-state">
+                        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+                        <p class="empty-text">No hay animatrónicos registrados en este local</p>
+                        @if (puedeCrear) {
+                        <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
+                            Añadir el primero
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
             </div>
-          }
-
-          <!-- Mensaje si no hay animatrónicos -->
-          @if (animatronicos.length === 0) {
-            <div class="empty-state">
-               <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-              <p class="empty-text">No hay animatrónicos registrados en este local</p>
-              @if (puedeCrear) {
-                <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
-                  Añadir el primero
-                </button>
-              }
-            </div>
-          }
         </div>
-
-      </div>
     </div>
-  </div>
 </div>
-
-<!-- FORMULARIO NUEVO ANIMATRÓNICO -->
 @if (mostrarFormularioNuevo) {
-  <div class="modal-overlay">
+<div class="modal-overlay">
     <div class="modal-window">
-      <div class="modal-header">
-        <h2>Nuevo Animatrónico</h2>
-        <button class="modal-close" (click)="cerrarFormularioNuevo()">×</button>
-      </div>
-      
-      <div class="modal-content">
-        <div class="form-group">
-          <label for="nuevo-nombre">Nombre *</label>
-          <input 
-            id="nuevo-nombre"
-            type="text" 
-            [(ngModel)]="nuevoAnimatronico.nombre" 
-            placeholder="Ej: Freddy Fazbear"
-            class="form-input">
+        <div class="modal-header">
+            <h2>Nuevo Animatrónico</h2>
+            <button class="modal-close" (click)="cerrarFormularioNuevo()">×</button>
         </div>
-
-        <!-- El tipo se asigna automáticamente según el local del usuario -->
-        <!-- Admin: puede elegir la gama libremente -->
-        @if (esAdmin) {
-          <div class="form-group">
-            <label for="nuevo-gama">Tipo / Gama *</label>
-            <select id="nuevo-gama" [(ngModel)]="nuevoAnimatronico.id_gama" name="id_gama" class="form-input">
-              @for (tipo of tiposAnimatronicos; track tipo.id) {
-                <option [value]="tipo.id">{{ tipo.nombre }}</option>
-              }
-            </select>
-          </div>
-        }
-
-        <div class="form-group">
-          <label for="nuevo-piezas">Número de Piezas *</label>
-          <input 
-            id="nuevo-piezas"
-            type="number" 
-            [(ngModel)]="nuevoAnimatronico.num_piezas" 
-            min="1"
-            class="form-input">
+        <div class="modal-content">
+            <div class="form-group">
+                <label for="nuevo-nombre">Nombre *</label>
+                <input id="nuevo-nombre" type="text" [(ngModel)]="nuevoAnimatronico.nombre"
+                    placeholder="Ej: Freddy Fazbear" class="form-input">
+            </div>
+            @if (esAdmin) {
+            <div class="form-group">
+                <label for="nuevo-gama">Tipo / Gama *</label>
+                <select id="nuevo-gama" [(ngModel)]="nuevoAnimatronico.id_gama" name="id_gama" class="form-input">
+                    @for (tipo of tiposAnimatronicos; track tipo.id) {
+                    <option [value]="tipo.id">{{ tipo.nombre }}</option>
+                    }
+                </select>
+            </div>
+            }
+            <div class="form-group">
+                <label for="nuevo-piezas">Número de Piezas *</label>
+                <input id="nuevo-piezas" type="number" [(ngModel)]="nuevoAnimatronico.num_piezas" min="1"
+                    class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="nuevo-reconocimiento">
+                    <input id="nuevo-reconocimiento" type="checkbox" [(ngModel)]="nuevoAnimatronico.reconocimiento">
+                    Sistema de Reconocimiento Facial
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="nuevo-foto">Foto</label>
+                <input id="nuevo-foto" type="file" (change)="onFileSelected($event, 'foto', true)" accept="image/*"
+                    class="form-input">
+                <small>Archivo seleccionado: {{ nuevoAnimatronico.foto || 'Ninguno' }}</small>
+            </div>
+            <div class="form-group">
+                <label for="nuevo-planos">Planos</label>
+                <input id="nuevo-planos" type="file" (change)="onFileSelected($event, 'planos', true)" accept="image/*"
+                    class="form-input">
+                <small>Archivo seleccionado: {{ nuevoAnimatronico.planos || 'Ninguno' }}</small>
+            </div>
         </div>
-
-        <div class="form-group">
-          <label for="nuevo-reconocimiento">
-            <input 
-              id="nuevo-reconocimiento"
-              type="checkbox" 
-              [(ngModel)]="nuevoAnimatronico.reconocimiento">
-            Sistema de Reconocimiento Facial
-          </label>
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
+            <button class="btn-save" (click)="guardarNuevo()">Guardar</button>
         </div>
-
-        <div class="form-group">
-          <label for="nuevo-foto">Foto</label>
-          <input 
-            id="nuevo-foto"
-            type="file" 
-            (change)="onFileSelected($event, 'foto', true)"
-            accept="image/*"
-            class="form-input">
-          <small>Archivo seleccionado: {{ nuevoAnimatronico.foto || 'Ninguno' }}</small>
-        </div>
-
-        <div class="form-group">
-          <label for="nuevo-planos">Planos</label>
-          <input 
-            id="nuevo-planos"
-            type="file" 
-            (change)="onFileSelected($event, 'planos', true)"
-            accept="image/*"
-            class="form-input">
-          <small>Archivo seleccionado: {{ nuevoAnimatronico.planos || 'Ninguno' }}</small>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn-cancel" (click)="cerrarFormularioNuevo()">Cancelar</button>
-        <button class="btn-save" (click)="guardarNuevo()">Guardar</button>
-      </div>
     </div>
-  </div>
+</div>
 }
-
-<!-- FORMULARIO EDITAR ANIMATRÓNICO -->
 @if (mostrarFormularioEditar && animatronicoEditando) {
-  <div class="modal-overlay">
+<div class="modal-overlay">
     <div class="modal-window">
-      <div class="modal-header">
-        <h2>Editar Animatrónico</h2>
-        <button class="modal-close" (click)="cerrarFormularioEditar()">×</button>
-      </div>
-      
-      <div class="modal-content">
-        <div class="form-group">
-          <label for="edit-nombre">Nombre *</label>
-          <input 
-            id="edit-nombre"
-            type="text" 
-            [(ngModel)]="animatronicoEditando.nombre" 
-            class="form-input">
+        <div class="modal-header">
+            <h2>Editar Animatrónico</h2>
+            <button class="modal-close" (click)="cerrarFormularioEditar()">×</button>
         </div>
-
-        <!-- Tipo/Gama: editable para admin, solo lectura para el resto -->
-        @if (esAdmin) {
-          <div class="form-group">
-            <label for="edit-gama">Tipo / Gama *</label>
-            <select id="edit-gama" [(ngModel)]="animatronicoEditando.id_gama" name="id_gama" class="form-input">
-              @for (tipo of tiposAnimatronicos; track tipo.id) {
-                <option [value]="tipo.id">{{ tipo.nombre }}</option>
-              }
-            </select>
-          </div>
-        } @else {
-          <div class="form-group">
-            <label>Tipo (fijo)</label>
-            <input
-              type="text"
-              [value]="obtenerNombreGama(animatronicoEditando.id_gama)"
-              class="form-input"
-              disabled
-              readonly>
-            <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
-          </div>
-        }
-        <div class="form-group">
-          <label>Tipo (fijo)</label>
-          <input 
-            type="text" 
-            [value]="obtenerNombreGama(animatronicoEditando.id_gama)"
-            class="form-input"
-            disabled
-            readonly>
-          <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
+        <div class="modal-content">
+            <div class="form-group">
+                <label for="edit-nombre">Nombre *</label>
+                <input id="edit-nombre" type="text" [(ngModel)]="animatronicoEditando.nombre" class="form-input">
+            </div>
+            @if (esAdmin) {
+            <div class="form-group">
+                <label for="edit-gama">Tipo / Gama *</label>
+                <select id="edit-gama" [(ngModel)]="animatronicoEditando.id_gama" name="id_gama" class="form-input">
+                    @for (tipo of tiposAnimatronicos; track tipo.id) {
+                    <option [value]="tipo.id">{{ tipo.nombre }}</option>
+                    }
+                </select>
+            </div>
+            } @else {
+            <div class="form-group">
+                <label>Tipo (fijo)</label>
+                <input type="text" [value]="obtenerNombreGama(animatronicoEditando.id_gama)" class="form-input" disabled
+                    readonly>
+                <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
+            </div>
+            }
+            <div class="form-group">
+                <label>Tipo (fijo)</label>
+                <input type="text" [value]="obtenerNombreGama(animatronicoEditando.id_gama)" class="form-input" disabled
+                    readonly>
+                <small>El tipo de animatrónico está determinado por el local y no se puede cambiar</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-piezas">Número de Piezas *</label>
+                <input id="edit-piezas" type="number" [(ngModel)]="animatronicoEditando.num_piezas" min="1"
+                    class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="edit-reconocimiento">
+                    <input id="edit-reconocimiento" type="checkbox" [(ngModel)]="animatronicoEditando.reconocimiento">
+                    Sistema de Reconocimiento Facial
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="edit-foto">Foto</label>
+                <input id="edit-foto" type="file" (change)="onFileSelected($event, 'foto', false)" accept="image/*"
+                    class="form-input">
+                <small>Archivo actual: {{ animatronicoEditando.foto }}</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-planos">Planos</label>
+                <input id="edit-planos" type="file" (change)="onFileSelected($event, 'planos', false)" accept="image/*"
+                    class="form-input">
+                <small>Archivo actual: {{ animatronicoEditando.planos }}</small>
+            </div>
         </div>
-
-        <div class="form-group">
-          <label for="edit-piezas">Número de Piezas *</label>
-          <input 
-            id="edit-piezas"
-            type="number" 
-            [(ngModel)]="animatronicoEditando.num_piezas" 
-            min="1"
-            class="form-input">
+        <div class="modal-footer">
+            @if (puedeEliminar) {
+            <button class="btn-delete" (click)="eliminarAnimatronico()"> Eliminar</button>
+            }
+            <div class="modal-footer-right">
+                <button class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
+                <button class="btn-save" (click)="actualizarAnimatronico()">Actualizar</button>
+            </div>
         </div>
-
-        <div class="form-group">
-          <label for="edit-reconocimiento">
-            <input 
-              id="edit-reconocimiento"
-              type="checkbox" 
-              [(ngModel)]="animatronicoEditando.reconocimiento">
-            Sistema de Reconocimiento Facial
-          </label>
-        </div>
-
-        <div class="form-group">
-          <label for="edit-foto">Foto</label>
-          <input 
-            id="edit-foto"
-            type="file" 
-            (change)="onFileSelected($event, 'foto', false)"
-            accept="image/*"
-            class="form-input">
-          <small>Archivo actual: {{ animatronicoEditando.foto }}</small>
-        </div>
-
-        <div class="form-group">
-          <label for="edit-planos">Planos</label>
-          <input 
-            id="edit-planos"
-            type="file" 
-            (change)="onFileSelected($event, 'planos', false)"
-            accept="image/*"
-            class="form-input">
-          <small>Archivo actual: {{ animatronicoEditando.planos }}</small>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <!-- NUEVO: Botón eliminar solo si tiene permisos -->
-        @if (puedeEliminar) {
-          <button class="btn-delete" (click)="eliminarAnimatronico()">🗑️ Eliminar</button>
-        }
-        <div class="modal-footer-right">
-          <button class="btn-cancel" (click)="cerrarFormularioEditar()">Cancelar</button>
-          <button class="btn-save" (click)="actualizarAnimatronico()">Actualizar</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 }
-
-        <!-- Helpy siempre visible-->
-    <div class="helpy-desktop">
-      <img
-        src="/Helpy/Helpy_Render.webp"
-        alt="Helpy asistente"
-        class="helpy-desktop-img"
-      />
-  </div>
-
-<!-- BARRA DE TAREAS -->
+<div class="helpy-desktop">
+    <img src="/Helpy/Helpy_Render.webp" alt="Helpy asistente" class="helpy-desktop-img" />
+</div>
 <div class="taskbar" *ngIf="!isMinimized">
-  <div class="start-button">
-    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-    <span>Inicio</span>
-  </div>
-
-  <div class="taskbar-separator"></div>
-
-  <div class="taskbar-windows">
-    <button 
-      *ngFor="let window of ventanasAbiertas$ | async"
-      class="taskbar-window-btn"
-      [class.minimized]="window.isMinimized"
-      [class.active]="!window.isMinimized && window.id === 'animatronicos'"
-      (click)="restaurarVentana(window.id)"
-    >
-      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-      <span>{{ window.title }}</span>
-    </button>
-  </div>
-
-  <div class="system-tray">
-    <div class="system-tray-user" *ngIf="usuario">
-        <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
-        <span class="user-name">{{ usuario.usuario }}</span>
+    <div class="start-button">
+        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+        <span>Inicio</span>
     </div>
-    
-    <div class="system-tray-separator"></div>
-    
-    <div class="system-tray-time">
-      {{ getHoraActual() }}
+    <div class="taskbar-separator"></div>
+    <div class="taskbar-windows">
+        <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
+            [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized && window.id === 'animatronicos'"
+            (click)="restaurarVentana(window.id)">
+            <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+            <span>{{ window.title }}</span>
+        </button>
     </div>
-    
-    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span>🚪</span>
-    </button>
-  </div>
+    <div class="system-tray">
+        <div class="system-tray-user" *ngIf="usuario">
+            <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
+            <span class="user-name">{{ usuario.usuario }}</span>
+        </div>
+        <div class="system-tray-separator"></div>
+        <div class="system-tray-time">
+            {{ getHoraActual() }}
+        </div>
+        <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+            <span></span>
+        </button>
+    </div>
 </div>

@@ -1,6 +1,3 @@
-/* ============================================
-   BARRA DE TAREAS INFERIOR (Estilo Windows 95 - Igual a Home2)
-   ============================================ */
 
 .taskbar {
   position: fixed;
@@ -19,9 +16,6 @@
   font-family: 'MS Sans Serif', Arial, sans-serif;
 }
 
-/* ============================================
-   BOTÓN START
-   ============================================ */
 
 .start-button {
   height: 32px;
@@ -51,20 +45,12 @@
   object-fit: contain;
 }
 
-/* ============================================
-   SEPARADORES
-   ============================================ */
-
 .taskbar-separator {
   width: 2px;
   height: 32px;
   background: linear-gradient(to right, #808080, #ffffff);
   margin: 0 0.2rem;
 }
-
-/* ============================================
-   VENTANAS ABIERTAS
-   ============================================ */
 
 .taskbar-windows {
   flex: 1;
@@ -122,10 +108,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-/* ============================================
-   BANDEJA DEL SISTEMA (System Tray)
-   ============================================ */
 
 .system-tray {
   display: flex;
@@ -191,9 +173,7 @@
   border-style: inset;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+/* Movil */
 
 @media (max-width: 768px) {
   .taskbar {
@@ -227,7 +207,6 @@
   }
 }
 
-/* ── Icono de rol en system-tray ── */
 .user-rol-icon {
   width: 20px;
   height: 20px;

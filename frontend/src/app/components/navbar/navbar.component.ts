@@ -1,10 +1,3 @@
-/**
- * COMPONENTE: NavbarComponent
- * 
- * Barra de navegación de la aplicación
- * Muestra menú dinámico según roles del usuario
- * Gestiona login/logout y navegación general
- */
 
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -64,7 +57,7 @@ export class NavbarComponent implements OnInit {
       return this.usuario.roles[0].nombre;
     }
 
-    // Sino, usar id_rol (fallback)
+    // Sino, usar id_rol
     switch (this.usuario.id_rol) {
       case 1: return 'Administrador';
       case 2: return 'Técnico';

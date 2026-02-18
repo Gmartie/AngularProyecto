@@ -1,298 +1,226 @@
-
 <div class="window-overlay" [class.hidden]="isMinimized">
-  <div class="window-container" [class.maximized]="isMaximized">
-    <div class="window">
-      <div class="window-header">
-        <div class="window-title">
-          <img [src]="getIconoLocal()" alt="Local" class="window-icon-small">
-          <span>Mi Restaurante</span>
-          <!-- Solo lectura -->
-          @if (soloLectura) {
-            <span class="badge-readonly">Solo Lectura</span>
-          }
+    <div class="window-container" [class.maximized]="isMaximized">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <img [src]="getIconoLocal()" alt="Local" class="window-icon-small">
+                    <span>Mi Restaurante</span>
+                    @if (soloLectura) {
+                    <span class="badge-readonly">Solo Lectura</span>
+                    }
+                </div>
+                <div class="helpy-hanging">
+                    <img src="/Helpy/HelpyLadder.webp" alt="Helpy" />
+                </div>
+                <div class="window-controls">
+                    <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
+                    <button class="window-btn maximize" (click)="toggleMaximizar()"
+                        title="Maximizar/Restaurar">□</button>
+                    <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                @if (esAdministrador && todosLosLocales.length > 0) {
+                <div class="toolbar">
+                    <div class="info-badge">
+                        <span>Modo Administrador - Todos los locales</span>
+                    </div>
+                </div>
+                <div class="locales-list">
+                    @for (local of todosLosLocales; track local.id) {
+                    <div class="local-card-compact" (click)="abrirFormularioEditar(local)">
+                        <div class="card-image-compact">
+                            <img [src]="obtenerRutaFoto(local.foto)" [alt]="local.ciudad"
+                                (error)="onImageError($event)">
+                        </div>
+                        <div class="card-info-compact">
+                            <h3 class="local-titulo-compact">{{ local.ciudad }}</h3>
+                            <p class="local-direccion">{{ local.direccion }}</p>
+                            <div class="local-stats">
+                                <span class="stat-item">{{ local.aforo }}</span>
+                                <span class="stat-item">{{ formatearFecha(local.fecha_apertura) }}</span>
+                                <span [class.badge-abierto]="local.abierto" [class.badge-cerrado]="!local.abierto"
+                                    class="stat-badge">
+                                    {{ local.abierto ? 'Abierto' : 'Cerrado' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-actions-compact">
+                            <button class="btn-edit-compact"></button>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+                @if (esAdministrador && todosLosLocales.length === 0) {
+                <div class="empty-state">
+                    <img src="/FNaF_Icons/fazbearInc.png" alt="No hay locales" class="empty-icon">
+                    <p>No hay locales registrados en el sistema</p>
+                </div>
+                }
+                @if (!esAdministrador && localUsuario) {
+                <div class="toolbar">
+                    @if (puedeEditar) {
+                    <div class="info-badge">
+                        <span>Local asignado - Modo edición</span>
+                    </div>
+                    } @else {
+                    <div class="info-badge">
+                        <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
+                    </div>
+                    }
+                </div>
+                }
+                @if (!esAdministrador && localUsuario) {
+                <div class="local-card">
+                    <div class="card-image">
+                        <img [src]="obtenerRutaFoto(localUsuario.foto)" [alt]="localUsuario.ciudad"
+                            (error)="onImageError($event)">
+                    </div>
+                    <div class="card-info">
+                        <h2 class="local-titulo">{{ localUsuario.ciudad }}</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Dirección:</span>
+                                <span class="info-value">{{ localUsuario.direccion }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Aforo:</span>
+                                <span class="info-value">{{ localUsuario.aforo }} personas</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Apertura:</span>
+                                <span class="info-value">{{ formatearFecha(localUsuario.fecha_apertura) }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Estado:</span>
+                                <span class="info-value">
+                                    <span [class.badge-abierto]="localUsuario.abierto"
+                                        [class.badge-cerrado]="!localUsuario.abierto">
+                                        {{ localUsuario.abierto ? 'Abierto' : 'Cerrado' }}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        @if (puedeEditar) {
+                        <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
+                            Editar Local
+                        </button>
+                        } @else {
+                        <button class="btn-view" disabled title="Solo el Propietario puede editar el local">
+                            Solo lectura
+                        </button>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <div class="empty-state">
+                    <img src="/FNaF_Icons/fazbearInc.png" alt="Fazbear" class="empty-icon">
+                    <p class="empty-text">No tienes un local asignado</p>
+                    <p class="empty-subtext">Contacta con un administrador para que te asigne un restaurante</p>
+                </div>
+                }
+            </div>
         </div>
-        
-        <!-- Helpy -->
-        <div class="helpy-hanging">
-          <img src="/Helpy/HelpyLadder.webp" alt="Helpy" />
-        </div>
-        
-        <div class="window-controls">
-          <button class="window-btn minimize" (click)="minimizarVentana()" title="Minimizar">_</button>
-          <button class="window-btn maximize" (click)="toggleMaximizar()" title="Maximizar/Restaurar">□</button>
-          <button class="window-btn close" (click)="cerrarVentana()" title="Cerrar">×</button>
-        </div>
-      </div>
-
-      <div class="window-content">
-        
-        <!-- Administrador -->
-        @if (esAdministrador && todosLosLocales.length > 0) {
-          <div class="toolbar">
-            <div class="info-badge">
-              <span>Modo Administrador - Todos los locales</span>
-            </div>
-          </div>
-
-          <div class="locales-list">
-            @for (local of todosLosLocales; track local.id) {
-              <div class="local-card-compact" (click)="abrirFormularioEditar(local)">
-                <div class="card-image-compact">
-                  <img [src]="obtenerRutaFoto(local.foto)"
-                    [alt]="local.ciudad"
-                    (error)="onImageError($event)">
-                </div>
-
-                <div class="card-info-compact">
-                  <h3 class="local-titulo-compact">{{ local.ciudad }}</h3>
-                  <p class="local-direccion">{{ local.direccion }}</p>
-                  <div class="local-stats">
-                    <span class="stat-item">{{ local.aforo }}</span>
-                    <span class="stat-item">{{ formatearFecha(local.fecha_apertura) }}</span>
-                    <span [class.badge-abierto]="local.abierto" 
-                          [class.badge-cerrado]="!local.abierto"
-                          class="stat-badge">
-                      {{ local.abierto ? 'Abierto' : 'Cerrado' }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="card-actions-compact">
-                  <button class="btn-edit-compact">✏️</button>
-                </div>
-              </div>
-            }
-          </div>
-        }
-
-        <!-- Admin no local -->
-        @if (esAdministrador && todosLosLocales.length === 0) {
-          <div class="empty-state">
-            <img src="/FNaF_Icons/fazbearInc.png" alt="No hay locales" class="empty-icon">
-            <p>No hay locales registrados en el sistema</p>
-          </div>
-        }
-        
-        <!-- Lectura -->
-        @if (!esAdministrador && localUsuario) {
-          <div class="toolbar">
-            @if (puedeEditar) {
-              <div class="info-badge">
-                <span>Local asignado - Modo edición</span>
-              </div>
-            } @else {
-              <div class="info-badge">
-                <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
-              </div>
-            }
-          </div>
-        }
-
-        <!-- Local del usuario -->
-        @if (!esAdministrador && localUsuario) {
-          <div class="local-card">
-            <div class="card-image">
-              <img [src]="obtenerRutaFoto(localUsuario.foto)"
-                [alt]="localUsuario.ciudad"
-                (error)="onImageError($event)">
-            </div>
-
-            <div class="card-info">
-              <h2 class="local-titulo">{{ localUsuario.ciudad }}</h2>
-              
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Dirección:</span>
-                  <span class="info-value">{{ localUsuario.direccion }}</span>
-                </div>
-
-                <div class="info-item">
-                  <span class="info-label">Aforo:</span>
-                  <span class="info-value">{{ localUsuario.aforo }} personas</span>
-                </div>
-
-                <div class="info-item">
-                  <span class="info-label">Apertura:</span>
-                  <span class="info-value">{{ formatearFecha(localUsuario.fecha_apertura) }}</span>
-                </div>
-
-                <div class="info-item">
-                  <span class="info-label">Estado:</span>
-                  <span class="info-value">
-                    <span [class.badge-abierto]="localUsuario.abierto" 
-                          [class.badge-cerrado]="!localUsuario.abierto">
-                      {{ localUsuario.abierto ? 'Abierto' : 'Cerrado' }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-actions">
-              @if (puedeEditar) {
-                <button class="btn-edit" (click)="abrirFormularioEditar(localUsuario)">
-                  Editar Local
-                </button>
-              } @else {
-                <button class="btn-view" disabled title="Solo el Propietario puede editar el local">
-                  Solo lectura
-                </button>
-              }
-            </div>
-          </div>
-        } @else {
-          <!-- Sin Local -->
-          <div class="empty-state">
-            <img src="/FNaF_Icons/fazbearInc.png" alt="Fazbear" class="empty-icon">
-            <p class="empty-text">No tienes un local asignado</p>
-            <p class="empty-subtext">Contacta con un administrador para que te asigne un restaurante</p>
-          </div>
-        }
-
-      </div>
     </div>
-  </div>
 </div>
-
 <div class="taskbar" *ngIf="!isMinimized">
-
-  <div class="start-button">
-    <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-    <span>Inicio</span>
-  </div>
-
-  <div class="taskbar-separator"></div>
-
-  <div class="taskbar-windows">
-    <button 
-      *ngFor="let window of ventanasAbiertas$ | async"
-      class="taskbar-window-btn"
-      [class.minimized]="window.isMinimized"
-      [class.active]="!window.isMinimized && window.id === 'locales'"
-      (click)="restaurarVentana(window.id)"
-    >
-      <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
-      <span>{{ window.title }}</span>
-    </button>
-  </div>
-
-  <div class="system-tray">
-    <div class="system-tray-user" *ngIf="usuario">
-      <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
-      <span class="user-name">{{ usuario.usuario }}</span>
+    <div class="start-button">
+        <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
+        <span>Inicio</span>
     </div>
-    
-    <div class="system-tray-separator"></div>
-    
-    <div class="system-tray-time">
-      {{ getHoraActual() }}
+    <div class="taskbar-separator"></div>
+    <div class="taskbar-windows">
+        <button *ngFor="let window of ventanasAbiertas$ | async" class="taskbar-window-btn"
+            [class.minimized]="window.isMinimized" [class.active]="!window.isMinimized && window.id === 'locales'"
+            (click)="restaurarVentana(window.id)">
+            <img [src]="window.icon" [alt]="window.title" class="taskbar-window-icon">
+            <span>{{ window.title }}</span>
+        </button>
     </div>
-    
-    <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
-      <span>🚪</span>
-    </button>
-  </div>
+    <div class="system-tray">
+        <div class="system-tray-user" *ngIf="usuario">
+            <img [src]="obtenerIconoRol()" [alt]="usuario.usuario" class="user-rol-icon">
+            <span class="user-name">{{ usuario.usuario }}</span>
+        </div>
+        <div class="system-tray-separator"></div>
+        <div class="system-tray-time">
+            {{ getHoraActual() }}
+        </div>
+        <button class="logout-btn" (click)="cerrarSesion()" title="Cerrar Sesión">
+            <span></span>
+        </button>
+    </div>
 </div>
-
-<!-- Editar local -->
 @if (mostrarFormularioEditar && localEditando) {
-  <div class="modal-overlay" (click)="cerrarFormularioEditar()">
+<div class="modal-overlay" (click)="cerrarFormularioEditar()">
     <div class="modal-window" (click)="$event.stopPropagation()">
-
-      <div class="window-header">
-        <div class="window-title">
-          <span class="window-icon-small">✏️</span>
-          <span>Editar Local</span>
-        </div>
-        <div class="window-controls">
-          <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
-        </div>
-      </div>
-
-      <div class="modal-content">
-        <form class="form-local">
-          <div class="form-group">
-            <label for="edit-ciudad">Ciudad *:</label>
-            <input type="text" 
-                   id="edit-ciudad" 
-                   [(ngModel)]="localEditando.ciudad"
-                   name="ciudad"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-direccion">Dirección *:</label>
-            <input type="text" 
-                   id="edit-direccion" 
-                   [(ngModel)]="localEditando.direccion"
-                   name="direccion"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-aforo">Aforo *:</label>
-            <input type="number" 
-                   id="edit-aforo" 
-                   [(ngModel)]="localEditando.aforo"
-                   name="aforo"
-                   min="1"
-                   required>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-fecha">Fecha de apertura:</label>
-            <input type="date" 
-                   id="edit-fecha" 
-                   [value]="fechaParaInput(localEditando.fecha_apertura)"
-                   (change)="onFechaChange($event)"
-                   name="fecha_apertura">
-          </div>
-
-          <div class="form-group">
-            <label>
-              <input type="checkbox" 
-                     [(ngModel)]="localEditando.abierto"
-                     name="abierto">
-              Local abierto
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-foto">Foto del local:</label>
-            <input type="file" 
-                   id="edit-foto"
-                   (change)="onFileSelected($event, false)"
-                   accept="image/*">
-            <small>O ingrese nombre del archivo (carpeta: /public/FNaF_RESTAURANTES/):</small>
-            <input type="text" 
-                   [(ngModel)]="localEditando.foto"
-                   name="foto"
-                   placeholder="ejemplo: freddy_pizza_1987.jpg">
-            @if (localEditando.foto) {
-              <div class="preview-image">
-                <img [src]="obtenerRutaFoto(localEditando.foto)" 
-                     alt="Preview"
-                     (error)="onImageError($event)">
-              </div>
-            }
-          </div>
-
-          <div class="form-actions">
-
-            <button type="button" class="btn-delete" (click)="eliminarLocal()" disabled title="La eliminación de locales está deshabilitada">
-              Eliminar
-            </button>
-            <div class="form-actions-right">
-              <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
-                Cancelar
-              </button>
-              <button type="button" class="btn-save" (click)="actualizarLocal()">
-                Actualizar
-              </button>
+        <div class="window-header">
+            <div class="window-title">
+                <span class="window-icon-small"></span>
+                <span>Editar Local</span>
             </div>
-          </div>
-        </form>
-      </div>
+            <div class="window-controls">
+                <button class="window-btn close" (click)="cerrarFormularioEditar()">×</button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <form class="form-local">
+                <div class="form-group">
+                    <label for="edit-ciudad">Ciudad *:</label>
+                    <input type="text" id="edit-ciudad" [(ngModel)]="localEditando.ciudad" name="ciudad" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-direccion">Dirección *:</label>
+                    <input type="text" id="edit-direccion" [(ngModel)]="localEditando.direccion" name="direccion"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-aforo">Aforo *:</label>
+                    <input type="number" id="edit-aforo" [(ngModel)]="localEditando.aforo" name="aforo" min="1"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-fecha">Fecha de apertura:</label>
+                    <input type="date" id="edit-fecha" [value]="fechaParaInput(localEditando.fecha_apertura)"
+                        (change)="onFechaChange($event)" name="fecha_apertura">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="localEditando.abierto" name="abierto">
+                        Local abierto
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="edit-foto">Foto del local:</label>
+                    <input type="file" id="edit-foto" (change)="onFileSelected($event, false)" accept="image/*">
+                    <small>O ingrese nombre del archivo (carpeta: /public/FNaF_RESTAURANTES/):</small>
+                    <input type="text" [(ngModel)]="localEditando.foto" name="foto"
+                        placeholder="ejemplo: freddy_pizza_1987.jpg">
+                    @if (localEditando.foto) {
+                    <div class="preview-image">
+                        <img [src]="obtenerRutaFoto(localEditando.foto)" alt="Preview" (error)="onImageError($event)">
+                    </div>
+                    }
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-delete" (click)="eliminarLocal()" disabled
+                        title="La eliminación de locales está deshabilitada">
+                        Eliminar
+                    </button>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn-cancel" (click)="cerrarFormularioEditar()">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-save" (click)="actualizarLocal()">
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 }

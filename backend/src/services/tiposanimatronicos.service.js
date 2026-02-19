@@ -7,9 +7,9 @@ class TiposAnimatronicosService {
 
   /**
    * Devuelve tipos de animatrónicos.
-   * - Sin filtro (admin): todos los tipos.
-   * - Con idLocal: solo los tipos que tienen al menos un animatrónico
-   *   asignado a ese local (via animatronico_local → animatronicos → tipos_animatronicos).
+   * - Admin: todos los tipos.
+   * - Normal: solo los tipos que tienen al menos un animatrónico
+   *   asignado a ese local
    */
   async getAll(idLocal = null) {
     if (idLocal) {

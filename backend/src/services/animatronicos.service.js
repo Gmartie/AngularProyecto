@@ -5,7 +5,7 @@ const path = require('path');
 
 class AnimatronicoService {
 
-  // ⭐ MODIFICADO: Ahora usa la tabla intermedia animatronico_local
+  // Ahora usa la tabla intermedia animatronico_local
   async getAll(id_local = null) {
     let query = `
       SELECT 
@@ -84,7 +84,7 @@ class AnimatronicoService {
 
     const animatronico_id = result.insertId;
 
-    // ⭐ NUEVO: Insertar en la tabla intermedia animatronico_local
+    // Insertar en la tabla intermedia animatronico_local
     await pool.query(
       `INSERT INTO animatronico_local 
        (id_animatronico, id_local, fecha_instalacion, estado)
@@ -141,15 +141,15 @@ class AnimatronicoService {
     this.eliminarArchivo(anima.foto, 'foto');
     this.eliminarArchivo(anima.planos, 'planos');
     
-    // ⭐ MODIFICADO: La tabla intermedia se eliminará automáticamente por CASCADE
+    // La tabla intermedia se eliminará automáticamente por CASCADE
     // Eliminar registro de la BD
     await pool.query('DELETE FROM animatronicos WHERE id = ?', [id]);
     
-    console.log(`✅ Animatrónico ${id} eliminado junto con sus archivos y relaciones`);
+    console.log(`Animatrónico ${id} eliminado junto con sus archivos y relaciones`);
   }
 
   /**
-   * ⭐ NUEVO: Actualiza el estado de un animatrónico en un local
+   * Actualiza el estado de un animatrónico en un local
    */
   async actualizarEstado(id_animatronico, id_local, estado) {
     const [result] = await pool.query(
@@ -167,7 +167,7 @@ class AnimatronicoService {
   }
 
   /**
-   * ⭐ NUEVO: Asigna un animatrónico a un local
+   * Asigna un animatrónico a un local
    */
   async asignarALocal(id_animatronico, id_local, fecha_instalacion = null, estado = 'Operativo') {
     // Verificar que el animatrónico existe
@@ -195,7 +195,7 @@ class AnimatronicoService {
   }
 
   /**
-   * ⭐ NUEVO: Remueve un animatrónico de un local
+   * Remueve un animatrónico de un local
    */
   async removerDeLocal(id_animatronico, id_local) {
     const [result] = await pool.query(
@@ -238,10 +238,10 @@ class AnimatronicoService {
       
       if (rutaArchivo && fs.existsSync(rutaArchivo)) {
         fs.unlinkSync(rutaArchivo);
-        console.log(`🗑️ Archivo eliminado: ${nombreArchivo}`);
+        console.log(`Archivo eliminado: ${nombreArchivo}`);
       }
     } catch (error) {
-      console.error(`❌ Error al eliminar archivo ${nombreArchivo}:`, error.message);
+      console.error(`Error al eliminar archivo ${nombreArchivo}:`, error.message);
       // No lanzar error, solo registrar - no queremos que falle la eliminación del registro
     }
   }

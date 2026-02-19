@@ -5,7 +5,7 @@ const { UnauthorizedError, ValidationError } = require('../utils/errors.util');
 
 class AuthService {
   async login(usuario, password) {
-    console.log(`🔍 LOGIN: Intentando loguear usuario: ${usuario}`);
+    console.log(`LOGIN: Intentando loguear usuario: ${usuario}`);
     
     // Buscar en la tabla 'usuario' (singular) con campos 'usuario', 'pass', 'correo', 'id_rol'
     const [users] = await pool.query(
@@ -13,23 +13,23 @@ class AuthService {
       [usuario, usuario]
     );
 
-    console.log(`🔍 LOGIN: Usuarios encontrados:`, users);
+    console.log(`LOGIN: Usuarios encontrados:`, users);
 
     if (users.length === 0) {
-      console.log(`❌ LOGIN: Usuario no encontrado: ${usuario}`);
+      console.log(` LOGIN: Usuario no encontrado: ${usuario}`);
       throw new UnauthorizedError('Credenciales invalidas');
     }
 
     const user = users[0];
-    console.log(`✅ LOGIN: Usuario encontrado:`, user.usuario);
-    console.log(`🔍 LOGIN: Contraseña ingresada: ${password}`);
+    console.log(`LOGIN: Usuario encontrado:`, user.usuario);
+    console.log(`LOGIN: Contraseña ingresada: ${password}`);
 
     // Comparar contraseñas usando bcrypt
     const isValidPassword = await bcrypt.compare(password, user.pass);
-    console.log(`🔍 LOGIN: Validación de contraseña: ${isValidPassword}`);
+    console.log(`LOGIN: Validación de contraseña: ${isValidPassword}`);
 
     if (!isValidPassword) {
-      console.log(`❌ LOGIN: Contraseña inválida para usuario: ${usuario}`);
+      console.log(` LOGIN: Contraseña inválida para usuario: ${usuario}`);
       throw new UnauthorizedError('Credenciales invalidas');
     }
 
@@ -39,7 +39,7 @@ class AuthService {
       [user.id_rol]
     );
 
-    console.log(`🔍 LOGIN: Rol encontrado:`, roles);
+    console.log(`LOGIN: Rol encontrado:`, roles);
 
     // El rol como array para mantener compatibilidad con el frontend
     const rolesArray = roles.length > 0 ? [{ id: roles[0].id, nombre: roles[0].rol }] : [];
@@ -57,7 +57,7 @@ class AuthService {
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
 
-    console.log(`✅ LOGIN: Token generado exitosamente`);
+    console.log(`LOGIN: Token generado exitosamente`);
     
     return { user, token, roles: rolesArray };
   }

@@ -19,9 +19,20 @@
                         <span class="btn-icon"></span>
                         Nueva Asignación
                     </button>
+                    @if (esAdmin) {
+                    <div class="filter-group">
+                        <label for="filtro-tipo-local">Filtrar por tipo:</label>
+                        <select id="filtro-tipo-local" [(ngModel)]="tipoFiltro" class="filter-select">
+                            <option value="">— Todos los tipos —</option>
+                            @for (tipo of tiposAnimatronicos; track tipo.id) {
+                            <option [value]="tipo.id">{{ tipo.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+                    }
                 </div>
                 <div class="animatronicos-list">
-                    @for (asignacion of asignaciones; track asignacion.id_animatronico + '-' + asignacion.id_local) {
+                    @for (asignacion of asignacionesFiltradas; track asignacion.id_animatronico + '-' + asignacion.id_local) {
                     <div class="animatronico-card">
                         <div class="card-image">
                             <img [src]="obtenerRutaFoto(asignacion.animatronico_foto || '')"
@@ -57,10 +68,10 @@
                         </div>
                     </div>
                     }
-                    @if (asignaciones.length === 0) {
+                    @if (asignacionesFiltradas.length === 0) {
                     <div class="empty-state">
                         <img src="/FNaF_Icons/fazbearInc.png" alt="Start" class="start-icon">
-                        <p class="empty-text">No hay asignaciones registradas</p>
+                        <p class="empty-text">{{ tipoFiltro ? 'No hay asignaciones de este tipo' : 'No hay asignaciones registradas' }}</p>
                         <button class="btn-add-empty" (click)="abrirFormularioNuevo()">
                             Añadir la primera
                         </button>

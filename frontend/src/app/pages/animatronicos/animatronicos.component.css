@@ -529,3 +529,33 @@
   height: 16px;
   object-fit: contain;
 }
+
+/* Filtro de tipo (solo admin) */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #000080;
+  white-space: nowrap;
+}
+
+.filter-select {
+  font-family: 'MS Sans Serif', Arial, sans-serif;
+  font-size: 12px;
+  padding: 2px 4px;
+  border: 2px inset #fff;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.filter-select:focus {
+  outline: 1px dotted #000080;
+}

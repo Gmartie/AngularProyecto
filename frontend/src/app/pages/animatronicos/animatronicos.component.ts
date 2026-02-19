@@ -33,6 +33,7 @@ interface TipoAnimatronico {
 export class AnimatronicosComponent implements OnInit, OnDestroy {
     animatronicos: Animatronico[] = [];
     tiposAnimatronicos: TipoAnimatronico[] = [];
+    tipoFiltro: number | string = '';
     animatronicoEditando: Animatronico | null = null;
     mostrarFormularioNuevo: boolean = false;
     mostrarFormularioEditar: boolean = false; fotoNuevoFile: File | null = null;
@@ -229,6 +230,11 @@ export class AnimatronicosComponent implements OnInit, OnDestroy {
             });
         }
     }
+    get animatronicosFiltrados(): Animatronico[] {
+        if (!this.tipoFiltro) return this.animatronicos;
+        return this.animatronicos.filter(a => a.id_gama === +this.tipoFiltro);
+    }
+
     obtenerNombreGama(id_gama: number): string {
         return this.tiposAnimatronicos.find(t => t.id === id_gama)?.nombre || 'Desconocido';
     }

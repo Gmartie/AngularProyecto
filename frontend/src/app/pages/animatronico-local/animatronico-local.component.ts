@@ -29,6 +29,9 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
     asignaciones: AnimatronicoLocal[] = [];
     animatronicos: Animatronico[] = [];
     locales: Local[] = [];
+    tiposAnimatronicos: { id: number; nombre: string }[] = [];
+    tipoFiltro: number | string = '';
+    esAdmin: boolean = false;
     asignacionEditando: AnimatronicoLocal | null = null;
     localOriginal: number = 0; // Guarda el local original al abrir editar
     mostrarFormularioNuevo: boolean = false;
@@ -62,6 +65,7 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
         this.authService.usuario$.subscribe(usuario => {
             this.usuario = usuario;
             if (usuario) {
+                this.esAdmin = usuario.id_rol === 6;
                 this.cargarDatos();
             }
         });
@@ -82,6 +86,20 @@ export class AnimatronicoLocalComponent implements OnInit, OnDestroy {
         this.cargarAsignaciones();
         this.cargarAnimatronicos();
         this.cargarLocales();
+        this.cargarTiposAnimatronicos();
+    }
+    cargarTiposAnimatronicos(): void {
+        this.animatronicosService.obtenerTipos().subscribe({
+            next: (tipos) => { this.tiposAnimatronicos = tipos; },
+            error: () => { this.tiposAnimatronicos = []; }
+        });
+    }
+    get asignacionesFiltradas(): AnimatronicoLocal[] {
+        if (!this.tipoFiltro) return this.asignaciones;
+        return this.asignaciones.filter(a => {
+            const anim = this.animatronicos.find(an => an.id === a.id_animatronico);
+            return anim?.id_gama === +this.tipoFiltro;
+        });
     }
     cargarAsignaciones(): void {
         this.animatronicoLocalService.obtenerTodos().subscribe({

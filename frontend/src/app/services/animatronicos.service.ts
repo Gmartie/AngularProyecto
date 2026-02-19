@@ -24,10 +24,7 @@ export class AnimatronicosService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   *  CAMBIO: Ahora usa el endpoint /api/animatronicos sin parámetros
-   * El backend filtra automáticamente por id_local del token JWT
-   */
+
   obtenerTodos(): Observable<Animatronico[]> {
     return this.http.get<ApiResponse<Animatronico[]>>(`${this.apiUrl}/animatronicos`)
       .pipe(
@@ -106,7 +103,7 @@ export class AnimatronicosService {
   }
 
   /**
-   * Sube una imagen (foto o planos) al servidor
+   * Sube una imagen al servidor
    */
   subirImagen(formData: FormData, tipo: 'foto' | 'planos'): Observable<ApiResponse<{ filename: string }>> {
     return this.http.post<ApiResponse<{ filename: string }>> (

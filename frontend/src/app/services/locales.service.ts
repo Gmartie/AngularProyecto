@@ -1,8 +1,3 @@
-/**
- * SERVICIO: LocalesService
- *
- * Gestiona operaciones CRUD de locales
- */
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

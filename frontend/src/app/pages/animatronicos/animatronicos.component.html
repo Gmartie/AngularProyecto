@@ -20,12 +20,10 @@
                 <div class="toolbar">
                     @if (puedeCrear) {
                     <button class="btn-add" (click)="abrirFormularioNuevo()">
-                        <span class="btn-icon"></span>
                         Añadir Animatrónico
                     </button>
                     } @else {
                     <div class="info-badge">
-                        <span class="badge-icon"></span>
                         <span>Modo visualización - {{ permisosService.obtenerNombreRol() }}</span>
                     </div>
                     }

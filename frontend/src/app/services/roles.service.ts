@@ -1,7 +1,3 @@
-/**
- * SERVICIO: RolesService
- * Gestiona roles de usuario
- */
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
